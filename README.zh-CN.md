@@ -1,6 +1,6 @@
 # windos2026
 
-[English](README.md) · 简体中文
+[English](README.md) · **简体中文** · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
 7 MB，一台 2026 年的 AI 超轻原生操作系统：回到千禧年是外星科技，留在今天是你的私人软件工厂。Bring anything. Leave with an HTML app.
 
