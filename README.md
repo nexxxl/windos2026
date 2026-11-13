@@ -1,18 +1,80 @@
-# NexlOS 插件版公开源码候选
+# windos2026
 
-独立的 DSH 插件源码：Node Host、Client、WebOS、办公界面、浏览器桥和测试均位于本目录。生成这个候选目录不等于执行公开发布。
+English · [简体中文](README.zh-CN.md)
+
+7 MB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
+
+If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
+
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.31 MiB tarball, and one runtime dependency. Every app on the desktop is an `apps/<id>/index.html` plus an `app.json` — readable, editable, and portable.
+
+## Install
+
+Send the repository URL to DSH, then say:
+
+```text
+https://github.com/nexxxl/windos2026
+install windos2026
+```
+
+DSH clones the repository and installs it into the current profile with `plugin_manager install_bundle`. You can also point it at a local directory:
+
+```text
+plugin_manager install_bundle target=/absolute/path/to/windos2026
+```
+
+Or install into the local profile without a conversation:
+
+```sh
+./scripts/install-posix.sh
+powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
+```
+
+Requires Node.js 22+ and a DSH build that can load local bundles. The npm package is not published yet; `npm install @nexlos/os` currently returns 404.
+
+## Use
+
+- **Open the desktop**: after install, enter the Web desktop. The first launch walks through the hello screen and asks for an interface language.
+- **One sentence, one app**: describe what you want in DSH; it generates an embedded app and puts it on the desktop.
+- **Bring a repository**: give it a GitHub URL; it clones the repo, finds the entry point, and installs it as a desktop app.
+- **Leave with it**: an app is just files. Copy `apps/<id>/` and it still runs on another machine.
+
+## What is inside
+
+| Item | Number |
+| --- | --- |
+| Tarball | 7.31 MiB |
+| Unpacked | 11.2 MB / 260 files |
+| Apps | 17 |
+| Commands | 25 |
+| Interface languages | 8 built in, 7 optional packs |
+| Themes | 2 (NEXL modern / Windos2026) |
+| Runtime dependencies | 1 (`jpeg-js`) |
+| License | Apache-2.0 (trademarks and third-party assets excepted) |
+
+## What it refuses to do
+
+- No third-party account and no hosted app store; apps, code and data stay on your machine.
+- No telemetry.
+- No system changes; the installer only writes DSH profile dependencies and links, and uninstalling removes exactly those.
+- No bundled CJK fonts, universal-edition binaries or internal history; none of that is in this repository.
+- No claim that Windows is fully validated; the known boundaries are in [Windows validation](docs/windows-validation.md).
+
+## Develop
 
 ```sh
 npm ci
 npm run check
 npm test
 npm pack --pack-destination /absolute/path/to/artifacts
-python3 scripts/check-source.py
-bash scripts/stage-public-repo.sh --check .
 ```
 
-使用 DSH 插件管理器将本目录作为 bundle 安装；包名 `@nexlos/os`，配置 `cordis.patch.yml`。宿主服务、模型、PTY 和 Chromium 由部署环境提供。
+Size gate:
 
-本候选目录不包含通用版源码、配套应用、制作工具或内部历史审计。插件源代码与既有公开文档按 [Apache-2.0](LICENSE) 提供；第三方素材按自身许可，商标权不包含在 Apache-2.0 中。见 [NOTICE](NOTICE)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) 和 [TRADEMARK.md](TRADEMARK.md)。
+```sh
+./scripts/verify-lite.sh
+```
 
-功能与平台边界见 [验证记录](docs/validation.md)、[Windows 验证](docs/windows-validation.md)、[拆分验证](docs/split-validation.md) 和 [命名迁移](docs/naming-migration.md)。插件的部分伴侣和高级办公能力仍未实现，不能从源码打包成功推导为功能可用。
+## License
+
+Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. See [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
