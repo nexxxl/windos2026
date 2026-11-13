@@ -1,0 +1,73 @@
+{
+  "name": "@nexlos/os",
+  "version": "1.1.0-lite.0",
+  "private": false,
+  "description": "NexlOS lite desktop for DeepSeek Harness: English-first, optional language and art packs.",
+  "type": "module",
+  "exports": {
+    ".": "./index.js",
+    "./client": "./client.js",
+    "./locale/*.json": "./locale/*.json",
+    "./icon": "./icon.svg"
+  },
+  "files": [
+    "*.js",
+    "*.css",
+    "cordis.patch.yml",
+    "locale",
+    "icon.svg",
+    "README.md",
+    "THIRD_PARTY_NOTICES.md",
+    "docs/artcraft/ATTRIBUTION.md",
+    "docs/validation.md",
+    "webos",
+    "vendor",
+    "extension",
+    "LICENSE",
+    "NOTICE",
+    "TRADEMARK.md",
+    "EULA.md",
+    "DISCLAIMER.md",
+    "README.en.md",
+    "docs/windows-validation.md",
+    "docs/naming-migration.md",
+    "docs/split-validation.md"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "platform": "web",
+      "immediately": true,
+      "inject": [
+        "@deepseek-ai/dsh-client-locale",
+        "@deepseek-ai/dsh-client-ui-layout",
+        "@deepseek-ai/dsh-client-ui-sidebar",
+        "@deepseek-ai/dsh-client-ui-workspace",
+        "@deepseek-ai/dsh-client-ui-conversation",
+        "@deepseek-ai/dsh-client-ui-sidebar-right"
+      ]
+    }
+  },
+  "dependencies": {
+    "jpeg-js": "^0.4.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "check": "node scripts/check-syntax.mjs",
+    "pack:check": "npm pack --dry-run"
+  },
+  "nexlos": {
+    "edition": "lite",
+    "packsBase": "/extras/",
+    "packs": [
+      "langs",
+      "fonts-cjk",
+      "artcraft"
+    ]
+  }
+}

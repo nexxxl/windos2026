@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "title": "NexlOS · AI-native operating system",
+    "description": "Turns the DeepSeek Harness main panel into the NexlOS desktop by running the original WebOS: windows, the meridian clock, the book room, This PC, and the AI command bar. A workspace is a space; a session is a process."
+  },
+  "panel": {
+    "title": "NexlOS Desktop"
+  }
+}

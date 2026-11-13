@@ -1,0 +1,266 @@
+/* 折叠空间弹层（独立原生 Surface 页面）。
+   视觉基准 = Windos2026 的普通窗口：同样的 3px 窗框、#e5e9ef 窗体、
+   #000080→#1084d0 标题栏、1px 边框与 14px 像素字。
+   弹层是一个小号窗口，不另造一套控件语言。
+   body 背景必须透明：这个页面是叠在真实页面之上的一块浮层视图。 */
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  overflow: hidden;
+}
+
+/* 视图比窗体大一圈，留给投影；JS 侧按同一组数字把视图对准锚点。 */
+body { padding: 3px 12px 16px 3px; }
+
+* { box-sizing: border-box; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+
+/* 皮肤 = 一套变量。取值与 app.css / window2026.css 的窗口 token 一一对应。 */
+.ov-skin-current {
+  --ov-paper: #f5efe4;
+  --ov-paper-2: #efe7d8;
+  --ov-face: #f5efe4;
+  --ov-ink: #1f1b17;
+  --ov-ink-2: #4a4239;
+  --ov-mute: #857a6a;
+  --ov-line: #d8cbb6;
+  --ov-accent: #a33a2c;
+  --ov-accent-soft: rgba(163, 58, 44, 0.12);
+  --ov-caption: none;
+  --ov-caption-ink: #857a6a;
+  --ov-sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --ov-shadow: 0 14px 36px rgba(31, 27, 23, 0.18);
+  --ov-radius: 9px;
+  --ov-smooth: antialiased;
+}
+
+/* Windos2026：窗体 #e5e9ef、窗框 1px #6f7e93 + 1px #fff、
+   标题栏渐变、正文 #182638、线 #d4dce7、强调 #244a86。
+   字体与字号由外壳通过 ?font= / ?fs= 传进来，和普通窗口保持同一套。 */
+.ov-skin-win98 {
+  --ov-paper: #f7f8fa;
+  --ov-paper-2: #edf0f5;
+  --ov-face: #e5e9ef;
+  --ov-ink: #182638;
+  --ov-ink-2: #34445a;
+  --ov-mute: #687588;
+  --ov-line: #d4dce7;
+  --ov-accent: #244a86;
+  --ov-accent-soft: #e6eefb;
+  --ov-caption: linear-gradient(90deg, #000080, #1084d0);
+  --ov-caption-ink: #fff;
+  --ov-sans: var(--ov-font, "Source Sans 3", "NexlOS Fusion Pixel", "PingFang SC", "Microsoft YaHei", sans-serif);
+  --ov-shadow: inset 0 0 0 1px #6f7e93, inset 0 0 0 2px #fff, 0 6px 16px rgba(16, 42, 66, 0.14);
+  --ov-radius: 2px;
+  --ov-smooth: antialiased;
+  --ov-ui: 14px;
+}
+
+/* 窗体：3px 内边距就是 Windos2026 的窗口边框。 */
+.ov-card {
+  width: 236px;
+  padding: 3px 3px 4px;
+  border: 0;
+  border-radius: var(--ov-radius);
+  background: var(--ov-face);
+  box-shadow: var(--ov-shadow);
+  color: var(--ov-ink);
+  font-family: var(--ov-sans);
+  font-size: var(--ov-ui, 12px);
+  -webkit-font-smoothing: var(--ov-smooth);
+  user-select: none;
+}
+
+/* 标题栏：与普通窗口同高、同渐变、同字重。 */
+.ov-head {
+  display: flex;
+  align-items: center;
+  height: 20px;
+  margin-bottom: 4px;
+  padding: 0 2px 0 5px;
+  background: var(--ov-caption);
+  color: var(--ov-caption-ink);
+  font-size: var(--ov-ui, 10.5px);
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+.ov-head > span:first-child {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+/* 关闭键：窗口右上角控制键的缩小版（16×14、1px 凸起）。 */
+.ov-close {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 14px;
+  margin-left: 5px;
+  border-radius: 0;
+  background: var(--ov-face);
+  color: var(--ov-ink);
+  font-size: 12px;
+  line-height: 12px;
+  text-align: center;
+  box-shadow: inset 1px 1px #fff, inset -1px -1px #8997aa;
+}
+
+.ov-close:hover { background: #f7f8fa; }
+.ov-close:active { box-shadow: inset 1px 1px #8997aa, inset -1px -1px #fff; }
+
+.ov-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 30px;
+  padding: 0 7px;
+  color: var(--ov-ink-2);
+  font-size: var(--ov-ui, 12px);
+  text-align: left;
+}
+
+.ov-row:hover { background: var(--ov-paper-2); }
+.ov-row.on { color: var(--ov-ink); }
+
+.ov-dot {
+  flex: 0 0 auto;
+  width: 9px;
+  height: 9px;
+  margin-right: 8px;
+  border-radius: 0;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.25);
+}
+
+.ov-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.ov-tick { flex: 0 0 auto; margin-left: 6px; color: var(--ov-accent); font-size: 1em; }
+
+.ov-sep { height: 1px; margin: 4px 3px; background: var(--ov-line); }
+
+.ov-create { display: flex; align-items: center; padding: 3px 4px 2px; }
+
+.ov-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0 6px;
+  border: 1px solid #bac5d3;
+  border-radius: 2px;
+  background: #fff;
+  color: var(--ov-ink);
+  font-size: var(--ov-ui, 11.5px);
+  outline: none;
+}
+
+.ov-input:focus {
+  border-color: #bac5d3;
+  box-shadow: inset 1px 1px #808080, inset -1px -1px #fff,
+              inset 2px 2px #161616, inset -2px -2px #dfdfdf;
+}
+
+.ov-add {
+  flex: 0 0 auto;
+  height: 26px;
+  margin-left: 5px;
+  padding: 0 9px;
+  border: 1px solid #d4dce7;
+  border-radius: 2px;
+  background: var(--ov-paper);
+  color: var(--ov-ink);
+  font-size: var(--ov-ui, 11.5px);
+}
+
+.ov-add:hover { background: #fff; border-color: #bac5d3; }
+.ov-add:active { box-shadow: inset 1px 1px #8997aa, inset -1px -1px #fff; }
+
+.ov-actions { display: flex; padding: 3px 4px 2px; }
+
+.ov-action {
+  flex: 1 1 0;
+  height: 26px;
+  margin-right: 5px;
+  border: 1px solid #d4dce7;
+  border-radius: 2px;
+  background: var(--ov-paper);
+  color: var(--ov-ink);
+  font-size: var(--ov-ui, 11.5px);
+}
+
+.ov-action:last-child { margin-right: 0; }
+.ov-action:hover { background: #fff; border-color: #bac5d3; }
+.ov-action:active { box-shadow: inset 1px 1px #8997aa, inset -1px -1px #fff; }
+
+.ov-confirm { display: flex; align-items: center; padding: 3px 4px 2px; font-size: var(--ov-ui, 11.5px); }
+
+.ov-warn { flex: 1 1 auto; margin-right: 6px; color: var(--ov-ink); }
+
+.ov-danger, .ov-cancel { height: 26px; padding: 0 8px; border: 1px solid #d4dce7; border-radius: 2px; background: var(--ov-paper); font-size: var(--ov-ui, 11.5px); }
+.ov-danger { color: var(--ov-ink); }
+.ov-danger:hover { background: #f4e2df; border-color: #d9b3ad; }
+.ov-cancel { margin-left: 4px; color: var(--ov-ink-2); }
+.ov-cancel:hover { background: #fff; border-color: #bac5d3; }
+
+/* ------------------------------ 现代皮肤 ------------------------------ */
+
+.ov-skin-current .ov-head {
+  height: auto;
+  margin: 0;
+  padding: 2px 10px 4px;
+  background: none;
+  color: var(--ov-mute);
+  font-size: 10.5px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.ov-skin-current .ov-close {
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  border-radius: 50%;
+  background: none;
+  color: var(--ov-mute);
+  box-shadow: none;
+  line-height: 16px;
+}
+
+.ov-skin-current .ov-close:hover { background: var(--ov-accent-soft); color: var(--ov-accent); }
+.ov-skin-current .ov-close:active { box-shadow: none; }
+
+.ov-skin-current .ov-card { padding: 4px 0 5px; color: var(--ov-ink-2); }
+.ov-skin-current .ov-row { height: 28px; padding: 0 10px; font-size: 12px; }
+.ov-skin-current .ov-dot { width: 8px; height: 8px; border-radius: 50%; box-shadow: none; }
+.ov-skin-current .ov-tick { font-size: 11px; }
+.ov-skin-current .ov-sep { margin: 4px 8px; background: var(--ov-line); }
+.ov-skin-current .ov-create,
+.ov-skin-current .ov-actions,
+.ov-skin-current .ov-confirm { padding: 3px 8px 2px; }
+.ov-skin-current .ov-input,
+.ov-skin-current .ov-add,
+.ov-skin-current .ov-action,
+.ov-skin-current .ov-danger,
+.ov-skin-current .ov-cancel { height: 24px; font-size: 11.5px; }
+.ov-skin-current .ov-input { border-color: var(--ov-line); background: var(--ov-paper-2); }
+.ov-skin-current .ov-input:focus { border-color: var(--ov-accent); box-shadow: none; background: var(--ov-paper); }
+.ov-skin-current .ov-add,
+.ov-skin-current .ov-action { border-color: var(--ov-line); background: var(--ov-paper-2); color: var(--ov-ink-2); }
+.ov-skin-current .ov-add:hover,
+.ov-skin-current .ov-action:hover { background: var(--ov-paper); color: var(--ov-ink); border-color: var(--ov-line); }
+.ov-skin-current .ov-add:active,
+.ov-skin-current .ov-action:active,
+.ov-skin-current .ov-danger:active { box-shadow: none; }
+.ov-skin-current .ov-warn { color: var(--ov-accent); }
+.ov-skin-current .ov-danger { border-color: transparent; background: var(--ov-accent-soft); color: var(--ov-accent); }
+.ov-skin-current .ov-danger:hover { background: rgba(163, 58, 44, 0.18); border-color: transparent; }
+.ov-skin-current .ov-cancel { border-color: transparent; background: none; color: var(--ov-mute); }
+.ov-skin-current .ov-cancel:hover { background: var(--ov-paper-2); border-color: transparent; color: var(--ov-ink); }

@@ -1,0 +1,40 @@
+/* Context-menu rows deliberately have no Start-menu icon column. */
+.c98-context-host { position: fixed; top: 0; left: 0; width: 0; height: 0; z-index: 120; overflow: visible; }
+.c98-context-host[hidden], .c98-context-menu[hidden] { display: none; }
+.c98-context-menu {
+  box-sizing: border-box; position: fixed; display: flex; flex-direction: column;
+  width: max-content; min-width: 170px; max-width: calc(100vw - 8px); max-height: calc(100vh - 8px);
+  margin: 0; padding: 3px; overflow: auto; border: 0; border-radius: 0;
+  background: #c0c0c0; color: #000;
+  box-shadow: inset -1px -1px #000, inset 1px 1px #c0c0c0, inset -2px -2px #808080, inset 2px 2px #fff;
+  font-family: var(--sans, Tahoma, sans-serif); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+  line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); letter-spacing: 0; text-align: left;
+}
+.c98-context-menu *, .c98-context-menu *::before, .c98-context-menu *::after { box-sizing: border-box; }
+.c98-context-menu:focus { outline: none; }
+.c98-context-menu .c98-context-item {
+  -webkit-appearance: none; appearance: none; display: flex; flex: 0 0 auto; align-items: center;
+  width: 100%; min-width: 0; min-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 8px);
+  margin: 0; padding: 2px 5px 2px 2px; gap: 0; border: 0; border-radius: 0;
+  background: #c0c0c0; color: #000; box-shadow: none;
+  font: inherit; line-height: inherit; letter-spacing: 0; text-align: left;
+  white-space: nowrap; text-transform: none; cursor: default; transition: none; outline: 0;
+}
+.c98-context-check { display: flex; flex: 0 0 18px; width: 18px; height: 14px; align-items: center; justify-content: center; }
+.c98-context-check > svg { width: 9px; height: 9px; display: block; image-rendering: pixelated; }
+.c98-context-label { display: block; flex: 1 1 auto; min-width: 0; padding: 0 8px 0 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.c98-context-key { white-space: nowrap; }
+.c98-context-key u { text-decoration: underline; text-underline-offset: 1px; }
+.c98-context-shortcut { flex: 0 0 auto; margin: 0 11px 0 14px; white-space: nowrap; }
+.c98-context-arrow { flex: 0 0 auto; width: 0; height: 0; margin: 0 3px 0 5px; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 4px solid currentColor; }
+.c98-context-tail { flex: 0 0 12px; width: 12px; }
+.c98-context-menu .c98-context-item:hover:not(:disabled),
+.c98-context-menu .c98-context-item.selected:not(:disabled),
+.c98-context-menu .c98-context-item.submenu-open:not(:disabled),
+.c98-context-menu .c98-context-item:focus:not(:disabled) { background: #000080; color: #fff; text-shadow: none; outline: 0; }
+.c98-context-menu .c98-context-item:disabled { color: #808080; background: #c0c0c0; text-shadow: 1px 1px #fff; opacity: 1; cursor: default; }
+.c98-context-separator { flex: 0 0 2px; height: 2px; margin: 3px 2px; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+@media (pointer: coarse) {
+  .c98-context-menu .c98-context-item { min-height: 32px; min-height: max(32px, calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 10px)); padding-top: 4px; padding-bottom: 4px; }
+  .c98-context-check { flex-basis: 22px; width: 22px; }
+}

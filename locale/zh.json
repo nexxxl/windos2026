@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "title": "NexlOS · AI 原生操作系统",
+    "description": "把 DeepSeek Harness 的主面板变成 NexlOS 桌面：直接运行原版 WebOS（窗口、子午流注钟、书房、此电脑、命令栏）。工作区即空间，会话即进程。"
+  },
+  "panel": {
+    "title": "NexlOS 桌面"
+  }
+}

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<title>音乐</title>
+<script>
+// 皮肤缓存先上屏：设置请求回来之前，win98 卡片不会闪一下现代样式。
+try {
+  if (localStorage.getItem('nexlos.appearance.v1') === 'win98') {
+    document.documentElement.setAttribute('data-appearance', 'win98');
+  }
+} catch (e) { /* 隐私模式照常渲染 */ }
+</script>
+<link rel="stylesheet" href="/a/music.css">
+<!-- win98 皮肤用像素字；现代皮肤不匹配这些字体，浏览器不会下载字体文件。 -->
+<link rel="stylesheet" href="/a/vendor/retro-font/retro-font.css">
+</head>
+<body>
+<div id="host" class="music-host"></div>
+<script type="module" src="/a/music-page.js"></script>
+</body>
+</html>

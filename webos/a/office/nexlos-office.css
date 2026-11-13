@@ -1,0 +1,106 @@
+/* Plugin-edition office layout: the DSH main panel is narrower than the native
+ * NexlOS window, so keep the two-column NexlOS layout visible instead of
+ * switching to the phone off-canvas sidebar at 900px. */
+@media (min-width: 680px) and (max-width: 900px) {
+  .app {
+    grid-template-columns: 216px minmax(0, 1fr);
+    grid-template-rows: 28px 1fr 26px;
+    grid-template-areas: "menu menu" "side stage" "status status";
+  }
+  .sidebar {
+    position: static;
+    width: auto;
+    transform: none;
+    box-shadow: none;
+  }
+  .only-mobile { display: none !important; }
+  .home { padding: 20px 22px 44px; }
+  .import-btn { margin: 0 10px 8px; }
+  .new-row { padding: 4px 8px 6px; }
+  .new-row .btn-new { font-size: 11px; padding: 4px 7px; margin: 0 4px 4px 0; }
+  .side-head { padding-left: 12px; }
+  .menubar { overflow-x: auto; }
+}
+
+/* Keep Word pagination in the narrower DSH panel. The native office script
+ * switches to a continuous paper at <=900px; here the iframe is ~758px but the
+ * product is still a desktop window, so restore the fixed A4 page layout. */
+@media (min-width: 680px) and (max-width: 900px) {
+  .doc-ruler { display: block !important; }
+  .doc-scroll { background: #808080; padding: 18px 18px 24px; }
+  .doc-pages {
+    display: grid;
+    grid-template-columns: max-content;
+    justify-content: center;
+    align-content: start;
+    grid-column-gap: 18px;
+    grid-row-gap: 18px;
+    min-height: 100%;
+  }
+  .doc-pages.mode-two,
+  .doc-pages.mode-four { grid-template-columns: repeat(2, max-content); }
+  .doc-pages.align-start { justify-content: start; }
+  .doc-page {
+    width: var(--page-w);
+    height: var(--page-h);
+    background: #fff;
+    border: 1px solid #a6a6a6;
+    border-radius: 0;
+    position: relative;
+    box-shadow: 0 2px 9px rgba(0, 0, 0, .32);
+  }
+  .doc-body {
+    height: 100%;
+    padding: var(--m-top) var(--m-right) var(--m-bottom) var(--m-left);
+  }
+  .page-head, .page-foot {
+    position: absolute;
+    left: var(--m-left);
+    right: var(--m-right);
+    font-size: 11.5px;
+    color: #4a4a4a;
+    text-align: center;
+  }
+  .page-head { top: 1.5cm; }
+  .page-foot { bottom: 1.75cm; }
+  #docPageStat, #docZoomWrap, #statusZoomHint { display: initial !important; }
+  .doc-toolbar, .sheet-toolbar, .slide-toolbar { flex-wrap: wrap; overflow: visible; }
+}
+
+/* Plugin-edition Windos2026 skin. Keep Office's layout; only swap the palette,
+   square the controls, and use the retro UI font. */
+html[data-appearance="win98"] {
+  --paper: #c0c0c0;
+  --panel: #c0c0c0;
+  --panel-2: #dfdfdf;
+  --ink: #000;
+  --ink-2: #000;
+  --muted: #404040;
+  --line: #808080;
+  --accent: #000080;
+  --accent-soft: #fff;
+  --good: #006400;
+  --bad: #800000;
+  --shadow: none;
+  --radius: 0;
+  --ui: Tahoma, "MS Sans Serif", "PingFang SC", sans-serif;
+  --serif: Tahoma, "MS Sans Serif", "PingFang SC", sans-serif;
+  --mono: "Courier New", monospace;
+}
+html[data-appearance="win98"] body,
+html[data-appearance="win98"] .app { background: #c0c0c0; color: #000; }
+html[data-appearance="win98"] .menubar,
+html[data-appearance="win98"] .statusbar,
+html[data-appearance="win98"] .sidebar,
+html[data-appearance="win98"] .toolbar { background: #c0c0c0; color: #000; border-color: #808080; }
+html[data-appearance="win98"] .btn,
+html[data-appearance="win98"] .menu-btn,
+html[data-appearance="win98"] input,
+html[data-appearance="win98"] select,
+html[data-appearance="win98"] textarea {
+  background: #c0c0c0; color: #000; border: 2px outset #fff; border-radius: 0;
+}
+html[data-appearance="win98"] .menu-btn:hover,
+html[data-appearance="win98"] .btn:hover { background: #d4d0c8; }
+html[data-appearance="win98"] .doc-scroll { background: #808080; }
+html[data-appearance="win98"] .doc-page { box-shadow: none; border-color: #808080; }

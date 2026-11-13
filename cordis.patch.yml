@@ -1,0 +1,7 @@
+# NexlOS loads as one Host/Client dual-face plugin row.
+# Host half (index.js): serves the original NexlOS WebOS from webos/ at /a and
+# implements the kernel contract (/c, /s, /agent) on top of DSH.
+# Client half (client.js): mounts the desktop as the `nexlos` main panel.
+- insert:
+    - id: nexlos-os
+      name: '@nexlos/os'

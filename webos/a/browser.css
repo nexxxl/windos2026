@@ -1,0 +1,1062 @@
+/* 浏览器：NEXLOS 自建浏览器外壳。
+   画面由内核画面泵送达，这里只管窗口骨架、标签页与输入条。
+   兼容 Chrome 72（Pixel C）：不用 flex gap、inset、min()/max()。 */
+
+.br {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--sans);
+}
+
+/* 只继承字体族和颜色：font 简写会把按钮/输入框的字号重置成继承的 16px，
+   反过来盖掉下面按控件声明的字号，标签、菜单、地址栏就会各用一套尺寸。 */
+.br button,
+.br input {
+  font-family: inherit;
+  color: inherit;
+}
+
+.br [hidden] {
+  display: none !important;
+}
+
+/* ------------------------------ 顶部外壳 ------------------------------ */
+
+.br-chrome {
+  flex: 0 0 auto;
+  background: var(--paper-2);
+  border-bottom: 1px solid var(--line);
+}
+
+/* 标签栏：左边是空间入口，中间是标签带，溢出时右边出现收件口。 */
+.br-tabbar {
+  display: flex;
+  align-items: flex-end;
+  height: 36px;
+  padding: 0 8px;
+}
+
+/* 空间入口宽度只跟名字有关，切换空间时标签带的起点不会跳动。 */
+.br-space-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  max-width: 136px;
+  height: 30px;
+  margin-right: 6px;
+  padding: 0 9px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.br-space-btn:hover { background: rgba(31, 27, 23, 0.06); }
+
+.br-space-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.br-space-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-tabs {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: flex-end;
+  height: 36px;
+  padding: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.br-tabs::-webkit-scrollbar {
+  display: none;
+}
+
+/* 每个标签固定等宽：位置只由顺序决定，用户能凭记忆直接点到同一个入口。 */
+.br-tab {
+  display: flex;
+  align-items: center;
+  flex: 0 0 168px;
+  width: 168px;
+  max-width: none;
+  height: 30px;
+  margin-right: 2px;
+  padding: 0 4px 0 11px;
+  border: 1px solid transparent;
+  border-bottom: 0;
+  border-radius: 8px 8px 0 0;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+}
+
+.br-tab:hover {
+  background: rgba(31, 27, 23, 0.05);
+  color: var(--ink-2);
+}
+
+.br-tab.active {
+  background: var(--paper);
+  border-color: var(--line);
+  color: var(--ink);
+}
+
+.br-tab-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-tab-close {
+  flex: 0 0 auto;
+  width: 16px;
+  height: 16px;
+  margin-left: 6px;
+  padding: 0;
+  border-radius: 50%;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 16px;
+  text-align: center;
+}
+
+/* 新建标签页：和 Chrome 一样跟在最后一个标签后面，尺寸与标签同高。 */
+.br-tab-new {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin: 0 0 1px 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 16px;
+  font-weight: 400;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.br-tab-new:hover {
+  background: rgba(31, 27, 23, 0.07);
+}
+
+.br-tab-new:active {
+  background: rgba(31, 27, 23, 0.12);
+}
+
+/* 溢出收件口：只在标签超出可视宽度时出现，样式与新标签按钮同高。 */
+.br-tabs-more {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin: 0 0 1px 2px;
+  padding: 0;
+  border: 0;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.br-tabs-more:hover { background: rgba(31, 27, 23, 0.07); }
+.br-tabs-more:active { background: rgba(31, 27, 23, 0.12); }
+
+.br-tab-close:hover {
+  background: rgba(163, 58, 44, 0.12);
+  color: var(--accent);
+}
+
+.br-tab-fill {
+  flex: 1 1 auto;
+  min-width: 12px;
+}
+
+.br-bar {
+  display: flex;
+  align-items: center;
+  height: 40px;
+  padding: 0 8px;
+}
+
+.br-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 7px;
+  border: 1px solid transparent;
+  border-radius: 7px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+/* 导航按钮与 Chrome 一致用圆形热区，图标统一 16px。 */
+.br-bar > .br-btn {
+  border-radius: 50%;
+  font-size: 16px;
+}
+
+.br-bar > .br-btn:hover {
+  border-color: transparent;
+}
+
+.br-btn:hover {
+  background: rgba(31, 27, 23, 0.06);
+  border-color: var(--line);
+}
+
+.br-btn:active {
+  background: rgba(31, 27, 23, 0.1);
+}
+
+.br-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 1px;
+}
+
+.br-bar .br-btn {
+  margin-right: 2px;
+}
+
+.br-go {
+  margin-left: 4px;
+  padding: 0 12px;
+  border-color: var(--line);
+  background: var(--paper);
+  font-size: 12px;
+}
+
+.br-go:hover {
+  background: var(--paper-3);
+}
+
+.br-addr {
+  flex: 1 1 auto;
+  min-width: 60px;
+  height: 30px;
+  margin-left: 6px;
+  padding: 0 13px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--paper);
+  color: var(--ink);
+  font-size: 12px;
+  outline: none;
+}
+
+.br-addr:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--accent-soft);
+}
+
+.br-addr::placeholder {
+  color: var(--mute);
+}
+
+/* ------------------------------ 画面 ------------------------------ */
+
+.br-stage {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: hidden;
+  background: #fff;
+}
+
+/* 浮层打开时垫在舞台上的页面快照：原生视图收起后，背后仍是刚才的页面。 */
+.br-freeze {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: fill;
+  background: #fff;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+.br-shot {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: #fff;
+  user-select: none;
+  -webkit-user-drag: none;
+}
+
+/* 透明的输入层盖在画面上：点击、滚轮与键盘都从这里转发给页面。 */
+.br-hit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  outline: none;
+  cursor: default;
+  touch-action: none;
+}
+
+.br-empty {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 420px;
+  max-width: 86%;
+  padding: 22px 24px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 0 18px 44px rgba(31, 27, 23, 0.12);
+  text-align: center;
+  transform: translate(-50%, -50%);
+}
+
+.br-empty-title {
+  margin-bottom: 8px;
+  font-family: var(--serif);
+  font-size: 17px;
+  color: var(--ink);
+}
+
+.br-empty-body {
+  font-size: 12.5px;
+  line-height: 1.7;
+  color: var(--ink-2);
+  word-break: break-word;
+}
+
+.br-empty-hint {
+  margin-top: 8px;
+  font-size: 11.5px;
+  line-height: 1.6;
+  color: var(--mute);
+}
+
+.br-retry {
+  margin-top: 14px;
+  padding: 0 16px;
+  border-color: var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+.br-retry:hover {
+  background: #8f2f23;
+}
+
+/* ------------------------------ 输入 ------------------------------ */
+
+.br-type {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  padding: 6px 8px;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+.br-compose {
+  flex: 1 1 auto;
+  min-width: 60px;
+  height: 30px;
+  padding: 0 12px;
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 12.5px;
+  outline: none;
+}
+
+.br-compose:focus {
+  border-color: var(--accent);
+  background: var(--paper);
+}
+
+.br-compose::placeholder {
+  color: var(--mute);
+}
+
+.br-type .br-btn {
+  margin-left: 6px;
+  border-color: var(--line);
+  background: var(--paper-2);
+  font-size: 12px;
+}
+
+/* 小屏：工具栏收紧，状态条只留一行地址。 */
+@media (max-width: 720px) {
+  .br-bar {
+    height: 40px;
+    padding: 0 4px;
+  }
+
+  .br-tabbar {
+    height: 34px;
+    padding: 0 4px;
+  }
+
+  .br-tabs {
+    height: 34px;
+  }
+
+  .br-space-btn {
+    max-width: 104px;
+    padding: 0 7px;
+  }
+
+  .br-tab {
+    flex-basis: 132px;
+    width: 132px;
+    height: 28px;
+  }
+
+  .br-tab-new {
+    width: 26px;
+    height: 26px;
+  }
+
+  .br-addr {
+    margin-left: 2px;
+    padding: 0 8px;
+  }
+
+  .br-btn {
+    min-width: 28px;
+    padding: 0 6px;
+  }
+
+  .br-go {
+    padding: 0 8px;
+  }
+
+  .br-empty {
+    padding: 16px 18px;
+  }
+}
+
+/* 深色系统：外壳跟随纸张主题变暗，页面画面保持原色。 */
+@media (prefers-color-scheme: dark) {
+  .br {
+    background: #1b1916;
+    color: #ece5d8;
+  }
+
+  .br-chrome {
+    background: #23201c;
+    border-color: #35302a;
+  }
+
+  .br-tab.active {
+    background: #1b1916;
+    border-color: #35302a;
+    color: #f2ebde;
+  }
+
+  .br-tab:hover,
+  .br-btn:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: #3d372f;
+  }
+
+  .br-addr,
+  .br-compose,
+  .br-go,
+  .br-type .br-btn {
+    background: #191613;
+    border-color: #3d372f;
+    color: #ece5d8;
+  }
+
+  .br-addr:focus,
+  .br-compose:focus {
+    background: #221e19;
+    border-color: #c46a5a;
+  }
+
+  .br-empty {
+    background: #221e19;
+    border-color: #3d372f;
+  }
+
+  .br-menu {
+    background: #23201c;
+    border-color: #35302a;
+  }
+
+  .br-mi:hover,
+  .br-tab-new:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .br-space-btn:hover,
+  .br-tabs-more:hover,
+  .br-sm-row:hover,
+  .br-sm-action:hover,
+  .br-sm-cancel:hover,
+  .br-tm-row:hover {
+    background: rgba(255, 255, 255, 0.07);
+  }
+
+  .br-sm-row.on,
+  .br-tm-row.on {
+    color: #f2ebde;
+  }
+
+  .br-bm-mark {
+    background: #2b2722;
+  }
+
+  .br-sm-input,
+  .br-tm-search {
+    background: #191613;
+    border-color: #3d372f;
+    color: #ece5d8;
+  }
+
+  .br-sm-input:focus,
+  .br-tm-search:focus {
+    background: #221e19;
+    border-color: #c46a5a;
+  }
+
+  .br-mi-sep {
+    background: #3d372f;
+  }
+
+  .br-empty-title {
+    color: #f2ebde;
+  }
+
+  .br-empty-body {
+    color: #cfc6b7;
+  }
+}
+
+/* ------------------------------ Chrome 级功能面 ------------------------------ */
+
+/* 书签栏：横向滚动，不换行。 */
+.br-bookmarks {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 8px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  border-top: 1px solid var(--line);
+  background: var(--paper);
+}
+
+/* 书签按内容宽度排：站点图标 + 短名，入口之间用一道竖线分隔，
+   不占整齐的空格子，也不让长标题把整条栏撑长。 */
+.br-bm {
+  display: inline-flex;
+  align-items: center;
+  flex: 0 0 auto;
+  max-width: 152px;
+  height: 24px;
+  padding: 0 6px;
+  border-radius: 5px;
+  font-size: 12px;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+
+.br-bm-mark {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 14px;
+  height: 14px;
+  margin-right: 5px;
+  border-radius: 3px;
+  background: var(--paper-2);
+  overflow: hidden;
+}
+
+.br-bm-letter {
+  color: var(--mute);
+  font-size: 9px;
+  line-height: 1;
+}
+
+.br-bm-icon {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: block;
+  width: 14px;
+  height: 14px;
+}
+
+.br-bm-label {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-bm-sep {
+  flex: 0 0 auto;
+  padding: 0 2px;
+  color: var(--mute);
+  font-size: 11px;
+  opacity: 0.6;
+}
+
+.br-bm:hover { background: var(--paper-2); }
+.br-bm-more { color: var(--mute); }
+
+/* 查找条：留在页面之上，不遮挡原生视图。 */
+.br-find {
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-top: 1px solid var(--line);
+  background: var(--paper-2);
+}
+
+.br-find-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 26px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  font-size: 12px;
+}
+
+.br-find-state {
+  min-width: 42px;
+  margin-left: 8px;
+  font-size: 11px;
+  color: var(--mute);
+  text-align: right;
+}
+
+.br-find .br-btn { margin-left: 2px; font-size: 16px; }
+
+/* 菜单：覆盖在舞台上方，打开时原生 Surface 会先收起。 */
+.br { position: relative; }
+
+.br-menu {
+  position: absolute;
+  top: 78px; /* 兜底值，打开时会按工具栏底边重新定位 */
+  right: 8px;
+  z-index: 40;
+  width: 204px;
+  max-width: calc(100% - 16px);
+  padding: 4px 0;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--paper);
+  box-shadow: 0 14px 36px rgba(31, 27, 23, 0.18);
+}
+
+.br-mi {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  height: 26px;
+  padding: 0 10px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.br-mi:hover { background: var(--paper-2); }
+.br-mi-key { color: var(--mute); font-size: 10.5px; letter-spacing: 0.01em; }
+
+/* 分组线：Chrome 的菜单靠细线分块，不靠加高行距。 */
+.br-mi-sep {
+  height: 1px;
+  margin: 4px 8px;
+  background: var(--line);
+}
+
+/* 空间菜单：锚在标签栏左侧，行高与顶部菜单一致。 */
+.br-space-menu {
+  left: 8px;
+  right: auto;
+  width: 236px;
+  padding: 4px 0 5px;
+}
+
+.br-sm-head {
+  padding: 2px 10px 4px;
+  color: var(--mute);
+  font-size: 10.5px;
+  letter-spacing: 0.06em;
+}
+
+.br-sm-row {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 28px;
+  padding: 0 10px;
+  border: 0;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.br-sm-row:hover { background: var(--paper-2); }
+.br-sm-row.on { color: var(--ink); }
+
+.br-sm-dot {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.br-sm-name {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-sm-tick {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  color: var(--accent);
+  font-size: 11px;
+}
+
+.br-sm-create {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px 2px;
+}
+
+.br-sm-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 24px;
+  padding: 0 7px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 11.5px;
+  outline: none;
+}
+
+.br-sm-input:focus { border-color: var(--accent); background: var(--paper); }
+
+.br-sm-add {
+  flex: 0 0 auto;
+  height: 24px;
+  margin-left: 6px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper-2);
+  color: var(--ink-2);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.br-sm-add:hover { background: var(--paper); color: var(--ink); }
+
+.br-sm-actions {
+  display: flex;
+  padding: 3px 8px 2px;
+}
+
+.br-sm-action {
+  flex: 1 1 0;
+  height: 24px;
+  margin-right: 6px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: transparent;
+  color: var(--ink-2);
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.br-sm-action:last-child { margin-right: 0; }
+.br-sm-action:hover { background: var(--paper-2); color: var(--ink); }
+
+.br-sm-confirm {
+  display: flex;
+  align-items: center;
+  padding: 3px 8px 2px;
+  font-size: 11.5px;
+}
+
+.br-sm-warn {
+  flex: 1 1 auto;
+  margin-right: 6px;
+  color: var(--accent);
+}
+
+.br-sm-danger,
+.br-sm-cancel {
+  height: 24px;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 5px;
+  font-size: 11.5px;
+  cursor: pointer;
+}
+
+.br-sm-danger { background: rgba(163, 58, 44, 0.12); color: var(--accent); }
+.br-sm-cancel { margin-left: 4px; background: transparent; color: var(--mute); }
+.br-sm-cancel:hover { background: var(--paper-2); color: var(--ink); }
+
+/* 标签收件口：搜索框常驻顶部，列表独立滚动。 */
+.br-tabs-menu {
+  width: 300px;
+  padding: 6px;
+}
+
+.br-tm-search {
+  width: 100%;
+  height: 26px;
+  margin-bottom: 4px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper-2);
+  color: var(--ink);
+  font-size: 12px;
+  outline: none;
+}
+
+.br-tm-search:focus { border-color: var(--accent); background: var(--paper); }
+
+.br-tm-list {
+  max-height: 48vh;
+  overflow-y: auto;
+  margin: 0 -2px;
+}
+
+.br-tm-row {
+  display: flex;
+  align-items: center;
+  height: 28px;
+  padding: 0 4px 0 8px;
+  border-radius: 6px;
+  color: var(--ink-2);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.br-tm-row:hover { background: var(--paper-2); color: var(--ink); }
+.br-tm-row.on { color: var(--ink); }
+
+.br-tm-title {
+  flex: 1 1 auto;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-tm-close {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-left: 6px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--mute);
+  font-size: 12px;
+  line-height: 18px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.br-tm-close:hover { background: rgba(163, 58, 44, 0.12); color: var(--accent); }
+
+.br-tm-empty {
+  padding: 14px 8px;
+  color: var(--mute);
+  font-size: 12px;
+  text-align: center;
+}
+
+/* 面板 */
+.br-panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+  background: rgba(24, 20, 16, 0.36);
+}
+
+.br-panel-card {
+  display: flex;
+  flex-direction: column;
+  width: 720px;
+  max-width: 100%;
+  max-height: 100%;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--paper);
+  box-shadow: 0 24px 60px rgba(31, 27, 23, 0.24);
+}
+
+.br-panel-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--line);
+}
+
+.br-panel-head b { font-size: 14px; }
+.br-panel-actions { display: flex; align-items: center; }
+.br-panel-actions .br-btn { margin-left: 6px; }
+
+.br-list { overflow: auto; padding: 6px 10px 12px; }
+
+.br-item {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+
+.br-item-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 8px 6px;
+  text-align: left;
+}
+
+.br-item-main b {
+  overflow: hidden;
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-item-main i {
+  overflow: hidden;
+  font-style: normal;
+  font-size: 11px;
+  color: var(--mute);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.br-item-del { margin-left: 8px; font-size: 11px; color: var(--accent); }
+.br-group { padding: 10px 6px 4px; font-size: 11px; letter-spacing: 0.08em; color: var(--mute); }
+.br-panel-empty { padding: 18px 8px; text-align: center; font-size: 12px; color: var(--mute); }
+.br-hint { margin: 8px 2px; font-size: 11.5px; line-height: 1.7; color: var(--mute); }
+/* 编译失败等需要用户处理的提示：用告警色，不和普通说明混在一起。 */
+.br-hint-warn { color: var(--accent); }
+
+.br-ext-form { padding: 10px 14px; border-bottom: 1px solid var(--line); }
+
+.br-ext-input {
+  width: 100%;
+  height: 30px;
+  padding: 0 9px;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: var(--paper);
+  font-size: 12px;
+}
+
+.br-ext-go { margin-top: 8px; }
+
+.br-set-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+}
+
+.br-set-input {
+  width: 320px;
+  max-width: 60%;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  font-size: 12px;
+}
+
+.br-set-select {
+  height: 28px;
+  padding: 0 6px;
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  background: var(--paper);
+  font-size: 12px;
+}
+
+/* 任务视窗里的浏览器海报：原生页面让位时占住舞台。 */
+.br-tv-poster {
+  margin: auto; display: grid; gap: 6px; text-align: center; padding: 18px;
+  color: #2a2722;
+}
+.br-tv-poster b { font-family: var(--serif); font-size: 19px; font-weight: 600; }
+.br-tv-poster span { font-size: 12px; color: #7a7369; letter-spacing: 0.04em; }
+

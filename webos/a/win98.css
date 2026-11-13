@@ -1,0 +1,1013 @@
+/* Windos2026 theme for NexlOS.
+   Control/bevel recipes adapted from 98.css, MIT, Copyright 2020 Jordan Scales.
+   https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/style.css
+   Window/menu metrics also checked against wieslawsoltes/Win98 (MIT).
+   https://github.com/wieslawsoltes/Win98/blob/bf27d8ab215bc4ba16d0a36a063854c4deb03c3b/styles/classic.css
+   Source notices ship in ui/vendor/retro-font/. Pixel fonts have their own license.
+   All desktop/application rules are opt-in. Geometry variables belong to os.js;
+   the existing window runtime still owns transforms, lifecycles and gestures. */
+
+/* The new settings preview controls are shared by both appearances. */
+.st-appearance-grid { display: flex; flex-wrap: wrap; margin: 0 -6px 18px; }
+.st-appearance-card {
+  position: relative; display: flex; flex-direction: column; align-items: stretch;
+  width: calc(50% - 12px); min-width: 0; margin: 6px; padding: 8px;
+  text-align: left; border: 2px solid #ddd; border-radius: 3px;
+  background: #fff; color: #222; cursor: pointer;
+}
+.st-appearance-card:hover { border-color: #999; }
+.st-appearance-card.active { border-color: var(--st-accent, #0078d7); }
+.st-appearance-card:focus { outline: 1px dotted var(--st-accent, #0078d7); outline-offset: 2px; }
+.st-appearance-card:disabled { cursor: wait; opacity: .65; }
+.st-appearance-art {
+  position: relative; display: block; height: 142px; overflow: hidden;
+  background: #d3dadd url("wallpapers/meadow.webp") center/cover; border: 1px solid #d4d4d4;
+}
+.st-appearance-window {
+  position: absolute; display: block; width: 72%; height: 84px; top: 18px; left: 17%;
+  background: #fff; border: 1px solid #c1c1c1; border-radius: 3px;
+  box-shadow: 0 3px 9px rgba(0, 0, 0, .12); overflow: hidden;
+}
+.st-appearance-title {
+  display: flex; align-items: center; justify-content: space-between; height: 19px;
+  padding: 0 6px; background: #f6f6f6; border-bottom: 1px solid #ddd;
+  font-family: Tahoma, "Microsoft Sans Serif", SimSun, sans-serif;
+  color: #222; font-size: 8px; font-weight: 700;
+}
+.st-appearance-title::after { content: "−  □  ×"; letter-spacing: 2px; font-size: 9px; }
+.st-appearance-title > i { display: none; }
+.st-appearance-content { display: block; padding: 10px 9px; }
+.st-appearance-content::before, .st-appearance-content::after {
+  content: ""; display: block; height: 4px; background: #d9e1e6; margin-bottom: 7px;
+}
+.st-appearance-content::after { width: 65%; }
+.st-appearance-taskbar {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 20px;
+  background: #eee; border-top: 1px solid #fff; font-size: 0;
+}
+.st-appearance-taskbar::before {
+  content: ""; position: absolute; left: 40%; top: 4px; width: 42px; height: 12px;
+  border-radius: 6px; background: #fff; border: 1px solid #d4d4d4;
+}
+.st-appearance-taskbar::after {
+  content: "12:00"; position: absolute; right: 6px; top: 4px;
+  color: #333; font-family: Tahoma, sans-serif; font-size: 7px;
+}
+.st-appearance-copy { display: block; padding: 11px 4px 3px; }
+.st-appearance-copy b { display: block; font-size: 13px; }
+.st-appearance-copy > span { display: block; margin-top: 4px; color: #666; font-size: 11px; line-height: 1.6; }
+.st-appearance-badge {
+  position: absolute; top: 16px; left: 16px; padding: 3px 6px;
+  background: var(--st-accent, #0078d7); color: #fff; font-size: 10px; font-weight: 600;
+}
+.st-appearance-card.win98 .st-appearance-art { background: #008080; border-color: #808080; }
+.st-appearance-card.win98 .st-appearance-window {
+  background: #c0c0c0; border: 1px solid; border-color: #fff #161616 #161616 #fff;
+  border-radius: 0; padding: 2px; box-shadow: inset -1px -1px #808080;
+}
+.st-appearance-card.win98 .st-appearance-title { background: #000080; border: 0; color: #fff; }
+.st-appearance-card.win98 .st-appearance-title::after {
+  background: #c0c0c0; border: 1px solid; border-color: #fff #161616 #161616 #fff;
+  color: #111; padding: 0 1px; line-height: 11px; letter-spacing: 1px;
+}
+.st-appearance-card.win98 .st-appearance-content {
+  margin: 5px; padding: 7px; background: #f0f0f0;
+  border: 1px solid; border-color: #808080 #fff #fff #808080;
+}
+.st-appearance-card.win98 .st-appearance-content::before,
+.st-appearance-card.win98 .st-appearance-content::after { height: 3px; margin-bottom: 6px; background: #a0a0a0; }
+.st-appearance-card.win98 .st-appearance-taskbar { background: #c0c0c0; border-top-color: #fff; }
+.st-appearance-card.win98 .st-appearance-taskbar::before {
+  content: attr(data-i18n-content); left: 3px; top: 2px; height: 14px; width: 33px;
+  border-radius: 0; background: #c0c0c0; border-color: #fff #161616 #161616 #fff;
+  font-size: 8px; text-align: center; line-height: 12px; color: #111;
+}
+.st-dark .st-appearance-card { background: #2b2b2b; border-color: #555; color: #f0f0f0; }
+.st-dark .st-appearance-card.active { border-color: var(--st-accent, #0078d7); }
+.st-dark .st-appearance-copy > span { color: #b0b0b0; }
+
+/* ---------- Fixed Windows classic palette and pixel typography ---------- */
+html[data-appearance="win98"] {
+  color-scheme: light;
+  --paper: #c0c0c0; --paper-2: #dfdfdf; --paper-3: #808080;
+  --ink: #000; --ink-2: #000; --mute: #555; --line: #808080;
+  --accent: #000080; --accent-soft: #dfdfdf;
+  --sans: var(--retro-font-family, "NexlOS Fusion Pixel", "NexlOS MS Sans Serif", SimSun, "Songti SC", sans-serif);
+  --c98-font-step: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) - 12px);
+  --serif: var(--sans);
+  --c98-face: #c0c0c0; --c98-light: #dfdfdf; --c98-white: #fff;
+  --c98-shadow: #808080; --c98-frame: #0a0a0a; --c98-selection: #000080;
+  --c98-raised: inset -1px -1px #0a0a0a, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #c0c0c0;
+  --c98-sunken: inset -1px -1px #fff, inset 1px 1px #0a0a0a, inset -2px -2px #c0c0c0, inset 2px 2px #808080;
+  --c98-field: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #c0c0c0, inset 2px 2px #0a0a0a;
+  --c98-window: inset -1px -1px #0a0a0a, inset 1px 1px #c0c0c0, inset -2px -2px #808080, inset 2px 2px #fff;
+  --c98-default: inset -2px -2px #0a0a0a, inset 1px 1px #0a0a0a, inset 2px 2px #fff, inset -3px -3px #808080, inset 3px 3px #dfdfdf;
+  --c98-checker: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2'%3E%3Cpath fill='%23fff' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23dfdfdf' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
+}
+html[data-appearance="win98"] body {
+  background: #c0c0c0; color: #000; font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+  -webkit-font-smoothing: var(--retro-font-smoothing, none); -moz-osx-font-smoothing: auto;
+}
+html[data-appearance="win98"] button,
+html[data-appearance="win98"] input,
+html[data-appearance="win98"] select,
+html[data-appearance="win98"] label,
+html[data-appearance="win98"] textarea,
+html[data-appearance="win98"] legend {
+  font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); letter-spacing: 0;
+  -webkit-font-smoothing: var(--retro-font-smoothing, none); border-radius: 0;
+}
+html[data-appearance="win98"] button { cursor: default; }
+html[data-appearance="win98"] button:focus { outline: 1px dotted #000; outline-offset: -4px; }
+html[data-appearance="win98"] button:disabled {
+  color: #808080; text-shadow: 1px 1px #fff; cursor: default; opacity: 1;
+}
+html[data-appearance="win98"] .nexlos-modern-icon { display: none; }
+html[data-appearance="win98"] .nexlos-classic-icon { display: inline; shape-rendering: crispEdges; }
+html[data-appearance="win98"] .os-tb-flag > .nexlos-classic-icon { display: flex; align-items: center; justify-content: center; }
+html[data-appearance="win98"] .appicon { shape-rendering: crispEdges; image-rendering: pixelated; }
+html[data-appearance="win98"] .nexlos-classic-icon svg {
+  display: block; shape-rendering: crispEdges; image-rendering: pixelated;
+}
+html[data-appearance="win98"] .os {
+  --os-accent: #000080 !important;
+  background: var(--retro-desktop-color, #008080); color: #000;
+  font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .os .os-wallpaper {
+  background-color: var(--retro-desktop-color, #008080);
+  background-image: var(--retro-wallpaper, none) !important;
+  background-size: cover; background-position: center; background-repeat: no-repeat; filter: none;
+}
+
+/* Desktop icons stay on the integer-pixel 32px drawing grid. */
+html[data-appearance="win98"] .os .os-icons { top: 5px; bottom: 0; left: 3px; gap: 0; grid-template-rows: repeat(auto-fill, 76px); }
+html[data-appearance="win98"] .os .os-icon {
+  width: 78px; min-height: 68px; gap: 4px; padding: 3px 3px 5px;
+  background: transparent; border: 0; border-radius: 0; box-shadow: none; transition: none;
+}
+html[data-appearance="win98"] .os .os-icon:hover,
+html[data-appearance="win98"] .os .os-icon.selected { background: transparent; box-shadow: none; }
+html[data-appearance="win98"] .os .os-icon-art {
+  width: 32px; height: 32px; background: transparent; border: 0; filter: none;
+}
+html[data-appearance="win98"] .os-icon-art .appicon,
+html[data-appearance="win98"] .os-icon-art .icon,
+html[data-appearance="win98"] .os-icon-art .nexlos-classic-icon svg { width: 32px; height: 32px; }
+html[data-appearance="win98"] .os .os-icon-label {
+  font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); padding: 1px 2px; text-shadow: none; color: #fff;
+}
+html[data-appearance="win98"] .os .os-icon.selected .os-icon-label { background: #000080; outline: 1px dotted #fff; }
+html[data-appearance="win98"] .os .os-icon-dot { display: none; }
+
+/* Three-pixel frames; chrome dimensions come from the shared geometry model. */
+html[data-appearance="win98"] .os .os-window,
+html[data-appearance="win98"] .os .os-window.active {
+  padding: 3px; border: 0; border-radius: 0; background: #c0c0c0; box-shadow: var(--c98-window);
+}
+html[data-appearance="win98"] .os .os-window.maximized { padding: 3px 3px 0; }
+html[data-appearance="win98"] .os .os-win-bar {
+  height: var(--os-titlebar-h, 18px); flex: 0 0 var(--os-titlebar-h, 18px);
+  grid-template-columns: 16px minmax(0, 1fr) auto; gap: 3px; padding: 2px;
+  background: linear-gradient(90deg, #000080, #1084d0); color: #fff; border: 0; box-shadow: none;
+}
+html[data-appearance="win98"] .os .os-window:not(.active) .os-win-bar { background: linear-gradient(90deg, #808080, #b5b5b5); }
+html[data-appearance="win98"] .os .os-win-title {
+  color: #fff; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); font-weight: 700; letter-spacing: 0;
+}
+html[data-appearance="win98"] .os .os-window:not(.active) .os-win-title { color: #c0c0c0; }
+html[data-appearance="win98"] .os-win-appicon,
+html[data-appearance="win98"] .os-win-appicon .appicon,
+html[data-appearance="win98"] .os-win-appicon .nexlos-classic-icon svg { width: 16px; height: 16px; }
+html[data-appearance="win98"] .os-win-controls { align-self: center; gap: 2px; height: var(--os-control-h, 14px); }
+html[data-appearance="win98"] .os .os-win-ctl {
+  display: flex; position: relative; align-items: center; justify-content: center;
+  width: var(--os-control-w, 16px); min-width: var(--os-control-w, 16px);
+  height: var(--os-control-h, 14px); min-height: 0; padding: 0; border: 0;
+  border-radius: 0; color: #000; background-color: #c0c0c0;
+  /* 标题栏字形都画在同一块 16px 画布上，按 1:1 贴图，缩放不再把描边拉虚。 */
+  background-position: center; background-repeat: no-repeat; background-size: 16px 16px;
+  image-rendering: pixelated; box-shadow: var(--c98-raised); transition: none;
+}
+html[data-appearance="win98"] .os .os-win-ctl .icon { display: none; }
+html[data-appearance="win98"] .os .os-win-ctl:hover,
+html[data-appearance="win98"] .os .os-win-ctl.close:hover { color: #000; background-color: #c0c0c0; }
+html[data-appearance="win98"] .os .os-win-ctl:active {
+  box-shadow: var(--c98-sunken); background-position: calc(50% + 1px) calc(50% + 1px);
+}
+/* 16px 画布、2px 墨宽：最小化短杠、最大化方框、还原双框、关闭叉号重量一致。 */
+html[data-appearance="win98"] .os-win-ctl.min { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M4 10h8v2H4z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] .os-win-ctl.max { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M2 2h12v2H2zM2 12h12v2H2zM2 2h2v12H2zM12 2h2v12h-2z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] .os-window.maximized .os-win-ctl.max { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M5 2h9v2H5zM12 4h2v7h-2zM11 9h3v2h-3zM2 5h9v2H2zM2 7h2v7H2zM9 7h2v7h-2zM2 12h9v2H2z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] .os-win-ctl.close { margin-left: 1px; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M3 3h2v1H3zM11 3h2v1H11zM4 4h2v1H4zM10 4h2v1H10zM5 5h2v1H5zM9 5h2v1H9zM6 6h2v1H6zM8 6h2v1H8zM7 7h2v1H7zM6 8h2v1H6zM8 8h2v1H8zM9 9h2v1H9zM5 9h2v1H5zM10 10h2v1H10zM4 10h2v1H4zM11 11h2v1H11zM3 11h2v1H3zM12 12h2v1H12zM2 12h2v1H2z'/%3E%3C/svg%3E"); }
+/* 标题栏按钮提示条：98 的 InfoWindow 米色，固定在按钮正下方，不跟鼠标跑。
+   用伪元素画，零 DOM、零 JS；title 属性已移除，不再触发系统 tooltip。 */
+html[data-appearance="win98"] .os .os-win-ctl::after {
+  content: attr(data-tip);
+  position: absolute; top: calc(100% + 6px); right: -1px;
+  z-index: 30; padding: 1px 6px 2px;
+  background: #ffffe1; color: #000; border: 1px solid #000;
+  font-size: 12px; line-height: 16px; white-space: nowrap;
+  opacity: 0; pointer-events: none;
+  transition: opacity 80ms linear 400ms;
+}
+html[data-appearance="win98"] .os .os-win-ctl:hover::after { opacity: 1; }
+html[data-appearance="win98"] .os-win-body,
+html[data-appearance="win98"] .os-frame { background: #c0c0c0; }
+html[data-appearance="win98"] .os-resize.se::after {
+  right: 2px; bottom: 2px; width: 10px; height: 10px; border: 0; opacity: 1;
+  background: repeating-linear-gradient(135deg, transparent 0, transparent 2px, #808080 2px, #808080 3px, #fff 3px, #fff 4px);
+  clip-path: polygon(100% 0, 100% 100%, 0 100%);
+}
+
+/* Classic taskbar: Start, Quick Launch, named task buttons, recessed tray. */
+html[data-appearance="win98"] .os .os-taskbar {
+  gap: 3px; justify-content: flex-start; border: 0;
+  padding: 3px calc(2px + var(--os-safe-r)) calc(2px + var(--os-safe-b)) calc(2px + var(--os-safe-l));
+  background: #c0c0c0; color: #000; box-shadow: inset 0 1px #dfdfdf, inset 0 2px #fff;
+}
+html[data-appearance="win98"] .os .os-tb-main { display: contents; }
+html[data-appearance="win98"] .os .os-deskclock { display: none; }
+html[data-appearance="win98"] .os .os-tb-left,
+html[data-appearance="win98"] .os .os-tb-searchbox,
+html[data-appearance="win98"] .os .os-tb-more,
+html[data-appearance="win98"] .os .os-tb-bell,
+html[data-appearance="win98"] .os .os-tb-showdesk,
+html[data-appearance="win98"] .os .os-tb-tray { display: none; }
+html[data-appearance="win98"] .os .os-tb-center {
+  position: static; left: auto; transform: none; flex: 1 1 auto; min-width: 0;
+  gap: 3px; height: 22px; justify-content: flex-start; overflow: hidden;
+}
+html[data-appearance="win98"] .os .os-tb-btn {
+  height: 22px; min-height: 22px; min-width: 28px; padding: 2px 5px; border: 0;
+  color: #000; border-radius: 0; background: #c0c0c0; box-shadow: var(--c98-raised); transition: none;
+}
+html[data-appearance="win98"] .os .os-tb-btn:hover { background: #c0c0c0; }
+html[data-appearance="win98"] .os .os-tb-btn:active { transform: none; box-shadow: var(--c98-sunken); }
+html[data-appearance="win98"] .os .os-tb-btn.active { background: #dfdfdf var(--c98-checker); box-shadow: var(--c98-sunken); }
+html[data-appearance="win98"] .os .os-tb-start {
+  flex: 0 0 auto; width: auto; min-width: 58px; gap: 2px; padding: 0 5px 0 2px; font-weight: 700;
+}
+html[data-appearance="win98"] .os-tb-start::after { content: none; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); margin-left: 1px; }
+html[data-appearance="win98"] .os .os-tb-flag { width: 20px; height: 20px; color: #000; }
+html[data-appearance="win98"] .os-tb-flag .icon,
+html[data-appearance="win98"] .os-tb-flag .nexlos-classic-icon svg { width: 16px; height: 16px; }
+html[data-appearance="win98"] .os .os-tb-app { flex: 0 1 160px; width: 160px; max-width: 160px; min-width: 28px; gap: 4px; justify-content: flex-start; }
+html[data-appearance="win98"] .os .os-tb-app-label { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .os .os-tb-dot { display: none; }
+html[data-appearance="win98"] .os-tb-art,
+html[data-appearance="win98"] .os-tb-art .appicon,
+html[data-appearance="win98"] .os-tb-art .nexlos-classic-icon svg { width: 16px; height: 16px; flex: 0 0 16px; }
+html[data-appearance="win98"] .os .os-classic-quicklaunch {
+  display: flex; align-items: center; gap: 1px; flex: 0 0 auto; padding: 0 4px 0 6px; margin-right: 1px;
+  border-left: 1px solid #808080; border-right: 1px solid #fff; height: 22px;
+}
+html[data-appearance="win98"] .os .os-classic-quickbtn {
+  display: flex; align-items: center; justify-content: center; width: 23px; height: 21px;
+  min-width: 0; min-height: 0; padding: 0; border: 0; box-shadow: none; background: #c0c0c0;
+}
+html[data-appearance="win98"] .os .os-classic-quickbtn:hover { box-shadow: inset -1px -1px #808080, inset 1px 1px #fff; }
+html[data-appearance="win98"] .os .os-classic-quickbtn:active { box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+html[data-appearance="win98"] .os-classic-quickbtn svg { width: 16px; height: 16px; }
+html[data-appearance="win98"] .os .os-tb-right { flex: 0 0 auto; height: 22px; gap: 4px; margin-left: auto; }
+html[data-appearance="win98"] .os .os-theme-toggle {
+  min-width: 22px; min-height: 22px; height: 22px; margin: 0; padding: 0 6px;
+  border: 0; border-radius: 0; color: #000; background: #c0c0c0; box-shadow: var(--c98-raised); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .os .os-theme-toggle:hover { background: #c0c0c0; }
+html[data-appearance="win98"] .os .os-theme-toggle:active { box-shadow: var(--c98-sunken); }
+html[data-appearance="win98"] .os-theme-toggle .icon { width: 14px; height: 14px; }
+/* Win98 任务栏是 44px 的实心条。几何缓存若还没跟上主题，也不许继承现代主题的 78px，
+   否则会出现一条比按钮高一截的灰带。 */
+html[data-appearance="win98"] .os { --os-dock-h: 44px !important; }
+
+html[data-appearance="win98"] .os .os-tb-clock {
+  /* 高度跟着用户字号走：固定 22px 会在 16–24px 字号下把时间裁掉半行。 */
+  height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 10px);
+  min-width: 62px; min-height: 22px; padding: 3px 8px; display: flex; flex-direction: row;
+  align-items: center; justify-content: center; border-radius: 0; overflow: hidden;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080;
+}
+html[data-appearance="win98"] .os .os-tb-clock:hover { background: #c0c0c0; }
+html[data-appearance="win98"] .os .os-tb-time { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); }
+html[data-appearance="win98"] .os .os-tb-date { display: none; }
+
+/* Vertical Start menu. Its actions and cascading state remain in classicmenu.js. */
+html[data-appearance="win98"] .os .os-start-panel { display: none; }
+html[data-appearance="win98"] .os .c98-start {
+  position: absolute; left: calc(2px + var(--os-safe-l)); bottom: var(--os-dock-h);
+  display: flex; align-items: stretch; min-width: 202px; max-width: calc(100vw - 8px);
+  padding: 3px; overflow: visible; background: #c0c0c0; color: #000;
+  box-shadow: var(--c98-window); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); pointer-events: none;
+}
+html[data-appearance="win98"] .os-start.open .c98-start { pointer-events: auto; }
+/* 程序把焦点交给菜单容器时，WebKit 会给整块 tabindex=-1 的面板画默认蓝环。
+   经典菜单只在条目上画虚线焦点，面板和子菜单本身永远没有外圈。 */
+html[data-appearance="win98"] .c98-start,
+html[data-appearance="win98"] .c98-menu,
+html[data-appearance="win98"] .c98-submenu { outline: 0; }
+html[data-appearance="win98"] .c98-rail {
+  flex: 0 0 24px; width: 24px; min-width: 24px; margin-right: 2px;
+  position: relative; overflow: hidden; background: linear-gradient(0deg, #000080, #1084d0); color: #fff;
+}
+html[data-appearance="win98"] .c98-rail > span {
+  position: absolute; bottom: 6px; left: 0; writing-mode: horizontal-tb;
+  transform: translateY(100%) rotate(-90deg); transform-origin: top left;
+  color: #fff; font-family: Arial, Tahoma, sans-serif; font-size: 20px; font-weight: 400;
+  line-height: 24px; white-space: nowrap; letter-spacing: 0;
+}
+html[data-appearance="win98"] .c98-menu { display: flex; flex: 1 1 auto; flex-direction: column; min-width: 160px; padding: 0; overflow: visible; }
+html[data-appearance="win98"] .c98-item {
+  display: flex; align-items: center; width: 100%; height: calc(22px + var(--c98-font-step)); min-height: calc(22px + var(--c98-font-step));
+  gap: 6px; margin: 0; padding: 2px 10px 2px 2px; border: 0; border-radius: 0;
+  background: #c0c0c0; color: #000; box-shadow: none; text-align: left;
+  font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); white-space: nowrap;
+}
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item { height: max(36px, calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 12px)); min-height: max(36px, calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 12px)); gap: 9px; padding-right: 9px; }
+html[data-appearance="win98"] .c98-item:hover:not(:disabled),
+html[data-appearance="win98"] .c98-item.selected:not(:disabled),
+html[data-appearance="win98"] .c98-submenu-host.open > .c98-item,
+html[data-appearance="win98"] .c98-item:focus:not(:disabled) { background: #000080; color: #fff; text-shadow: none; outline: 0; }
+html[data-appearance="win98"] .c98-glyph { display: inline-flex; align-items: center; justify-content: center; width: 20px; height: 16px; flex: 0 0 20px; }
+html[data-appearance="win98"] .c98-glyph svg { width: 16px; height: 16px; display: block; image-rendering: pixelated; shape-rendering: crispEdges; }
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item > .c98-glyph,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item > .c98-glyph { width: 32px; flex-basis: 32px; height: 32px; }
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item > .c98-glyph > svg,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item > .c98-glyph > svg { width: 32px; height: 32px; }
+html[data-appearance="win98"] .c98-label { flex: 1 1 auto; padding-right: 9px; }
+html[data-appearance="win98"] .c98-label u { text-decoration: underline; }
+html[data-appearance="win98"] .c98-group-label { padding: 5px 8px 3px 28px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #808080; text-shadow: 1px 1px #fff; }
+html[data-appearance="win98"] .c98-arrow { width: 0; height: 0; border-top: 4px solid transparent; border-bottom: 4px solid transparent; border-left: 4px solid currentColor; font-size: 0; }
+html[data-appearance="win98"] .c98-separator { height: 2px; flex: 0 0 2px; margin: 3px 2px; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+html[data-appearance="win98"] .c98-submenu-host { position: relative; overflow: visible; }
+html[data-appearance="win98"] .c98-submenu {
+  position: fixed; z-index: 94; min-width: 166px; max-width: calc(100vw - 8px);
+  padding: 3px; overflow: visible; background: #c0c0c0; color: #000; box-shadow: var(--c98-window);
+}
+html[data-appearance="win98"] .c98-submenu-host:not(.open) > .c98-submenu { display: none; }
+html[data-appearance="win98"] .c98-empty { padding: 5px 10px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #808080; text-shadow: 1px 1px #fff; }
+
+/* Shell Run/Find/About use NexlOS actions under the classic dialog surface. */
+html[data-appearance="win98"] .c98-dialog-layer {
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 90;
+  display: flex; align-items: center; justify-content: center; padding: 12px;
+  background: transparent;
+  /* 这层只负责居中定位：空白处必须让点击穿过去，否则属性表一开整台桌面都点不动。 */
+  pointer-events: none;
+}
+html[data-appearance="win98"] .c98-dialog-layer[hidden] { display: none; }
+html[data-appearance="win98"] .c98-dialog {
+  display: flex; flex-direction: column; width: 380px; max-width: 100%; max-height: calc(100vh - 24px);
+  margin: 0; padding: 3px; border: 0; border-radius: 0; background: #c0c0c0;
+  color: #000; box-shadow: var(--c98-window); font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+  pointer-events: auto;
+}
+html[data-appearance="win98"] .c98-dialog-title {
+  display: flex; flex: 0 0 18px; align-items: center; justify-content: space-between;
+  height: calc(18px + var(--c98-font-step)); padding: 2px 2px 2px 3px; gap: 6px;
+  background: linear-gradient(90deg, #000080, #1084d0); color: #fff;
+  /* 表头整条可拖：拖动时不要选中标题文字，触屏上也不要让手势变成滚动。 */
+  user-select: none; -webkit-user-select: none; touch-action: none;
+}
+html[data-appearance="win98"] .c98-dialog-title strong { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); font-weight: 700; }
+html[data-appearance="win98"] .c98-dialog-close {
+  width: 16px; height: 14px; min-height: 0; padding: 0; border: 0; border-radius: 0; flex: 0 0 16px;
+  font-size: 0; color: #000; background: #c0c0c0 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 0h2v1H0zM6 0h2v1H6zM1 1h2v1H1zM5 1h2v1H5zM2 2h4v1H2zM3 3h2v1H3zM2 4h4v1H2zM1 5h2v1H1zM5 5h2v1H5zM0 6h2v1H0zM6 6h2v1H6z'/%3E%3C/svg%3E") center no-repeat;
+  box-shadow: var(--c98-raised);
+}
+html[data-appearance="win98"] .c98-dialog-close svg { display: none; }
+html[data-appearance="win98"] .c98-dialog-close:active { box-shadow: var(--c98-sunken); background-position: calc(50% + 1px) calc(50% + 1px); }
+html[data-appearance="win98"] .c98-dialog-body { min-height: 0; padding: 12px 10px; overflow: auto; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); }
+html[data-appearance="win98"] .c98-field { display: flex; align-items: center; gap: 8px; margin: 4px 0; }
+html[data-appearance="win98"] .c98-field label { flex: 0 0 auto; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .c98-field input {
+  flex: 1 1 auto; min-width: 0; height: 22px; padding: 3px 4px; border: 0; border-radius: 0;
+  background: #fff; color: #000; box-shadow: var(--c98-field); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .c98-dialog-note { margin: 8px 0; color: #444; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px); }
+html[data-appearance="win98"] .c98-run-results {
+  display: flex; flex-direction: column; min-height: 0; max-height: 180px; margin-top: 8px; padding: 3px;
+  background: #fff; box-shadow: var(--c98-field); overflow: auto;
+}
+html[data-appearance="win98"] .c98-run-results:empty { display: none; }
+html[data-appearance="win98"] .c98-result {
+  display: flex; flex: 0 0 auto; align-items: center; width: 100%; min-height: 20px; gap: 6px;
+  margin: 0; padding: 2px 4px; border: 0; border-radius: 0; background: #fff; color: #000;
+  text-align: left; font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .c98-result svg { width: 16px; height: 16px; flex: 0 0 16px; shape-rendering: crispEdges; }
+html[data-appearance="win98"] .c98-result:hover,
+html[data-appearance="win98"] .c98-result:focus { outline: 0; background: #000080; color: #fff; }
+html[data-appearance="win98"] .c98-dialog-actions { display: flex; justify-content: flex-end; gap: 6px; padding: 0 10px 12px; }
+html[data-appearance="win98"] .c98-button {
+  display: inline-flex; align-items: center; justify-content: center; min-width: 75px; height: 23px;
+  margin: 0; padding: 0 12px; border: 0; border-radius: 0; background: #c0c0c0; color: #000;
+  box-shadow: var(--c98-raised); font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .c98-button.default { box-shadow: var(--c98-default); }
+html[data-appearance="win98"] .c98-button:active:not(:disabled) { box-shadow: var(--c98-sunken); padding: 1px 11px 0 13px; }
+html[data-appearance="win98"] .c98-button:disabled { color: #808080; text-shadow: 1px 1px #fff; }
+
+/* Shared raised pushbuttons: normal/default/pressed/focused/disabled states. */
+html[data-appearance="win98"] .primary,
+html[data-appearance="win98"] .ghost,
+html[data-appearance="win98"] .xp .xp-btn,
+html[data-appearance="win98"] .xp .xp-selbar-btn,
+html[data-appearance="win98"] .st .st-btn,
+html[data-appearance="win98"] .mm .mm-btn,
+html[data-appearance="win98"] .tm .tm-btn,
+html[data-appearance="win98"] .mv .mv-btn,
+html[data-appearance="win98"] .mf .mf-btn,
+html[data-appearance="win98"] .ma .ma-btn,
+html[data-appearance="win98"] .sc .sc-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-height: 23px; height: 23px; padding: 0 12px; border: 0; border-radius: 0;
+  background: #c0c0c0; color: #000; box-shadow: var(--c98-raised);
+  font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 3px); letter-spacing: 0; text-decoration: none;
+  filter: none; transition: none;
+}
+html[data-appearance="win98"] .primary,
+html[data-appearance="win98"] .xp .xp-btn.primary,
+html[data-appearance="win98"] .st .st-btn.primary,
+html[data-appearance="win98"] .mm .mm-btn.primary,
+html[data-appearance="win98"] .mf .mf-btn.primary,
+html[data-appearance="win98"] .mv .mv-btn.primary,
+html[data-appearance="win98"] .sc .sc-btn.primary { color: #000; background: #c0c0c0; box-shadow: var(--c98-default); }
+html[data-appearance="win98"] .primary:hover,
+html[data-appearance="win98"] .ghost:hover,
+html[data-appearance="win98"] .xp .xp-btn:hover,
+html[data-appearance="win98"] .xp .xp-selbar-btn:hover,
+html[data-appearance="win98"] .st .st-btn:hover,
+html[data-appearance="win98"] .mm .mm-btn:hover,
+html[data-appearance="win98"] .tm .tm-btn:hover,
+html[data-appearance="win98"] .mv .mv-btn:hover,
+html[data-appearance="win98"] .mf .mf-btn:hover,
+html[data-appearance="win98"] .ma .ma-btn:hover,
+html[data-appearance="win98"] .sc .sc-btn:hover { background: #c0c0c0; color: #000; filter: none; }
+html[data-appearance="win98"] .primary:active:not(:disabled),
+html[data-appearance="win98"] .ghost:active:not(:disabled),
+html[data-appearance="win98"] .xp .xp-btn:active:not(:disabled),
+html[data-appearance="win98"] .st .st-btn:active:not(:disabled),
+html[data-appearance="win98"] .mm .mm-btn:active:not(:disabled),
+html[data-appearance="win98"] .tm .tm-btn:active:not(:disabled),
+html[data-appearance="win98"] .mv .mv-btn:active:not(:disabled),
+html[data-appearance="win98"] .mf .mf-btn:active:not(:disabled),
+html[data-appearance="win98"] .ma .ma-btn:active:not(:disabled),
+html[data-appearance="win98"] .sc .sc-btn:active:not(:disabled) { box-shadow: var(--c98-sunken); padding: 1px 11px 0 13px; }
+html[data-appearance="win98"] .primary:disabled,
+html[data-appearance="win98"] .ghost:disabled,
+html[data-appearance="win98"] .xp .xp-btn:disabled,
+html[data-appearance="win98"] .xp .xp-selbar-btn:disabled,
+html[data-appearance="win98"] .st .st-btn:disabled,
+html[data-appearance="win98"] .mm .mm-btn:disabled,
+html[data-appearance="win98"] .tm .tm-btn:disabled,
+html[data-appearance="win98"] .mv .mv-btn:disabled,
+html[data-appearance="win98"] .mf .mf-btn:disabled,
+html[data-appearance="win98"] .ma .ma-btn:disabled,
+html[data-appearance="win98"] .sc .sc-btn:disabled { color: #808080; text-shadow: 1px 1px #fff; opacity: 1; }
+html[data-appearance="win98"] .ghost.danger { min-width: 23px; padding: 0 6px; }
+html[data-appearance="win98"] .xp-dialog-btns .xp-btn,
+html[data-appearance="win98"] .st-btn,
+html[data-appearance="win98"] .mm-dialog-btns .mm-btn { min-width: 75px; }
+
+/* Recessed fields and range sliders. No modern blue fill or rounded switch. */
+html[data-appearance="win98"] .field,
+html[data-appearance="win98"] .task-note-input,
+html[data-appearance="win98"] .xp .xp-crumbs,
+html[data-appearance="win98"] .xp .xp-search,
+html[data-appearance="win98"] .xp .xp-rename-input,
+html[data-appearance="win98"] .st .st-search,
+html[data-appearance="win98"] .st .st-input,
+html[data-appearance="win98"] .mm .mm-input,
+html[data-appearance="win98"] .mv .mv-url,
+html[data-appearance="win98"] .ma .ma-url {
+  min-height: 22px; height: 22px; border: 0; border-radius: 0; padding: 2px 4px;
+  background: #fff; color: #000; box-shadow: var(--c98-field); font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .task-note-input { height: auto; min-height: 50px; }
+html[data-appearance="win98"] .st .st-search-input,
+html[data-appearance="win98"] .xp .xp-search-input { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-switch {
+  width: 13px; height: 13px; flex: 0 0 13px; border: 0; border-radius: 0; background: #fff;
+  box-shadow: var(--c98-field); transition: none;
+}
+html[data-appearance="win98"] .st .st-switch-knob { display: none; }
+html[data-appearance="win98"] .st .st-switch.on { background: #fff; }
+html[data-appearance="win98"] .st-switch.on::after {
+  content: ""; position: absolute; left: 3px; top: 3px; width: 7px; height: 7px;
+  background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='7' height='7' shape-rendering='crispEdges'%3E%3Cpath d='M0 2h1v1h1v1h1V3h1V2h1V1h1V0h1v3H6v1H5v1H4v1H3v1H2V6H1V5H0z'/%3E%3C/svg%3E") center no-repeat;
+}
+html[data-appearance="win98"] .mv-seek::-webkit-slider-runnable-track,
+html[data-appearance="win98"] .mv-vol::-webkit-slider-runnable-track,
+html[data-appearance="win98"] .ma-seek::-webkit-slider-runnable-track,
+html[data-appearance="win98"] .ma-vol::-webkit-slider-runnable-track { height: 4px; border-radius: 0; background: #808080; box-shadow: 1px 1px #fff, inset 1px 1px #000; }
+html[data-appearance="win98"] .mv-seek::-webkit-slider-thumb,
+html[data-appearance="win98"] .mv-vol::-webkit-slider-thumb,
+html[data-appearance="win98"] .ma-seek::-webkit-slider-thumb,
+html[data-appearance="win98"] .ma-vol::-webkit-slider-thumb {
+  width: 11px; height: 21px; margin-top: -9px; border: 0; border-radius: 0; background: #c0c0c0; box-shadow: var(--c98-raised);
+}
+
+/* Explorer: classic menu/toolbar density, white document pane, recessed status. */
+html[data-appearance="win98"] .xp,
+html[data-appearance="win98"] .st,
+html[data-appearance="win98"] .mm,
+html[data-appearance="win98"] .tm {
+  --xp-accent: #000080 !important; --st-accent: #000080 !important; --mm-accent: #000080 !important;
+  background: #c0c0c0; color: #000; font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .xp .xp-cmd { height: calc(30px + var(--c98-font-step)); flex-basis: calc(30px + var(--c98-font-step)); padding: 2px 4px; background: #c0c0c0; border-bottom-color: #808080; }
+html[data-appearance="win98"] .xp .xp-cmd-btn { height: calc(23px + var(--c98-font-step)); padding: 2px 7px; border-radius: 0; color: #000; background: transparent; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-cmd-btn:hover { background: transparent; box-shadow: inset -1px -1px #808080, inset 1px 1px #fff; }
+html[data-appearance="win98"] .xp .xp-cmd-btn:active { box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+html[data-appearance="win98"] .xp .xp-addr { height: calc(28px + var(--c98-font-step)); flex-basis: calc(28px + var(--c98-font-step)); background: #c0c0c0; border-color: #808080; padding: 2px 4px; }
+html[data-appearance="win98"] .xp .xp-navbtn { width: 24px; height: 24px; border-radius: 0; color: #000; }
+/* 前后/向上箭头同样落在 16px 网格上，描边 2px，与标题栏控件同重。 */
+html[data-appearance="win98"] .xp .xp-navbtn .xp-ic {
+  width: 16px; height: 16px; stroke-width: 2; stroke-linecap: square; stroke-linejoin: miter;
+  shape-rendering: crispEdges;
+}
+html[data-appearance="win98"] .xp .xp-navbtn:hover:not(:disabled) { background: #c0c0c0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .xp .xp-navbtn:disabled { color: #808080; text-shadow: 1px 1px #fff; }
+html[data-appearance="win98"] .xp .xp-crumb { height: calc(18px + var(--c98-font-step)); padding: 0 4px; color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-crumb:hover { background: #000080; color: #fff; }
+html[data-appearance="win98"] .xp .xp-side { width: 180px; flex-basis: 180px; background: #fff; border: 0; box-shadow: inset -1px 0 #808080; padding: 4px; }
+html[data-appearance="win98"] .xp .xp-side-head { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); padding: 4px; }
+html[data-appearance="win98"] .xp .xp-side-item { height: calc(22px + var(--c98-font-step)); padding-left: 14px; border-radius: 0; color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-side-item:hover { background: #dfdfdf; box-shadow: none; }
+html[data-appearance="win98"] .xp .xp-listwrap { background: #fff; box-shadow: var(--c98-field); margin: 2px; }
+html[data-appearance="win98"] .xp .xp-cols { height: calc(20px + var(--c98-font-step)); padding: 0 2px; background: #c0c0c0; border: 0; }
+html[data-appearance="win98"] .xp .xp-col { height: calc(20px + var(--c98-font-step)); padding: 2px 5px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #000; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .xp .xp-col:hover { background: #c0c0c0; }
+html[data-appearance="win98"] .xp .xp-row { height: calc(20px + var(--c98-font-step)); border: 0; padding: 0 6px; }
+html[data-appearance="win98"] .xp .xp-row:hover { background: #dfdfdf; }
+html[data-appearance="win98"] .xp .xp-name-text,
+html[data-appearance="win98"] .xp .xp-group { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-date,
+html[data-appearance="win98"] .xp .xp-type,
+html[data-appearance="win98"] .xp .xp-size,
+html[data-appearance="win98"] .xp .xp-group span,
+html[data-appearance="win98"] .xp .xp-drive-head i,
+html[data-appearance="win98"] .xp .xp-drive-meta,
+html[data-appearance="win98"] .xp .xp-search-head { color: #444; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-group { padding: 10px 8px 5px; }
+html[data-appearance="win98"] .xp .xp-drive { background: #c0c0c0; border: 0; box-shadow: var(--c98-raised); padding: 8px; }
+html[data-appearance="win98"] .xp-drive-head b { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-drive-bar,
+html[data-appearance="win98"] .st .st-usage-bar { height: 14px; padding: 3px; background: #c0c0c0; box-shadow: var(--c98-field); }
+html[data-appearance="win98"] .xp .xp-drive-bar i { background-color: #000080; }
+html[data-appearance="win98"] .xp .xp-tile { width: 86px; height: 78px; border: 0; }
+html[data-appearance="win98"] .xp .xp-tile .xp-glyph { width: 32px; height: 32px; }
+html[data-appearance="win98"] .xp .xp-tile-name { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); margin-top: 5px; }
+html[data-appearance="win98"] .xp .xp-tile:hover { background: #dfdfdf; }
+html[data-appearance="win98"] .xp .xp-status { height: calc(20px + var(--c98-font-step)); flex-basis: calc(20px + var(--c98-font-step)); margin: 2px; padding: 2px 5px; background: #c0c0c0; color: #000; border: 0; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-status-sel,
+html[data-appearance="win98"] .xp .xp-status-right { color: #000; }
+html[data-appearance="win98"] .xp .xp-selbar { padding: 3px 5px; background: #c0c0c0; border-color: #fff; }
+html[data-appearance="win98"] .xp .xp-selbar-count { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-side-note { color: #000; background: #ffffe1; border-color: #000; }
+html[data-appearance="win98"] .xp .xp-row.selected,
+html[data-appearance="win98"] .xp .xp-tile.selected,
+html[data-appearance="win98"] .xp .xp-side-item.active { background: #000080; color: #fff; border: 0; box-shadow: none; }
+html[data-appearance="win98"] .xp-row.selected .xp-name-text,
+html[data-appearance="win98"] .xp-row.selected .xp-date,
+html[data-appearance="win98"] .xp-row.selected .xp-type,
+html[data-appearance="win98"] .xp-row.selected .xp-size { color: #fff; }
+
+/* Settings is a dense Control Panel surface; current-mode controls stay separate. */
+html[data-appearance="win98"] .st .st-head { height: calc(36px + var(--c98-font-step)); flex-basis: calc(36px + var(--c98-font-step)); padding: 0 8px; background: #c0c0c0; border: 0; box-shadow: inset 0 -1px #808080, 0 1px #fff; }
+html[data-appearance="win98"] .st .st-head-title b { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #000; }
+html[data-appearance="win98"] .st .st-search { height: 22px; }
+html[data-appearance="win98"] .st .st-head-title .st-ic { width: 16px; height: 16px; color: #000; }
+html[data-appearance="win98"] .st .st-avatar { border-radius: 0; width: 24px; height: 24px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); background: #000080; }
+html[data-appearance="win98"] .st .st-account-meta b,
+html[data-appearance="win98"] .st .st-account-meta i { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #000; }
+html[data-appearance="win98"] .st .st-nav { width: 180px; flex-basis: 180px; padding: 5px 4px; background: #c0c0c0; border-right: 1px solid #808080; }
+html[data-appearance="win98"] .st .st-nav-item { height: calc(28px + var(--c98-font-step)); padding: 0 8px; border-radius: 0; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #000; }
+html[data-appearance="win98"] .st .st-nav-item:hover { background: #dfdfdf; }
+html[data-appearance="win98"] .st .st-nav-item.active { background: #000080; color: #fff; box-shadow: none; }
+html[data-appearance="win98"] .st .st-nav-ic { width: 16px; margin-right: 8px; color: #000; }
+html[data-appearance="win98"] .st .st-nav-item.active .st-nav-ic { color: #fff; }
+html[data-appearance="win98"] .st .st-nav-foot { padding: 12px 6px; color: #444; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-main { padding: 14px 16px 24px; background: #c0c0c0; }
+html[data-appearance="win98"] .st .st-page-head { margin-bottom: 12px; }
+html[data-appearance="win98"] .st .st-page-head h1 { font-family: var(--sans); font-size: 16px; color: #000; letter-spacing: 0; }
+html[data-appearance="win98"] .st .st-page-head p,
+html[data-appearance="win98"] .st .st-row-text span,
+html[data-appearance="win98"] .st .st-card-head span,
+html[data-appearance="win98"] .st .st-tile span,
+html[data-appearance="win98"] .st .st-value,
+html[data-appearance="win98"] .st .st-note,
+html[data-appearance="win98"] .st .st-app-meta span,
+html[data-appearance="win98"] .st .st-app-kind,
+html[data-appearance="win98"] .st .st-theme > b + span,
+html[data-appearance="win98"] .st .st-net-status span,
+html[data-appearance="win98"] .st .st-update span { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #444; }
+html[data-appearance="win98"] .st .st-card { margin: 0 0 12px; border: 1px solid #808080; background: #c0c0c0; box-shadow: 1px 1px #fff, inset 1px 1px #fff; }
+html[data-appearance="win98"] .st .st-row { min-height: 42px; padding: 8px 10px; border-bottom: 0; }
+html[data-appearance="win98"] .st .st-row-text b,
+html[data-appearance="win98"] .st .st-card-head b,
+html[data-appearance="win98"] .st .st-tile b,
+html[data-appearance="win98"] .st .st-app-meta b,
+html[data-appearance="win98"] .st .st-theme b { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-row-ic { width: 24px; color: #000; }
+html[data-appearance="win98"] .st .st-card-head { padding: 10px 10px 5px; }
+html[data-appearance="win98"] .st .st-tile { padding: 10px; background: #c0c0c0; border: 0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .st .st-tile-ic { color: #000; }
+html[data-appearance="win98"] .st .st-h2 { margin: 16px 0 8px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-input { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-theme { background: #c0c0c0; border-color: #808080; border-radius: 0; }
+html[data-appearance="win98"] .st .st-wall-name { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-wall-name i { color: #000080; }
+html[data-appearance="win98"] .st .st-preview { background: #c0c0c0; box-shadow: var(--c98-field); border: 0; }
+html[data-appearance="win98"] .st .st-clock { font-size: 18px; color: #000; }
+html[data-appearance="win98"] .st .st-app { border-color: #808080; }
+html[data-appearance="win98"] .st .st-appearance-card { color: #000; background: #c0c0c0; border-radius: 0; }
+html[data-appearance="win98"] .st .st-appearance-copy > span { color: #444; }
+html[data-appearance="win98"] .st .st-appearance-card.active { border-color: #000080; }
+html[data-appearance="win98"] .st .st-appearance-card.win98 .st-appearance-title { font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); background: linear-gradient(90deg, #000080, #1084d0); }
+
+/* Property dialogs, tabs, message boxes and Notepad. */
+html[data-appearance="win98"] .xp .xp-dialog-layer,
+html[data-appearance="win98"] .mm .mm-dialog-layer { background: transparent; }
+html[data-appearance="win98"] .xp .xp-dialog,
+html[data-appearance="win98"] .xp .xp-note-win,
+html[data-appearance="win98"] .mm .mm-dialog {
+  background: #c0c0c0; color: #000; border: 0; padding: 3px; border-radius: 0; box-shadow: var(--c98-window);
+}
+html[data-appearance="win98"] .xp .xp-dialog-bar,
+html[data-appearance="win98"] .xp .xp-note-bar {
+  height: calc(18px + var(--c98-font-step)); min-height: calc(18px + var(--c98-font-step)); flex: 0 0 calc(18px + var(--c98-font-step)); padding: 2px 2px 2px 3px;
+  background: linear-gradient(90deg, #000080, #1084d0); color: #fff; border: 0; font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .xp .xp-dialog-x {
+  height: 14px; min-width: 16px; width: 16px; font-family: "NexlOS MS Sans Serif", sans-serif; font-size: 11px;
+  color: #000; background: #c0c0c0; box-shadow: var(--c98-raised);
+}
+html[data-appearance="win98"] .xp .xp-dialog-x:hover { background: #c0c0c0; color: #000; }
+html[data-appearance="win98"] .xp .xp-dialog-body { padding: 12px 10px; }
+html[data-appearance="win98"] .xp .xp-dialog-btns,
+html[data-appearance="win98"] .xp .xp-dialog-foot { padding: 4px 10px 12px; }
+html[data-appearance="win98"] .xp .xp-tabs { margin-bottom: 10px; border-bottom: 1px solid #fff; }
+html[data-appearance="win98"] .xp .xp-tabs span {
+  padding: 4px 8px; margin-top: 2px; color: #000; background: #c0c0c0;
+  border: 0; border-radius: 3px 3px 0 0; box-shadow: inset -1px 0 #0a0a0a, inset 1px 1px #dfdfdf, inset -2px 0 #808080, inset 2px 2px #fff;
+  font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+html[data-appearance="win98"] .xp .xp-tabs span.active { margin: 0 -2px -1px; padding-top: 5px; padding-bottom: 5px; position: relative; color: #000; background: #c0c0c0; }
+html[data-appearance="win98"] .xp .xp-prop-grid dt,
+html[data-appearance="win98"] .xp .xp-prop-head i,
+html[data-appearance="win98"] .xp .xp-prop-path,
+html[data-appearance="win98"] .xp .xp-field,
+html[data-appearance="win98"] .xp .xp-field > span,
+html[data-appearance="win98"] .xp .xp-confirm-text { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-prop-grid dd { color: #000; }
+html[data-appearance="win98"] .xp .xp-note-title { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-note-menu { height: calc(20px + var(--c98-font-step)); min-height: calc(20px + var(--c98-font-step)); background: #c0c0c0; color: #000; border: 0; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .xp .xp-note-menu span { padding: 2px 6px; }
+html[data-appearance="win98"] .xp .xp-note-body { background: #fff; color: #000; font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 3px); padding: 4px; box-shadow: var(--c98-field); }
+html[data-appearance="win98"] .xp .xp-note-foot { height: calc(20px + var(--c98-font-step)); background: #c0c0c0; border: 0; color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+html[data-appearance="win98"] .mm .mm-dialog { padding: 12px; }
+html[data-appearance="win98"] .mm .mm-dialog > b { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+
+/* Writing and memory: classic shell, with readable white document interiors. */
+html[data-appearance="win98"] .rail,
+html[data-appearance="win98"] .topbar,
+html[data-appearance="win98"] .chapters-head,
+html[data-appearance="win98"] .chapter-list,
+html[data-appearance="win98"] .editor-bar,
+html[data-appearance="win98"] .mm .mm-bar,
+html[data-appearance="win98"] .mm .mm-docbar,
+html[data-appearance="win98"] .tm .tm-bar,
+html[data-appearance="win98"] .tm .tm-foot { background: #c0c0c0; color: #000; border-color: #808080; backdrop-filter: none; }
+html[data-appearance="win98"] .rail { padding: 8px 5px; box-shadow: inset -1px 0 #fff; }
+html[data-appearance="win98"] .rail-item { padding: 9px 3px; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #000; letter-spacing: 0; }
+html[data-appearance="win98"] .rail-item.active,
+html[data-appearance="win98"] .chapter-row.active { background: #000080; color: #fff; box-shadow: none; }
+html[data-appearance="win98"] .chapter-row.active .chapter-words { color: #fff; }
+html[data-appearance="win98"] .pane { padding: 18px 20px 40px; }
+html[data-appearance="win98"] .pane-head { margin-bottom: 18px; }
+html[data-appearance="win98"] .pane-head h1 { font-family: var(--sans); font-size: 20px; letter-spacing: 0; }
+html[data-appearance="win98"] .section-title { font-family: var(--sans); font-size: 13px; margin-top: 24px; }
+html[data-appearance="win98"] .eyebrow { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); letter-spacing: 0; color: #000; }
+html[data-appearance="win98"] .book-card,
+html[data-appearance="win98"] .app-card,
+html[data-appearance="win98"] .task-card { background: #c0c0c0; border: 0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .book-card:hover,
+html[data-appearance="win98"] .app-card:hover { transform: none; outline: 1px dotted #000; outline-offset: -4px; }
+html[data-appearance="win98"] .book-spine { width: 5px; background: #000080; opacity: 1; }
+html[data-appearance="win98"] .book-body { padding: 12px; }
+html[data-appearance="win98"] .book-body b,
+html[data-appearance="win98"] .app-title b { font-family: var(--sans); font-size: 13px; }
+html[data-appearance="win98"] .book-body i,
+html[data-appearance="win98"] .book-body small { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); color: #444; }
+html[data-appearance="win98"] .chapters-head { padding: 12px 14px; }
+html[data-appearance="win98"] .chapters-head h1 { font-family: var(--sans); font-size: 16px; }
+html[data-appearance="win98"] .chapter-row { padding: 7px 10px; border-color: #808080; }
+html[data-appearance="win98"] .chapter-title { font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .chapter-words { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .editor-wrap,
+html[data-appearance="win98"] .mm .mm-right { background: #fff; }
+html[data-appearance="win98"] .editor-bar { padding: 5px 12px; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+html[data-appearance="win98"] .editor { font-family: SimSun, "Songti SC", serif; font-size: 16px; line-height: 1.7; color: #000; background: #fff; }
+html[data-appearance="win98"] .task-col { background: #c0c0c0; border: 1px solid #808080; box-shadow: 1px 1px #fff, inset 1px 1px #fff; }
+html[data-appearance="win98"] .task-col-head b,
+html[data-appearance="win98"] .task-card b { font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .task-card.active { outline: 1px dotted #000; outline-offset: -4px; }
+html[data-appearance="win98"] .export-preview { background: #fff; border: 0; box-shadow: var(--c98-field); }
+html[data-appearance="win98"] .mm .mm-bar { height: 30px; gap: 6px; padding: 2px 5px; }
+html[data-appearance="win98"] .mm .mm-count,
+html[data-appearance="win98"] .mm .mm-group-head,
+html[data-appearance="win98"] .mm .mm-group-head span,
+html[data-appearance="win98"] .mm .mm-group-head i,
+html[data-appearance="win98"] .mm .mm-item-meta,
+html[data-appearance="win98"] .mm .mm-doc-meta { color: #444; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .mm .mm-list { background: #fff; border-color: #808080; }
+html[data-appearance="win98"] .mm .mm-item { border-radius: 0; padding: 5px 7px; }
+html[data-appearance="win98"] .mm .mm-item:hover { background: #dfdfdf; }
+html[data-appearance="win98"] .mm .mm-item.active { background: #000080; color: #fff; box-shadow: none; }
+html[data-appearance="win98"] .mm .mm-item.active .mm-item-meta { color: #fff; }
+html[data-appearance="win98"] .mm .mm-docbar { min-height: 30px; padding: 3px 6px; }
+html[data-appearance="win98"] .mm .mm-doc-title { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .mm .mm-editor { background: #fff; color: #000; font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 3px); padding: 6px; }
+html[data-appearance="win98"] .tm .tm-bar { height: 28px; padding: 2px 5px; }
+html[data-appearance="win98"] .tm .tm-shell,
+html[data-appearance="win98"] .tm .tm-meta,
+html[data-appearance="win98"] .tm .tm-hint { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .tm .tm-foot { height: 20px; border: 0; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+
+/* Menus and secondary surfaces use raised frames; tooltips use InfoWindow cream. */
+html[data-appearance="win98"] .os .os-ctx,
+html[data-appearance="win98"] .xp .xp-ctx,
+html[data-appearance="win98"] .os .os-clockpop,
+html[data-appearance="win98"] .os .os-traypop,
+html[data-appearance="win98"] .os .os-tb-peek {
+  padding: 3px; background: #c0c0c0; color: #000; border: 0; border-radius: 0;
+  box-shadow: var(--c98-window); backdrop-filter: none; animation: none;
+}
+html[data-appearance="win98"] .os .os-ctx-item,
+html[data-appearance="win98"] .xp .xp-ctx-item { padding: 4px 16px 4px 8px; min-height: 22px; border-radius: 0; color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .os .os-ctx-item:hover:not(:disabled),
+html[data-appearance="win98"] .xp .xp-ctx-item:hover { color: #fff; background: #000080; }
+html[data-appearance="win98"] .os .os-cal-head b,
+html[data-appearance="win98"] .os .os-cal-now,
+html[data-appearance="win98"] .os .os-cal-day { color: #000; font-family: var(--sans); }
+html[data-appearance="win98"] .os .os-cal-now { font-size: 18px; }
+html[data-appearance="win98"] .os .os-cal-day.today { color: #fff; background: #000080; border-radius: 0; }
+html[data-appearance="win98"] .os .os-traypop,
+html[data-appearance="win98"] .os .os-clockpop { padding: 10px; }
+html[data-appearance="win98"] .os .os-tray-ico,
+html[data-appearance="win98"] .os .os-peek-meta i,
+html[data-appearance="win98"] .os .os-peek-glyph { color: #000; }
+html[data-appearance="win98"] .os .os-peek-shot { background: #fff; border: 0; border-radius: 0; box-shadow: var(--c98-field); }
+html[data-appearance="win98"] .os .os-peek-shotbar { background: linear-gradient(90deg, #000080, #1084d0); }
+html[data-appearance="win98"] .os .os-peek-x { background: #c0c0c0; color: #000; border-radius: 0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .os .os-switcher { background: rgba(0, 0, 0, .3); backdrop-filter: none; }
+html[data-appearance="win98"] .os .os-switch-card { padding: 6px; background: #c0c0c0; color: #000; border: 0; border-radius: 0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .os .os-switch-card.on { outline: 1px dotted #000; outline-offset: -4px; }
+html[data-appearance="win98"] .os .os-switch-shot { border-radius: 0; }
+html[data-appearance="win98"] .os .os-switch-shotbar { background: linear-gradient(90deg, #000080, #1084d0); }
+html[data-appearance="win98"] .os .os-switch-shotbody { background: #fff; }
+html[data-appearance="win98"] .os .os-native,
+html[data-appearance="win98"] .os .os-native-meta > div,
+html[data-appearance="win98"] .os .os-win-freeze { background: #c0c0c0; color: #000; }
+html[data-appearance="win98"] .os .os-native h2,
+html[data-appearance="win98"] .os .os-win-freeze b { font-size: 16px; color: #000; }
+html[data-appearance="win98"] .os .os-native-lede { color: #000; }
+html[data-appearance="win98"] .os .os-win-freeze em { background: #c0c0c0; color: #000; border: 0; border-radius: 0; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .toast,
+html[data-appearance="win98"] body.os-mode .toast,
+html[data-appearance="win98"] .xp .xp-toast,
+html[data-appearance="win98"] .st-toast,
+html[data-appearance="win98"] .mm-toast {
+  background: #ffffe1; color: #000; border: 1px solid #000; border-radius: 0; box-shadow: none; font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+}
+
+/* Media retains the picture/artwork; controls and import dialogs are classic. */
+html[data-appearance="win98"] .mv-bar,
+html[data-appearance="win98"] .mv-srcrow { background: #c0c0c0; color: #000; border-color: #fff; }
+html[data-appearance="win98"] .mv-time,
+html[data-appearance="win98"] .mv-times,
+html[data-appearance="win98"] .mv-note,
+html[data-appearance="win98"] .mv-srcicon { color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .mv-url:focus { background: #fff; color: #000; }
+html[data-appearance="win98"] .mf .mf-box { background: #c0c0c0; color: #000; border: 0; border-radius: 0; box-shadow: var(--c98-window); }
+html[data-appearance="win98"] .mf .mf-head { padding: 8px; border-color: #808080; }
+html[data-appearance="win98"] .mf .mf-title { font-size: 13px; }
+html[data-appearance="win98"] .mf .mf-place { background: #c0c0c0; color: #000; border-radius: 0; box-shadow: var(--c98-raised); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .mf .mf-place.on { background: #000080; color: #fff; }
+html[data-appearance="win98"] .mf .mf-list { background: #fff; box-shadow: var(--c98-field); margin: 3px; }
+html[data-appearance="win98"] .mf .mf-row { height: calc(24px + var(--c98-font-step)); color: #000; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); border-radius: 0; }
+html[data-appearance="win98"] .mf .mf-row:hover { background: #dfdfdf; }
+html[data-appearance="win98"] .mf .mf-row.on { background: #000080; color: #fff; }
+html[data-appearance="win98"] .mf .mf-rowtext i,
+html[data-appearance="win98"] .mf .mf-rowsize,
+html[data-appearance="win98"] .mf .mf-status,
+html[data-appearance="win98"] .mf .mf-crumb { color: #444; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .mf .mf-row.on .mf-rowtext i,
+html[data-appearance="win98"] .mf .mf-row.on .mf-rowsize { color: #fff; }
+/* 98 的列表是单行：名字下面的“文件夹/文档”会把 24px 行高撑破，挤到下一行上。
+   类型由左侧 18px 色块表达，名字和大小留在同一行。 */
+html[data-appearance="win98"] .mf .mf-rowtext { display: block; align-self: center; min-width: 0; }
+html[data-appearance="win98"] .mf .mf-rowtext b {
+  display: block; line-height: 18px;
+  font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); font-weight: 400;
+}
+html[data-appearance="win98"] .mf .mf-rowtext i { display: none; }
+html[data-appearance="win98"] .mf .stp-ext {
+  width: 18px; height: 18px; border-radius: 0; font-size: 7px;
+  background: #000080; color: #fff;
+}
+html[data-appearance="win98"] .mf .mf-row.on .stp-ext { background: #fff; color: #000080; }
+/* 选择器的上一级/关闭在 98 里是小号凸起按钮，不是悬空图标。 */
+html[data-appearance="win98"] .mf .mf-icon {
+  width: 18px; height: 18px; border-radius: 0; color: #000;
+  background: #c0c0c0; box-shadow: var(--c98-raised);
+}
+html[data-appearance="win98"] .mf .mf-icon:active { box-shadow: var(--c98-sunken); }
+/* 宿主电脑投放区按 98 的输入框外观走，避免浅灰字落在浅灰底上。 */
+html[data-appearance="win98"] .stp-host {
+  color: #000; background: #fff; border: 1px solid #808080;
+  border-radius: 0; box-shadow: var(--c98-field);
+}
+html[data-appearance="win98"] .stp-host b { color: #000; }
+html[data-appearance="win98"] .stp-host-ic .icon { color: #000080; }
+html[data-appearance="win98"] .stp-host-go {
+  border-radius: 0; background: #c0c0c0; color: #000; box-shadow: var(--c98-raised);
+}
+
+/* Native-looking WebKit scrollbars, with a two-pixel checkerboard track. */
+html[data-appearance="win98"]::-webkit-scrollbar,
+html[data-appearance="win98"] ::-webkit-scrollbar { width: 16px; height: 16px; }
+html[data-appearance="win98"]::-webkit-scrollbar-track,
+html[data-appearance="win98"] ::-webkit-scrollbar-track { background: #dfdfdf var(--c98-checker); }
+html[data-appearance="win98"]::-webkit-scrollbar-thumb,
+html[data-appearance="win98"] ::-webkit-scrollbar-thumb { background: #c0c0c0; border: 0; box-shadow: var(--c98-window); }
+html[data-appearance="win98"]::-webkit-scrollbar-corner,
+html[data-appearance="win98"] ::-webkit-scrollbar-corner { background: #c0c0c0; }
+/* 滚动条端头：几何只写在基础选择器上，方向选择器只负责一张箭头图，
+   双按钮端头直接不渲染，否则每端的两个半格会各画一次同一枚箭头。 */
+html[data-appearance="win98"] ::-webkit-scrollbar-button {
+  display: block; width: 16px; height: 16px; min-width: 16px; min-height: 16px;
+  margin: 0; padding: 0; border: 0;
+  background-color: #c0c0c0; background-image: none;
+  background-position: center; background-repeat: no-repeat; background-size: 16px 16px;
+  image-rendering: pixelated; box-shadow: var(--c98-window);
+}
+/* 端头只留一枚箭头：macOS 的 WebKit 会给每个端头再挂一枚反向半格
+   （start:increment / end:decrement）。只清掉这两格的图和高度，
+   否则一端会并排出现「上箭头 + 下箭头」。 */
+html[data-appearance="win98"] ::-webkit-scrollbar-button:start:increment,
+html[data-appearance="win98"] ::-webkit-scrollbar-button:end:decrement {
+  background-image: none; height: 0; min-height: 0; box-shadow: none; border: 0;
+}
+html[data-appearance="win98"] ::-webkit-scrollbar-button:vertical:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M7 6h2v1H7zM6 7h4v1H6zM5 8h6v1H5zM4 9h8v1H4z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] ::-webkit-scrollbar-button:vertical:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M4 6h8v1H4zM5 7h6v1H5zM6 8h4v1H6zM7 9h2v1H7z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] ::-webkit-scrollbar-button:horizontal:decrement { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M6 7h1v2H6zM7 6h1v4H7zM8 5h1v6H8zM9 4h1v8H9z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] ::-webkit-scrollbar-button:horizontal:increment { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' shape-rendering='crispEdges'%3E%3Cpath d='M9 7h1v2H9zM8 6h1v4H8zM7 5h1v6H7zM6 4h1v8H6z'/%3E%3C/svg%3E"); }
+html[data-appearance="win98"] ::-webkit-scrollbar-button:active {
+  box-shadow: var(--c98-sunken);
+  background-position: calc(50% + 1px) calc(50% + 1px);
+}
+
+/* Touch keeps the era's surfaces, with dimensions from the touch geometry model. */
+html[data-appearance="win98"] .xp .xp-classic-menubar {
+  display: flex; flex: 0 0 20px; height: calc(20px + var(--c98-font-step)); align-items: center;
+  padding: 0 2px; background: #c0c0c0; color: #000; border-bottom: 1px solid #808080;
+}
+html[data-appearance="win98"] .xp .xp-menubar-button {
+  height: calc(18px + var(--c98-font-step)); min-height: calc(18px + var(--c98-font-step)); padding: 0 6px; border: 0; background: transparent;
+  color: #000; box-shadow: none; font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px);
+}
+html[data-appearance="win98"] .xp .xp-menubar-button:hover { box-shadow: inset -1px -1px #808080, inset 1px 1px #fff; }
+html[data-appearance="win98"] .xp .xp-menubar-button[aria-expanded="true"] { box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+html[data-appearance="win98"] .os .os-tb-time {
+  font-family: var(--sans); font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); line-height: calc(var(--w26-ui-size, var(--retro-font-size, 12px)) + 4px);
+}
+@media (pointer: coarse), (max-width: 760px) {
+  html[data-appearance="win98"] .c98-dialog-title { height: calc(32px + var(--c98-font-step)); flex-basis: calc(32px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .c98-dialog-close { width: 36px; height: 28px; flex-basis: 36px; }
+  html[data-appearance="win98"] .c98-field input,
+  html[data-appearance="win98"] .c98-button,
+  html[data-appearance="win98"] .c98-result { min-height: 36px; height: 36px; }
+  html[data-appearance="win98"] .os .os-tb-center,
+  html[data-appearance="win98"] .os .os-tb-right { height: 42px; }
+  html[data-appearance="win98"] .os .os-tb-btn,
+  html[data-appearance="win98"] .os .os-theme-toggle,
+  html[data-appearance="win98"] .os .os-tb-clock { height: 42px; min-height: 42px; min-width: 42px; }
+  html[data-appearance="win98"] .os .os-tb-center { overflow-x: auto; overflow-y: hidden; }
+  html[data-appearance="win98"] .os .os-tb-start { flex: 0 0 auto; min-width: 65px; }
+  html[data-appearance="win98"] .os .os-tb-app { flex-basis: 110px; min-width: 36px; }
+  html[data-appearance="win98"] .os .os-classic-quicklaunch { display: none; }
+  html[data-appearance="win98"] .os .os-icon { width: 78px; min-height: 72px; }
+  html[data-appearance="win98"] .os .os-icons { display: grid; grid-auto-flow: column; grid-template-columns: none; grid-template-rows: repeat(auto-fill, 76px); padding: 0; position: absolute; }
+  html[data-appearance="win98"] .c98-item { height: calc(36px + var(--c98-font-step)); min-height: calc(36px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .c98-start { max-height: calc(100vh - var(--os-dock-h) - 8px); }
+  html[data-appearance="win98"] .c98-start > .c98-menu { overflow-y: auto; }
+  html[data-appearance="win98"] .xp .xp-cmd { height: calc(40px + var(--c98-font-step)); flex-basis: calc(40px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .xp .xp-addr { height: calc(36px + var(--c98-font-step)); flex-basis: calc(36px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .xp .xp-classic-menubar { height: calc(32px + var(--c98-font-step)); flex-basis: calc(32px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .xp .xp-menubar-button { height: calc(30px + var(--c98-font-step)); min-height: calc(30px + var(--c98-font-step)); padding: 0 8px; }
+  html[data-appearance="win98"] .xp .xp-cmd-btn,
+  html[data-appearance="win98"] .xp .xp-navbtn { min-height: 32px; height: 32px; min-width: 32px; }
+  html[data-appearance="win98"] .xp .xp-row { min-height: calc(36px + var(--c98-font-step)); height: calc(36px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .xp .xp-side-item { min-height: calc(36px + var(--c98-font-step)); height: calc(36px + var(--c98-font-step)); }
+  html[data-appearance="win98"] .xp .xp-dialog-bar,
+  html[data-appearance="win98"] .xp .xp-note-bar { height: 32px; flex-basis: 32px; }
+  html[data-appearance="win98"] .xp .xp-dialog-x { height: 28px; width: 36px; }
+  html[data-appearance="win98"] .primary,
+  html[data-appearance="win98"] .ghost,
+  html[data-appearance="win98"] .xp .xp-btn,
+  html[data-appearance="win98"] .st .st-btn,
+  html[data-appearance="win98"] .mm .mm-btn,
+  html[data-appearance="win98"] .tm .tm-btn,
+  html[data-appearance="win98"] .mv .mv-btn,
+  html[data-appearance="win98"] .mf .mf-btn,
+  html[data-appearance="win98"] .sc .sc-btn { height: 32px; min-height: 32px; }
+  html[data-appearance="win98"] .st .st-row { min-height: 48px; }
+  html[data-appearance="win98"] .st .st-switch { width: 23px; height: 23px; flex-basis: 23px; }
+  html[data-appearance="win98"] .st .st-switch.on::after { left: 8px; top: 8px; }
+}
+@media (max-width: 760px) {
+  html[data-appearance="win98"] .st .st-main { padding: 12px; }
+  html[data-appearance="win98"] .st .st-head { padding: 0 6px; }
+  html[data-appearance="win98"] .xp .xp-side { position: absolute; top: calc(108px + var(--c98-font-step) * 3); bottom: 0; width: 200px; flex-basis: auto; }
+  html[data-appearance="win98"] .xp .xp-scrim { top: calc(108px + var(--c98-font-step) * 3); }
+}
+@media (max-width: 520px) {
+  html[data-appearance="win98"] .os .os-icons {
+    left: 3px; right: 3px; display: grid; grid-auto-flow: row;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); grid-template-rows: none;
+    grid-auto-rows: 76px; align-content: start; align-items: start; justify-items: center;
+  }
+  html[data-appearance="win98"] .st .st-nav { width: 48px; flex-basis: 48px; padding-left: 2px; padding-right: 2px; }
+  html[data-appearance="win98"] .st .st-nav-item { height: calc(36px + var(--c98-font-step)); padding: 0; justify-content: center; }
+  html[data-appearance="win98"] .st .st-nav-ic { margin-right: 0; }
+  html[data-appearance="win98"] .st .st-head-title { margin-right: 8px; }
+  html[data-appearance="win98"] .st .st-search { width: 116px; }
+  html[data-appearance="win98"] .pane { padding: 14px 12px 36px; }
+}
+
+/* User typography grows text rows; the default 12px pixel geometry is unchanged. */
+.os-classic-start-label { display: none; }
+html[data-appearance="win98"] .os-classic-start-label { display: inline; font-weight: 700; white-space: nowrap; }
+html[data-appearance="win98"] .os .os-tb-center,
+html[data-appearance="win98"] .os .os-tb-right { height: calc(var(--os-dock-h) - 6px - var(--os-safe-b, 0px)); }
+html[data-appearance="win98"] .os .os-tb-btn,
+html[data-appearance="win98"] .os .os-theme-toggle,
+html[data-appearance="win98"] .os .os-tb-clock { height: calc(var(--os-dock-h) - 6px - var(--os-safe-b, 0px)); min-height: 22px; }
+html[data-appearance="win98"] .os .os-icons { grid-template-rows: repeat(auto-fill, calc(76px + var(--c98-font-step) * 3)); }
+html[data-appearance="win98"] .os .os-icon { width: calc(78px + var(--c98-font-step) * 2); max-width: 100%; min-height: calc(68px + var(--c98-font-step) * 3); align-self: start; }
+html[data-appearance="win98"] .os .os-icon-label { max-width: 100%; max-height: calc(32px + var(--c98-font-step) * 2); overflow: hidden; overflow-wrap: break-word; }
+html[data-appearance="win98"] .primary,
+html[data-appearance="win98"] .ghost,
+html[data-appearance="win98"] .xp .xp-btn,
+html[data-appearance="win98"] .st .st-btn,
+html[data-appearance="win98"] .mm .mm-btn,
+html[data-appearance="win98"] .mf .mf-btn,
+html[data-appearance="win98"] .sc .sc-btn,
+html[data-appearance="win98"] .mv .mv-btn,
+html[data-appearance="win98"] .ma .ma-btn,
+html[data-appearance="win98"] .c98-button { height: calc(23px + var(--c98-font-step)); min-height: calc(23px + var(--c98-font-step)); }
+html[data-appearance="win98"] .st .st-input,
+html[data-appearance="win98"] .st .st-search,
+html[data-appearance="win98"] .xp .xp-crumbs,
+html[data-appearance="win98"] .xp .xp-search,
+html[data-appearance="win98"] .field,
+html[data-appearance="win98"] .c98-field input { height: calc(22px + var(--c98-font-step)); min-height: calc(22px + var(--c98-font-step)); }
+html[data-appearance="win98"] .st .st-nav-item { height: auto; min-height: calc(28px + var(--c98-font-step)); padding-top: 5px; padding-bottom: 5px; }
+html[data-appearance="win98"] .st .st-nav-item > span:last-child { white-space: normal; line-height: 1.2; }
+html[data-appearance="win98"] .st .st-row-text b,
+html[data-appearance="win98"] .st .st-card-head b,
+html[data-appearance="win98"] .st .st-appearance-copy b,
+html[data-appearance="win98"] .st .st-appearance-copy > span { font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); }
+html[data-appearance="win98"] .st .st-page-head h1 { font-size: calc(16px + var(--c98-font-step)); }
+html[data-appearance="win98"] .st .st-head-title { flex-shrink: 0; }
+html[data-appearance="win98"] .c98-start { min-width: calc(202px + var(--c98-font-step) * 5); max-height: calc(100vh - var(--os-dock-h) - 8px); }
+html[data-appearance="win98"] .c98-start > .c98-menu { min-height: 0; overflow-y: auto; }
+html[data-appearance="win98"] .editor { font-family: var(--sans); font-size: calc(16px + var(--c98-font-step)); }
+@media (pointer: coarse), (max-width: 760px) {
+  html[data-appearance="win98"] .primary,
+  html[data-appearance="win98"] .ghost,
+  html[data-appearance="win98"] .xp .xp-btn,
+  html[data-appearance="win98"] .st .st-btn,
+  html[data-appearance="win98"] .c98-button { height: calc(32px + var(--c98-font-step)); min-height: calc(32px + var(--c98-font-step)); }
+}
+@media (max-width: 520px) {
+  html[data-appearance="win98"] .os .os-icons { grid-template-rows: none; grid-auto-rows: calc(76px + var(--c98-font-step) * 3); }
+}
+
+html[data-appearance="win98"] .os .os-tb-btn:active > *,
+html[data-appearance="win98"] .os .os-classic-quickbtn:active > * { transform: translate(1px, 1px); }
+
+@media (max-width: 520px) {
+  html[data-appearance="win98"] .st .st-nav-item { min-height: 36px; padding-top: 4px; padding-bottom: 4px; }
+}
+
+/* Property sheet and the desktop's power dialog share the classic frame. */
+html[data-appearance="win98"] .c98-dialog.c98-dialog-date { width: calc(410px + var(--c98-font-step) * 18); }
+html[data-appearance="win98"] .c98-dialog-date > .c98-dialog-body { padding: 4px 0 0; }
+html[data-appearance="win98"] .c98-power-choice { display: flex; align-items: center; gap: 7px; margin: 12px 0 12px 38px; }
+.c98-poweroff { position: fixed; inset: 0; z-index: 100000; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px; padding: 24px; background: #000; color: #e49a27; font: 700 20px/1.6 Arial, sans-serif; text-align: center; }
+.c98-poweroff button { padding: 6px 20px; border: 1px solid #e49a27; background: #000; color: inherit; font: 14px Arial, sans-serif; }

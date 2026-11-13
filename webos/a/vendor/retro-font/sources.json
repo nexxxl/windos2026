@@ -1,0 +1,189 @@
+{
+  "repository": "https://github.com/jdan/98.css",
+  "commit": "b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+  "retrieved_date": "2026-11-04",
+  "files": [
+    {
+      "file": "ms_sans_serif.woff2",
+      "upstream_path": "fonts/converted/ms_sans_serif.woff2",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/converted/ms_sans_serif.woff2",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/converted/ms_sans_serif.woff2?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 6508,
+      "sha256": "11b5a68acb6b967d1faa5a3f58432028e9c9cada37c8778d9dcc7415dca73a32",
+      "upstream_git_blob_sha": "83ea806020dcccda6b9f8c9c6c3c6b573f550df9"
+    },
+    {
+      "file": "ms_sans_serif_bold.woff2",
+      "upstream_path": "fonts/converted/ms_sans_serif_bold.woff2",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/converted/ms_sans_serif_bold.woff2",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/converted/ms_sans_serif_bold.woff2?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 6264,
+      "sha256": "5f3fbc5790b315fc158b749078e7fd1d74e1f9b463f6b7266c1908cb82a450ae",
+      "upstream_git_blob_sha": "610c0911782e150841b2857e5a79d62d8f12cfbf"
+    },
+    {
+      "file": "source/regular/license.txt",
+      "upstream_path": "fonts/src/ms-sans-serif/license.txt",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif/license.txt",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif/license.txt?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 223,
+      "sha256": "efa69ea6ddd11befc5f42965dbe7b9b10a9db3bf122d603489e9d8363d036f9b",
+      "upstream_git_blob_sha": "fa4925dc99bbc646ca00bf0264d78eb8a168bb85"
+    },
+    {
+      "file": "source/regular/readme.txt",
+      "upstream_path": "fonts/src/ms-sans-serif/readme.txt",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif/readme.txt",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif/readme.txt?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 1120,
+      "sha256": "6599ad698ff7f2d8d1c745cc8c6b0e04042a8b0e26416e9eccefd2eab6850a2c",
+      "upstream_git_blob_sha": "63472f406890b7358359305d9eccf2ca0423aa17"
+    },
+    {
+      "file": "source/regular/MS Sans Serif.ttf",
+      "upstream_path": "fonts/src/ms-sans-serif/MS Sans Serif.ttf",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif/MS%20Sans%20Serif.ttf",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif/MS%20Sans%20Serif.ttf?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 14280,
+      "sha256": "d4a95d0594b3eca2b87a6db0c867f49717ca6f0b2bcf003e77cc3294be8922da",
+      "upstream_git_blob_sha": "fa521b2390769e9922a66c14e79ae92b9fafca64"
+    },
+    {
+      "file": "source/bold/license.txt",
+      "upstream_path": "fonts/src/ms-sans-serif-bold/license.txt",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif-bold/license.txt",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif-bold/license.txt?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 228,
+      "sha256": "89af821e4dd03e78318c01f3d9682b620229ff6906cff4cb5722372e3fc28e0e",
+      "upstream_git_blob_sha": "9d25b93d3d2ca6bad404e203c6fe1c9dbae4e585"
+    },
+    {
+      "file": "source/bold/readme.txt",
+      "upstream_path": "fonts/src/ms-sans-serif-bold/readme.txt",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif-bold/readme.txt",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif-bold/readme.txt?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 1120,
+      "sha256": "c936ebb71ce44231bcb6434c6fcf8b90e6e22985825170b5b9b1cb3eead10e98",
+      "upstream_git_blob_sha": "624cb667718b48f8fa2bb269beadf188e79d6cf1"
+    },
+    {
+      "file": "source/bold/MS Sans Serif Bold.ttf",
+      "upstream_path": "fonts/src/ms-sans-serif-bold/MS Sans Serif Bold.ttf",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/fonts/src/ms-sans-serif-bold/MS%20Sans%20Serif%20Bold.ttf",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/fonts/src/ms-sans-serif-bold/MS%20Sans%20Serif%20Bold.ttf?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 12256,
+      "sha256": "ca0eec0f2b98f2863129f66828c391e8647c5f6e0daffb0e38af24f0a1b7a075",
+      "upstream_git_blob_sha": "b91b8faf8eca387935c1012f4309f1749e047aaa"
+    },
+    {
+      "file": "98.css-LICENSE.txt",
+      "upstream_path": "LICENSE",
+      "source_url": "https://github.com/jdan/98.css/blob/b1d7a907371bbe523d6f64e3af97f714fdbd6d6a/LICENSE",
+      "download_url": "https://api.github.com/repos/jdan/98.css/contents/LICENSE?ref=b1d7a907371bbe523d6f64e3af97f714fdbd6d6a",
+      "bytes": 1053,
+      "sha256": "8933005629892c51d896f7591b5e79c39a17617ce678231e4c3aa7d412d2682f",
+      "upstream_git_blob_sha": "55b4959739e044c3e1becff22da133418b24c010"
+    },
+    {
+      "file": "fusion-pixel-12px-proportional-zh_hans.otf.woff2",
+      "repository": "https://github.com/TakWolf/fusion-pixel-font",
+      "upstream_release": "2026.10.25",
+      "release_commit": "3266d59c25c3fa8f8b5e163b29736a706fd9ab6f",
+      "source_url": "https://fusion-pixel-font.takwolf.com/fusion-pixel-12px-proportional-zh_hans.otf.woff2",
+      "download_url": "https://fusion-pixel-font.takwolf.com/fusion-pixel-12px-proportional-zh_hans.otf.woff2",
+      "retrieved_date": "2026-11-04",
+      "internal_font_version": "2026.10.25",
+      "bytes": 691364,
+      "sha256": "a640f821a3e2532e658e985679b3babe81c70f602a92f8f4a2a91c7a5bc00354",
+      "provenance_note": "Downloaded from the official project demo site. Internal version and pinned release source/notice verified. Release archive byte comparison pending; no claim of archive byte identity yet."
+    },
+    {
+      "file": "fusion-pixel-LICENSE-OFL.txt",
+      "repository": "https://github.com/TakWolf/fusion-pixel-font",
+      "upstream_path": "LICENSE-OFL",
+      "source_url": "https://github.com/TakWolf/fusion-pixel-font/blob/3266d59c25c3fa8f8b5e163b29736a706fd9ab6f/LICENSE-OFL",
+      "download_url": "https://api.github.com/repos/TakWolf/fusion-pixel-font/contents/LICENSE-OFL?ref=3266d59c25c3fa8f8b5e163b29736a706fd9ab6f",
+      "bytes": 4418,
+      "sha256": "bc518cf64b8032c07690f33cc270c35c179255a6ac8efa7c165ebae7e8f76a63",
+      "upstream_git_blob_sha": "0427d1db87f97040016b5954b4892790878beeaa"
+    },
+    {
+      "file": "source-sans-3-variable.woff2",
+      "repository": "https://github.com/adobe-fonts/source-sans",
+      "commit": "87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "upstream_path": "WOFF2/VF/SourceSans3VF-Upright.otf.woff2",
+      "source_url": "https://github.com/adobe-fonts/source-sans/blob/87b37a2daaed80fcb8e8ccb0085c4d72ddade12e/WOFF2/VF/SourceSans3VF-Upright.otf.woff2",
+      "download_url": "https://api.github.com/repos/adobe-fonts/source-sans/contents/WOFF2/VF/SourceSans3VF-Upright.otf.woff2?ref=87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 164736,
+      "sha256": "f9e4eac0e8f8ffdae91cf6eff3962b96e81417cba5c728bc1c89efe9510e7653",
+      "upstream_git_blob_sha": "d1537d81b4b5488baf83c1741ddc26e4046c5e65",
+      "modified": false
+    },
+    {
+      "file": "source-sans-LICENSE.md",
+      "repository": "https://github.com/adobe-fonts/source-sans",
+      "commit": "87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "upstream_path": "LICENSE.md",
+      "source_url": "https://github.com/adobe-fonts/source-sans/blob/87b37a2daaed80fcb8e8ccb0085c4d72ddade12e/LICENSE.md",
+      "download_url": "https://api.github.com/repos/adobe-fonts/source-sans/contents/LICENSE.md?ref=87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 4486,
+      "sha256": "56af9b9c6715597e458284a474dc118a50a4150e9d547c70f7b4a33c3e6a9328",
+      "upstream_git_blob_sha": "22c601b82f29fc6bb801445098c9f23ffdca4f94",
+      "modified": false
+    },
+    {
+      "file": "source-sans-README.md",
+      "repository": "https://github.com/adobe-fonts/source-sans",
+      "commit": "87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "upstream_path": "README.md",
+      "source_url": "https://github.com/adobe-fonts/source-sans/blob/87b37a2daaed80fcb8e8ccb0085c4d72ddade12e/README.md",
+      "download_url": "https://api.github.com/repos/adobe-fonts/source-sans/contents/README.md?ref=87b37a2daaed80fcb8e8ccb0085c4d72ddade12e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 686,
+      "sha256": "7063447cc731d98fe64b3e8ddfa2768de820a73c214ea317dfc2a1db16a97361",
+      "upstream_git_blob_sha": "0a6ffb6b8e069e8fc237572fc6b75064ff6efa92",
+      "modified": false
+    },
+    {
+      "file": "libre-franklin-black.woff2",
+      "repository": "https://github.com/impallari/Libre-Franklin",
+      "commit": "5e76d2f48045806a2d6827622df023aec97cd59e",
+      "upstream_path": "fonts/webfonts/LibreFranklin-Black.woff2",
+      "source_url": "https://github.com/impallari/Libre-Franklin/blob/5e76d2f48045806a2d6827622df023aec97cd59e/fonts/webfonts/LibreFranklin-Black.woff2",
+      "download_url": "https://api.github.com/repos/impallari/Libre-Franklin/contents/fonts/webfonts/LibreFranklin-Black.woff2?ref=5e76d2f48045806a2d6827622df023aec97cd59e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 53516,
+      "sha256": "11aaedd18d38263082d7ddd61488418233f1eacdd675d538f3252c7491a1598d",
+      "upstream_git_blob_sha": "399b075148b5d97af5b91d0973ab75821deb97f7",
+      "modified": false
+    },
+    {
+      "file": "libre-franklin-OFL.txt",
+      "repository": "https://github.com/impallari/Libre-Franklin",
+      "commit": "5e76d2f48045806a2d6827622df023aec97cd59e",
+      "upstream_path": "OFL.txt",
+      "source_url": "https://github.com/impallari/Libre-Franklin/blob/5e76d2f48045806a2d6827622df023aec97cd59e/OFL.txt",
+      "download_url": "https://api.github.com/repos/impallari/Libre-Franklin/contents/OFL.txt?ref=5e76d2f48045806a2d6827622df023aec97cd59e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 4451,
+      "sha256": "ea80c9fcfc279cc306910cf5a21133320276ced31d3929e3c025519f3ed28b50",
+      "upstream_git_blob_sha": "9df4654e218a02ac083782e63bd2a65f074df023",
+      "modified": false
+    },
+    {
+      "file": "libre-franklin-README.md",
+      "repository": "https://github.com/impallari/Libre-Franklin",
+      "commit": "5e76d2f48045806a2d6827622df023aec97cd59e",
+      "upstream_path": "README.md",
+      "source_url": "https://github.com/impallari/Libre-Franklin/blob/5e76d2f48045806a2d6827622df023aec97cd59e/README.md",
+      "download_url": "https://api.github.com/repos/impallari/Libre-Franklin/contents/README.md?ref=5e76d2f48045806a2d6827622df023aec97cd59e",
+      "retrieved_date": "2026-11-05",
+      "bytes": 2144,
+      "sha256": "fc3921dc96919a3f644faf044f94c3d4b59fcaf0655f22c822edce39006b6d88",
+      "upstream_git_blob_sha": "2a68a4d1b8e2da1c0aa2acbf4c8d13ae98d23e30",
+      "modified": false
+    }
+  ]
+}

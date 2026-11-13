@@ -1,0 +1,138 @@
+/* NexlOS Minesweeper: original DOM/CSS artwork, no historical sprite assets.
+   Bevel/metric references: 98.css and wieslawsoltes/Win98 (MIT). */
+.ms {
+  --ms-cell: 16px;
+  position: relative; display: flex; flex-direction: column; height: 100%; min-height: 0;
+  background: var(--paper, #f0f0f0); color: #111; font-family: var(--sans); font-size: 12px;
+  --ms-raised: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #dfdfdf;
+  --ms-sunken: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #000;
+  user-select: none;
+}
+.ms button, .ms input { font: inherit; color: inherit; }
+.ms button { cursor: default; }
+.ms button:focus { outline: 1px dotted #000; outline-offset: -4px; }
+.ms [hidden] { display: none !important; }
+.ms-menubar {
+  display: flex; align-items: center; flex: 0 0 auto; min-height: 22px; padding: 1px 2px;
+  background: var(--paper-2, #dfdfdf); border-bottom: 1px solid var(--line, #aaa);
+}
+.ms-menu-button { min-height: 20px; padding: 2px 6px; border: 0; background: transparent; white-space: nowrap; }
+.ms-menu-button:hover { box-shadow: inset -1px -1px #808080, inset 1px 1px #fff; }
+.ms-menu-button[aria-expanded="true"] { box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+.ms-flag-mode {
+  display: flex; align-items: center; justify-content: center; gap: 3px; margin-left: auto;
+  min-height: 20px; padding: 2px 6px; border: 0; background: transparent; white-space: nowrap;
+}
+.ms-flag-mode .ms-cell-art { width: 16px; height: 16px; }
+.ms-flag-mode[aria-pressed="true"] { background: #c0c0c0; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; }
+.ms-stage { display: flex; align-items: flex-start; flex: 1 1 auto; min-height: 0; padding: 12px; overflow: auto; -webkit-overflow-scrolling: touch; }
+.ms-game { flex: 0 0 auto; width: max-content; margin: 0 auto; padding: 6px; background: #c0c0c0; box-shadow: var(--ms-raised); }
+.ms-scoreboard {
+  display: flex; align-items: center; justify-content: space-between; gap: 12px;
+  min-width: 138px; padding: 5px; margin-bottom: 6px; border: 2px solid transparent;
+  background: #c0c0c0; box-shadow: var(--ms-sunken);
+}
+.ms-led { display: flex; flex: 0 0 auto; padding: 1px; background: #000; box-shadow: 1px 1px #fff, -1px -1px #808080; }
+.ms-digit { display: block; position: relative; width: 13px; height: 23px; background: #000; }
+.ms-segment { display: block; position: absolute; background: #360000; }
+.ms-segment.lit { background: #ff0000; }
+.ms-segment.s-a { left: 3px; top: 1px; width: 7px; height: 2px; }
+.ms-segment.s-b { left: 10px; top: 3px; width: 2px; height: 7px; }
+.ms-segment.s-c { left: 10px; top: 13px; width: 2px; height: 7px; }
+.ms-segment.s-d { left: 3px; top: 21px; width: 7px; height: 2px; }
+.ms-segment.s-e { left: 1px; top: 13px; width: 2px; height: 7px; }
+.ms-segment.s-f { left: 1px; top: 3px; width: 2px; height: 7px; }
+.ms-segment.s-g { left: 3px; top: 11px; width: 7px; height: 2px; }
+.ms-face {
+  display: flex; align-items: center; justify-content: center; flex: 0 0 26px;
+  width: 26px; height: 26px; padding: 0; border: 0; border-radius: 0;
+  background: #c0c0c0; box-shadow: var(--ms-raised);
+}
+.ms-face:active { box-shadow: var(--ms-sunken); padding: 1px 0 0 1px; }
+.ms-face-art { display: block; width: 20px; height: 20px; }
+.ms-grid {
+  display: flex; flex-direction: column; width: max-content; padding: 0; border: 3px solid transparent;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #dfdfdf, inset 2px 2px #808080, inset -3px -3px #dfdfdf, inset 3px 3px #808080;
+  background: #c0c0c0;
+}
+.ms-row { display: flex; flex: 0 0 auto; margin: 0; padding: 0; }
+.ms .ms-cell {
+  display: flex; align-items: center; justify-content: center; position: relative;
+  flex: 0 0 var(--ms-cell); width: var(--ms-cell); min-width: var(--ms-cell); height: var(--ms-cell);
+  min-height: 0; margin: 0; padding: 0; border: 0; border-radius: 0;
+  color: #000; background: #c0c0c0; box-shadow: inset -1px -1px #808080, inset 1px 1px #fff, inset -2px -2px #c0c0c0, inset 2px 2px #dfdfdf;
+  font-family: "NexlOS MS Sans Serif", Tahoma, sans-serif; font-size: 11px; font-weight: 700; line-height: 14px;
+  -webkit-font-smoothing: none; touch-action: manipulation; -webkit-touch-callout: none;
+}
+.ms .ms-cell:active:not(.open) { box-shadow: inset -1px -1px #808080, inset 1px 1px #808080; }
+.ms .ms-cell.open { box-shadow: inset -1px -1px #808080; }
+.ms .ms-cell.exploded { background: #f00; box-shadow: inset -1px -1px #808080; }
+.ms .ms-cell:focus { outline-offset: -3px; }
+.ms-cell-art { display: block; width: 16px; height: 16px; pointer-events: none; image-rendering: pixelated; shape-rendering: crispEdges; }
+.ms-number { pointer-events: none; }
+.ms .ms-cell.number-1 { color: #0000ff; }
+.ms .ms-cell.number-2 { color: #008000; }
+.ms .ms-cell.number-3 { color: #ff0000; }
+.ms .ms-cell.number-4 { color: #000080; }
+.ms .ms-cell.number-5 { color: #800000; }
+.ms .ms-cell.number-6 { color: #008080; }
+.ms .ms-cell.number-7 { color: #000; }
+.ms .ms-cell.number-8 { color: #808080; }
+.ms-status {
+  display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; gap: 8px;
+  min-height: 20px; padding: 2px 5px; background: var(--paper-2, #dfdfdf);
+  border-top: 1px solid var(--line, #aaa); line-height: 1.4;
+}
+.ms-status-message { min-width: 0; }
+.ms-progress { flex: 0 0 auto; color: #555; white-space: nowrap; }
+.ms-dropdown {
+  display: flex; flex-direction: column; position: absolute; z-index: 25; min-width: 190px; max-width: 100%;
+  padding: 3px; background: #c0c0c0; color: #000; box-shadow: var(--ms-raised);
+}
+.ms-dropdown-item {
+  display: flex; align-items: center; width: 100%; gap: 6px; min-height: 24px; padding: 3px 8px 3px 2px;
+  border: 0; border-radius: 0; color: #000; background: #c0c0c0; text-align: left; white-space: nowrap;
+}
+.ms-dropdown-item:hover, .ms-dropdown-item:focus { outline: 0; color: #fff; background: #000080; }
+.ms-dropdown-item small { margin-left: auto; font: inherit; font-size: .85em; }
+.ms-menu-check { display: inline-block; width: 14px; flex: 0 0 14px; text-align: center; }
+.ms-menu-separator { height: 2px; margin: 3px 2px; border-top: 1px solid #808080; border-bottom: 1px solid #fff; }
+.ms-dialog-layer { display: flex; position: absolute; top: 0; right: 0; bottom: 0; left: 0; align-items: center; justify-content: center; z-index: 30; background: rgba(0, 0, 0, .12); padding: 6px; }
+.ms-dialog { width: 350px; max-width: 100%; max-height: 100%; display: flex; flex-direction: column; padding: 3px; border: 0; background: #c0c0c0; color: #000; box-shadow: var(--ms-raised); }
+.ms-dialog-title { display: flex; flex: 0 0 auto; align-items: center; justify-content: space-between; min-height: 20px; gap: 6px; padding: 2px 3px; background: linear-gradient(90deg, #000080, #1084d0); color: #fff; }
+.ms-dialog-close { width: 18px; height: 16px; flex: 0 0 18px; padding: 0; border: 0; background: #c0c0c0; color: #000; box-shadow: var(--ms-raised); font-size: 13px; line-height: 13px; }
+.ms-dialog-body { padding: 10px; overflow: auto; min-height: 0; line-height: 1.5; }
+.ms-dialog-body p { margin: 0 0 10px; }
+.ms-dialog-body p:last-child { margin-bottom: 0; }
+.ms-dialog-actions { display: flex; flex: 0 0 auto; flex-wrap: wrap; justify-content: flex-end; gap: 6px; padding: 0 10px 10px; }
+.ms .ms-button { min-width: 75px; min-height: 23px; padding: 4px 10px; border: 0; border-radius: 0; background: #c0c0c0; color: #000; box-shadow: var(--ms-raised); }
+.ms .ms-button.default { box-shadow: inset -1px -1px #000, inset 1px 1px #000, inset -2px -2px #808080, inset 2px 2px #fff, inset -3px -3px #c0c0c0, inset 3px 3px #dfdfdf; }
+.ms .ms-button:active { box-shadow: var(--ms-sunken); padding: 5px 9px 3px 11px; }
+.ms-custom-field { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 7px 0; }
+.ms-custom-field input { width: 94px; min-width: 0; min-height: 23px; padding: 4px 5px; border: 0; border-radius: 0; background: #fff; color: #000; box-shadow: var(--ms-sunken); }
+.ms-dialog-error { color: #a00000; }
+html[data-appearance="win98"] .ms {
+  background: #c0c0c0; font-family: var(--retro-font-family, var(--sans));
+  font-size: var(--w26-ui-size, var(--retro-font-size, 12px)); -webkit-font-smoothing: var(--retro-font-smoothing, none);
+}
+html[data-appearance="win98"] .ms-menubar,
+html[data-appearance="win98"] .ms-status { background: #c0c0c0; border-color: #808080; }
+html[data-appearance="win98"] .ms-status { box-shadow: inset -1px -1px #fff, inset 1px 1px #808080; border: 0; margin: 2px; }
+html[data-appearance="win98"] .ms-dialog-layer { background: transparent; }
+@media (pointer: coarse) {
+  .ms { --ms-cell: 24px; }
+  .ms .ms-menu-button, .ms .ms-flag-mode, .ms .ms-dropdown-item { min-height: 36px; }
+  .ms .ms-face { width: 36px; height: 36px; flex-basis: 36px; }
+  .ms .ms-button, .ms .ms-custom-field input { min-height: 36px; }
+  .ms .ms-dialog-close { width: 34px; height: 30px; flex-basis: 34px; }
+  .ms .ms-cell-art { width: 16px; height: 16px; }
+  .ms-stage { padding: 8px; }
+}
+@media (max-width: 360px) {
+  .ms .ms-flag-mode > span { display: none; }
+  .ms-progress { display: none; }
+  .ms-menu-button { padding-left: 5px; padding-right: 5px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ms *, .ms *::before, .ms *::after { animation: none !important; transition: none !important; }
+}

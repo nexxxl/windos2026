@@ -1,0 +1,13 @@
+{
+  "schema": "nexlos.edition/1",
+  "edition": "plugin",
+  "displayName": "nexlos插件版",
+  "layout": "standalone",
+  "requiresSiblingProject": false,
+  "supplementalSource": [
+    "applications/reader",
+    "tools/companion-factory",
+    "tools/ebook-supplychain"
+  ],
+  "preparedDate": "2026-11-12"
+}

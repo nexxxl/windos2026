@@ -1,0 +1,26 @@
+{
+  "name": "NexlOS",
+  "short_name": "NexlOS",
+  "description": "一个可以装进单个二进制的写作操作系统：桌面、窗口、媒体、扫码与创作空间。",
+  "lang": "zh-CN",
+  "dir": "ltr",
+  "start_url": "/#/desktop",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "any",
+  "background_color": "#f5efe4",
+  "theme_color": "#f5efe4",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    { "src": "/a/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/a/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/a/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ],
+  "shortcuts": [
+    { "name": "书房", "short_name": "书房", "url": "/#/shelf" },
+    { "name": "视频", "short_name": "视频", "url": "/#/video" },
+    { "name": "音乐", "short_name": "音乐", "url": "/#/music" },
+    { "name": "扫一扫", "short_name": "扫一扫", "url": "/#/scan" }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "manifest_version": 3,
+  "name": "NexlOS Host Browser Bridge",
+  "version": "0.1.0",
+  "description": "Renders NexlOS browser tabs with the real Chrome engine and streams them to the DSH workbench via WebRTC.",
+  "permissions": ["tabs", "tabCapture", "offscreen", "debugger", "storage"],
+  "host_permissions": ["http://127.0.0.1:3080/*", "http://localhost:3080/*", "https://*/*", "http://*/*"],
+  "background": { "service_worker": "background.js" },
+  "action": { "default_popup": "popup.html" }
+}

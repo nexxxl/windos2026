@@ -1,0 +1,60 @@
+/* 内置开源可商用字体（SIL Open Font License 1.1，全文见 fonts/OFL.txt）。
+   只声明 @font-face，浏览器按需下载，没被选中的字体不会占用带宽。 */
+
+/* ---------- 中文 ---------- */
+@font-face { font-family: "Noto Sans SC"; src: url("fonts/NotoSansSC-500.woff") format("woff"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("fonts/NotoSansSC-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("fonts/NotoSansSC-800.woff") format("woff"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Sans SC"; src: url("fonts/NotoSansSC-900.woff") format("woff"); font-weight: 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("fonts/NotoSerifSC-400.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Noto Serif SC"; src: url("fonts/NotoSerifSC-700.woff2") format("woff2"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "LXGW WenKai"; src: url("fonts/LXGWWenKai-500.woff") format("woff"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "LXGW Neo ZhiSong"; src: url("fonts/LXGWNeoZhiSong-gb.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Smiley Sans Oblique"; src: url("fonts/SmileySans-Oblique.woff2") format("woff2"); font-weight: 400; font-style: normal; font-display: swap; }
+
+/* ---------- 西文无衬线 ---------- */
+@font-face { font-family: "Inter"; src: url("fonts/Inter-var.woff") format("woff"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Roboto Condensed"; src: url("fonts/RobotoCondensed-var.woff") format("woff"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-600.woff") format("woff"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Poppins"; src: url("fonts/Poppins-800.woff") format("woff"); font-weight: 800; font-style: normal; font-display: swap; }
+@font-face { font-family: "Josefin Sans"; src: url("fonts/JosefinSans-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Exo 2"; src: url("fonts/Exo2-800i.woff") format("woff"); font-weight: 800; font-style: italic; font-display: swap; }
+@font-face { font-family: "Archivo Black"; src: url("fonts/ArchivoBlack-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Anton"; src: url("fonts/Anton-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Alfa Slab One"; src: url("fonts/AlfaSlabOne-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Lilita One"; src: url("fonts/LilitaOne-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Righteous"; src: url("fonts/Righteous-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+
+/* ---------- 西文衬线 ---------- */
+@font-face { font-family: "EB Garamond"; src: url("fonts/EBGaramond-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "EB Garamond"; src: url("fonts/EBGaramond-400i.woff") format("woff"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "EB Garamond"; src: url("fonts/EBGaramond-600.woff") format("woff"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Libre Baskerville"; src: url("fonts/LibreBaskerville-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Libre Baskerville"; src: url("fonts/LibreBaskerville-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/CormorantGaramond-500.woff") format("woff"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/CormorantGaramond-500i.woff") format("woff"); font-weight: 500; font-style: italic; font-display: swap; }
+@font-face { font-family: "Cormorant Garamond"; src: url("fonts/CormorantGaramond-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("fonts/PlayfairDisplay-400i.woff") format("woff"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("fonts/PlayfairDisplay-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Playfair Display"; src: url("fonts/PlayfairDisplay-700i.woff") format("woff"); font-weight: 700; font-style: italic; font-display: swap; }
+@font-face { font-family: "Cinzel"; src: url("fonts/Cinzel-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Cinzel"; src: url("fonts/Cinzel-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Marcellus"; src: url("fonts/Marcellus-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IM FELL English"; src: url("fonts/IMFellEnglish-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "IM FELL English"; src: url("fonts/IMFellEnglish-400i.woff") format("woff"); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("fonts/cmunrm.woff") format("woff"); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: "CMU Serif"; src: url("fonts/cmunti.woff") format("woff"); font-weight: 500; font-style: italic; font-display: swap; }
+
+/* ---------- 手写与装饰 ---------- */
+@font-face { font-family: "Caveat"; src: url("fonts/Caveat-600.woff") format("woff"); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: "Kalam"; src: url("fonts/Kalam-700.woff") format("woff"); font-weight: 700; font-style: normal; font-display: swap; }
+@font-face { font-family: "Gochi Hand"; src: url("fonts/GochiHand-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Bangers"; src: url("fonts/Bangers-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Rye"; src: url("fonts/Rye-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "UnifrakturMaguntia"; src: url("fonts/UnifrakturMaguntia-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: "Press Start 2P"; src: url("fonts/PressStart2P-400.woff") format("woff"); font-weight: 400; font-style: normal; font-display: swap; }
+
+/* ---------- 等宽 ---------- */
+@font-face { font-family: "JetBrains Mono"; src: url("fonts/JetBrainsMono-var.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }
+@font-face { font-family: "Source Code Pro"; src: url("fonts/SourceCodePro-var.woff2") format("woff2"); font-weight: 100 900; font-style: normal; font-display: swap; }

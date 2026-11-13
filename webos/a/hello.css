@@ -1,0 +1,151 @@
+/* 首次进入系统的 hello 引导：黑底、大字招呼语、原生语言名。
+   它是系统仪式而不是主题的一部分，两套主题共用同一屏。 */
+
+.hello {
+  position: fixed;
+  inset: 0;
+  z-index: 10000;
+  display: grid;
+  place-items: center;
+  align-items: safe center;
+  padding: max(24px, env(safe-area-inset-top)) 24px max(24px, env(safe-area-inset-bottom));
+  overflow: auto;
+  background:
+    radial-gradient(120% 90% at 50% 24%, #202024 0%, #101012 48%, #000 100%);
+  color: #f5f5f7;
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Segoe UI", "Helvetica Neue", system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  opacity: 1;
+  transition: opacity .65s ease;
+}
+
+.hello.done { opacity: 0; pointer-events: none; }
+
+.hello-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(26px, 4.5vh, 52px);
+  /* 880px 让 8 个语言胶囊在桌面宽屏排成一行，避免最后一个单独换行。 */
+  width: min(880px, 100%);
+  text-align: center;
+}
+
+.hello-word {
+  max-width: 100%;
+  font-size: clamp(72px, 15vw, 190px);
+  font-weight: 300;
+  line-height: .95;
+  letter-spacing: -.045em;
+  word-break: keep-all;
+  background: linear-gradient(180deg, #ffffff 12%, #c7c7cd 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  transition: opacity .22s ease, transform .22s ease;
+}
+
+.hello-word.swap { opacity: 0; transform: translateY(10px) scale(.985); }
+
+.hello-choices {
+  width: 100%;
+  opacity: 0;
+  transform: translateY(14px);
+  pointer-events: none;
+  transition: opacity .7s ease, transform .7s ease;
+}
+
+.hello.choose .hello-choices { opacity: 1; transform: none; pointer-events: auto; }
+
+.hello-choose {
+  margin: 0 0 18px;
+  font-size: 15px;
+  letter-spacing: .01em;
+  color: #a1a1a6;
+}
+
+.hello-langs {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.hello-lang {
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 999px;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, .04);
+  color: #f5f5f7;
+  font: inherit;
+  font-size: 15px;
+  line-height: 1.2;
+  cursor: pointer;
+  transition: background .18s ease, color .18s ease, border-color .18s ease, transform .18s ease;
+}
+
+.hello-lang:hover { border-color: rgba(255, 255, 255, .52); transform: translateY(-1px); }
+
+.hello-lang[aria-pressed="true"] {
+  background: #f5f5f7;
+  border-color: #f5f5f7;
+  color: #111;
+}
+
+.hello-go {
+  appearance: none;
+  margin-top: 28px;
+  border: 0;
+  border-radius: 999px;
+  padding: 13px 38px;
+  background: #f5f5f7;
+  color: #111;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .18s ease, opacity .18s ease;
+}
+
+.hello-go:hover { transform: translateY(-1px); }
+.hello-go:disabled { opacity: .55; cursor: default; transform: none; }
+
+.hello-hint {
+  margin: 14px 0 0;
+  font-size: 13px;
+  color: #86868b;
+}
+
+.hello-mark {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  margin: 0;
+  text-align: center;
+  font-size: 11px;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: #6e6e73;
+}
+
+.hello-lang:focus-visible,
+.hello-go:focus-visible {
+  outline: 2px solid #0a84ff;
+  outline-offset: 3px;
+}
+
+@media (max-width: 560px) {
+  /* 窄屏缩短招呼语字号：日文、韩文五个字也不会顶出左右留白。 */
+  .hello-word { font-size: clamp(52px, 15vw, 96px); }
+  .hello-langs { gap: 8px; }
+  .hello-lang { padding: 9px 15px; font-size: 14px; }
+  .hello-choose { margin-bottom: 14px; }
+  .hello-go { margin-top: 22px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hello, .hello-word, .hello-choices, .hello-lang, .hello-go { transition: none; }
+  .hello-word.swap { opacity: 1; transform: none; }
+}

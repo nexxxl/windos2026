@@ -1,0 +1,83 @@
+name: plugin-ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: plugin-ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  source-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python3 scripts/check-source.py
+
+  plugin:
+    name: Standalone plugin (Node 22)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: npm pack --dry-run
+
+  python-tools:
+    name: Optional companion Python source
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install ruff
+      - name: Ruff syntax and undefined names
+        run: |
+          if [ -d tools ]; then
+            ruff check tools scripts
+          else
+            ruff check scripts
+          fi
+
+  format:
+    name: Formatting (advisory)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npx --yes prettier@3 --check "*.{js,css,json,md}" "webos/**/*.{js,css,json,md}" "docs/**/*.md"
+
+  public-scope:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Check public candidate when companion sources are absent
+        run: |
+          if [ -d tools ] || [ -d applications ]; then
+            echo "Full local source includes companion tools; use the public staging script before publishing."
+            exit 0
+          fi
+          bash scripts/stage-public-repo.sh --check .

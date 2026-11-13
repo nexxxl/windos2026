@@ -1,0 +1,570 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>便捷办公</title>
+<link rel="stylesheet" href="fonts.css">
+<link rel="stylesheet" href="app.css">
+<link rel="stylesheet" href="nexlos-office.css">
+</head>
+<body>
+<svg class="icon-sprite" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" aria-hidden="true">
+  <symbol id="i-eraser" viewBox="0 0 24 24"><path d="M7 21h10M5 14l9-9a2.8 2.8 0 0 1 4 4l-9 9H5v-4z"/><path d="M10 9l5 5"/></symbol>
+  <symbol id="i-brush" viewBox="0 0 24 24"><path d="M18.4 2.6 14 7l-1.6-1.6a2 2 0 0 0-2.8 0L8 7l9 9 1.6-1.6a2 2 0 0 0 0-2.8L17 10l4.4-4.4a2.1 2.1 0 1 0-3-3z"/><path d="M9 8c-2 3-4 3.5-7 4l8 10c2-1 6-5 6-7"/><path d="m14.5 17.5-10-2.5"/></symbol>
+  <symbol id="i-highlight" viewBox="0 0 24 24"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 12-4.6 4.6a2 2 0 0 1-2.8 0l-5.2-5.2a2 2 0 0 1 0-2.8L14 4"/><path d="m9 11 4 4"/></symbol>
+  <symbol id="i-bold" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="15" font-weight="800">B</text></symbol>
+  <symbol id="i-italic" viewBox="0 0 24 24"><text x="12" y="17" text-anchor="middle" font-size="15" font-style="italic" font-weight="700">I</text></symbol>
+  <symbol id="i-underline" viewBox="0 0 24 24"><text x="12" y="16" text-anchor="middle" font-size="14" font-weight="600" text-decoration="underline">U</text></symbol>
+  <symbol id="i-strike" viewBox="0 0 24 24"><text x="12" y="16" text-anchor="middle" font-size="14" font-weight="600" text-decoration="line-through">S</text></symbol>
+  <symbol id="i-align-left" viewBox="0 0 24 24"><path d="M4 6h16M4 10h10M4 14h16M4 18h8"/></symbol>
+  <symbol id="i-align-center" viewBox="0 0 24 24"><path d="M4 6h16M7 10h10M4 14h16M8 18h8"/></symbol>
+  <symbol id="i-align-right" viewBox="0 0 24 24"><path d="M4 6h16M10 10h10M4 14h16M12 18h8"/></symbol>
+  <symbol id="i-align-justify" viewBox="0 0 24 24"><path d="M4 6h16M4 10h16M4 14h16M4 18h16"/></symbol>
+  <symbol id="i-bullets" viewBox="0 0 24 24"><circle class="dot" cx="4.5" cy="6" r="1.2"/><circle class="dot" cx="4.5" cy="12" r="1.2"/><circle class="dot" cx="4.5" cy="18" r="1.2"/><path d="M8 6h12M8 12h12M8 18h12"/></symbol>
+  <symbol id="i-numbering" viewBox="0 0 24 24"><path d="M9 6h11M9 12h11M9 18h11"/><text x="2" y="8.5" font-size="7">1</text><text x="2" y="14.5" font-size="7">2</text><text x="2" y="20.5" font-size="7">3</text></symbol>
+  <symbol id="i-indent-dec" viewBox="0 0 24 24"><path d="M11 6h9M11 12h9M11 18h9"/><path d="M7 9 3 12l4 3"/><path d="M3 9v6"/></symbol>
+  <symbol id="i-indent-inc" viewBox="0 0 24 24"><path d="M11 6h9M11 12h9M11 18h9"/><path d="m7 9 4 3-4 3"/><path d="M11 9v6"/></symbol>
+  <symbol id="i-table" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M3 10h18M3 15h18M9 5v14M15 5v14"/></symbol>
+  <symbol id="i-link" viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.5.5l3-3a5 5 0 0 0-7-7l-1.7 1.7"/><path d="M14 11a5 5 0 0 0-7.5-.5l-3 3a5 5 0 0 0 7 7l1.7-1.7"/></symbol>
+  <symbol id="i-pagebreak" viewBox="0 0 24 24"><path d="M6 3h12v18H6z" opacity=".55"/><path d="M2.5 12h19" stroke-dasharray="3 3"/></symbol>
+  <symbol id="i-rule" viewBox="0 0 24 24"><path d="M4 12h16"/><path d="M7 8h10M7 16h10" opacity=".35"/></symbol>
+  <symbol id="i-art" viewBox="0 0 24 24"><text x="8" y="19" font-size="15" font-weight="700">A</text><path d="m18 3 1.2 2.8L22 7l-2.8 1.2L18 11l-1.2-2.8L14 7l2.8-1.2z" fill="currentColor" stroke="none"/></symbol>
+  <symbol id="i-headerfooter" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M4 8h16M4 16h16"/><path d="M4 3h16v5H4zM4 16h16v5H4z" fill="currentColor" stroke="none" opacity=".16"/></symbol>
+  <symbol id="i-pagenum" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><text x="12" y="16" text-anchor="middle" font-size="10">#</text></symbol>
+  <symbol id="i-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+  <symbol id="i-grow" viewBox="0 0 24 24"><text x="8" y="19" font-size="13" font-weight="700">A</text><path d="M18 20V8M14.5 11.5 18 8l3.5 3.5"/></symbol>
+  <symbol id="i-shrink" viewBox="0 0 24 24"><text x="8" y="19" font-size="13" font-weight="700">A</text><path d="M18 8v12M14.5 16.5 18 20l3.5-3.5"/></symbol>
+  <symbol id="i-merge" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M9 5v4M9 15v4M15 5v4M15 15v4M9 12h6"/></symbol>
+  <symbol id="i-borders" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="1"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></symbol>
+  <symbol id="i-fill" viewBox="0 0 24 24"><path d="M4 13 11 6l7 7-7 7z"/><path d="M11 6 8.5 3.5"/><path d="M19 14c1.5 2 2 3 2 4a2 2 0 0 1-4 0c0-1 .5-2 2-4z"/></symbol>
+  <symbol id="i-freeze" viewBox="0 0 24 24"><path d="M12 3v18M4.2 7.5l15.6 9M19.8 7.5l-15.6 9M9.5 4.5 12 6l2.5-1.5M9.5 19.5 12 18l2.5 1.5"/></symbol>
+  <symbol id="i-row-add" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="11" rx="1"/><path d="M9 4v11M15 4v11M12 16v5M9.5 18.5h5"/></symbol>
+  <symbol id="i-row-del" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="11" rx="1"/><path d="M9 4v11M15 4v11M9.5 18.5h5"/></symbol>
+  <symbol id="i-col-add" viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="18" rx="1"/><path d="M3 9h12M3 15h12M19 12h4M21 10v4"/></symbol>
+  <symbol id="i-col-del" viewBox="0 0 24 24"><rect x="3" y="3" width="12" height="18" rx="1"/><path d="M3 9h12M3 15h12M19 12h4"/></symbol>
+  <symbol id="i-sigma" viewBox="0 0 24 24"><text x="3" y="19" font-size="17" font-weight="600">Σ</text></symbol>
+  <symbol id="i-sort-asc" viewBox="0 0 24 24"><path d="M4 6h6M4 11h5M4 16h4"/><path d="M18 5v14M14 15l4 4 4-4"/></symbol>
+  <symbol id="i-sort-desc" viewBox="0 0 24 24"><path d="M4 6h4M4 11h5M4 16h6"/><path d="M18 19V5M14 9l4-4 4 4"/></symbol>
+  <symbol id="i-percent" viewBox="0 0 24 24"><path d="M19 5 5 19"/><circle cx="7" cy="7" r="2.4"/><circle cx="17" cy="17" r="2.4"/></symbol>
+  <symbol id="i-currency" viewBox="0 0 24 24"><path d="M7 4l5 8 5-8"/><path d="M12 12v8M8 14h8M8 17h8"/></symbol>
+  <symbol id="i-decimal" viewBox="0 0 24 24"><circle class="dot" cx="4" cy="18" r="1.3"/><text x="6" y="19" font-size="11" font-weight="700">00</text></symbol>
+  <symbol id="i-textbox" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="1"/><path d="M8 9h8M12 9v7"/></symbol>
+  <symbol id="i-trash" viewBox="0 0 24 24"><path d="M4 7h16M9 7V4h6v3M6 7l1 14h10l1-14"/><path d="M10 11v6M14 11v6"/></symbol>
+  <symbol id="i-copy" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="1"/><path d="M16 8V4H4v12h4"/></symbol>
+  <symbol id="i-layer-up" viewBox="0 0 24 24"><path d="m12 3 9 5-9 5-9-5z"/><path d="M12 13v8M8.5 17.5 12 21l3.5-3.5"/></symbol>
+  <symbol id="i-layer-down" viewBox="0 0 24 24"><path d="m12 21 9-5-9-5-9 5z"/><path d="M12 11V3M8.5 6.5 12 3l3.5 3.5"/></symbol>
+  <symbol id="i-chevron-left" viewBox="0 0 24 24"><path d="M15 5 8 12l7 7"/></symbol>
+  <symbol id="i-chevron-right" viewBox="0 0 24 24"><path d="m9 5 7 7-7 7"/></symbol>
+  <symbol id="i-slide-add" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="1"/><path d="M12 7v7M8.5 10.5h7M8 20h8"/></symbol>
+  <symbol id="i-slide-del" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="1"/><path d="M8.5 10.5h7M8 20h8"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12z"/><circle cx="12" cy="12" r="2.5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24"><path d="M20 12a8 8 0 1 1-2.3-5.7"/><path d="M20 4v5h-5"/></symbol>
+  <symbol id="i-external" viewBox="0 0 24 24"><path d="M14 4h6v6M20 4l-9 9"/><path d="M19 14v5H5V5h5"/></symbol>
+  <symbol id="i-sidebar" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="16" rx="1"/><path d="M9 4v16"/></symbol>
+  <symbol id="i-zoom-in" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5M10.5 8v5"/></symbol>
+  <symbol id="i-zoom-out" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5M8 10.5h5"/></symbol>
+  <symbol id="i-fit-width" viewBox="0 0 24 24"><path d="M3 12h18M3 12l4-4M3 12l4 4M21 12l-4-4M21 12l-4 4"/><path d="M6 5v14M18 5v14" opacity=".45"/></symbol>
+  <symbol id="i-fit-page" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 8h6M9 12h6M9 16h4"/></symbol>
+  <symbol id="i-print" viewBox="0 0 24 24"><path d="M6 9V3h12v6"/><rect x="3" y="9" width="18" height="8" rx="1"/><path d="M6 14h12v7H6z"/><path d="M17 12h.01"/></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M12 3v12M7.5 10.5 12 15l4.5-4.5"/><path d="M4 18v3h16v-3"/></symbol>
+  <symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5h.01"/></symbol>
+  <symbol id="i-thumbs" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="9" rx="1"/><rect x="3" y="15" width="7" height="6" rx="1"/><rect x="14" y="15" width="7" height="6" rx="1"/></symbol>
+  <symbol id="i-rotate" viewBox="0 0 24 24"><path d="M20 11a8 8 0 1 0-2.5 5.8"/><path d="M20 4v7h-7"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></symbol>
+</svg>
+
+<div class="app" id="app">
+
+  <nav class="menubar" id="menubar" aria-label="菜单栏">
+    <button class="icon-btn only-mobile" id="btnSidebar" title="文件列表" aria-label="文件列表">☰</button>
+    <div class="menubar-menus" id="menubarMenus"></div>
+    <span class="menubar-spacer"></span>
+    <span class="menubar-hint" id="menuHint"></span>
+  </nav>
+
+  <!-- 兼容层：菜单栏接管顶栏后，旧逻辑仍然通过这几个隐藏节点保持单一入口。 -->
+  <div hidden>
+    <input id="titleInput" value="">
+    <button id="btnHome"></button>
+    <button id="btnExport"></button>
+    <button id="btnDelete"></button>
+    <div id="exportMenu"></div>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="side-head">
+      <span>工作区</span>
+      <button class="icon-btn" id="btnHome" title="回首页">⌂</button>
+    </div>
+    <div class="new-row" id="newRow">
+      <button class="btn btn-new" data-new="doc">Word</button>
+      <button class="btn btn-new" data-new="sheet">Excel</button>
+      <button class="btn btn-new" data-new="slide">PPT</button>
+      <button class="btn btn-new" data-new="markdown">MD</button>
+      <button class="btn btn-new" data-new="html">HTML</button>
+      <button class="btn btn-new" data-new="pdf">PDF</button>
+    </div>
+    <label class="import-btn">
+      导入文件
+      <input type="file" id="fileInput" accept=".docx,.xlsx,.pptx,.md,.markdown,.csv,.html,.htm,.pdf" hidden>
+    </label>
+    <input type="file" id="pdfInput" accept=".pdf,application/pdf" hidden>
+    <div class="file-list" id="fileList"></div>
+    <div class="side-foot"><span id="versionText">v0.1.0</span></div>
+  </aside>
+
+  <main class="stage" id="stage">
+
+    <section class="view home" id="viewHome">
+      <div class="home-hero">
+        <div class="home-actions" id="homeActions">
+          <button class="btn btn-primary" data-new="doc">新建 Word</button>
+          <button class="btn" data-new="sheet">新建 Excel</button>
+          <button class="btn" data-new="slide">新建 PPT</button>
+          <button class="btn" data-new="markdown">新建 Markdown</button>
+          <button class="btn" data-new="html">新建 HTML</button>
+          <button class="btn" data-new="pdf">打开 PDF</button>
+        </div>
+      </div>
+      <h2 class="section-title">最近</h2>
+      <div class="card-grid" id="recentGrid"></div>
+    </section>
+
+    <section class="view view-doc" id="viewDoc" hidden>
+      <div class="doc-toolbar ribbon" id="docToolbar">
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="docStyle" class="style-select" title="段落样式">
+              <option value="p">正文</option>
+              <option value="h1">标题 1</option>
+              <option value="h2">标题 2</option>
+              <option value="h3">标题 3</option>
+              <option value="h4">标题 4</option>
+              <option value="quote">引用</option>
+              <option value="pre">代码块</option>
+            </select>
+          </div>
+          <div class="rg-label">样式</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="docFont" class="font-select" title="字体"></select>
+            <select id="docSize" class="size-select" title="字号">
+              <option value="">字号</option>
+              <option>8</option><option>9</option><option>10</option><option>11</option><option>12</option>
+              <option>14</option><option>16</option><option>18</option><option>20</option><option>22</option>
+              <option>24</option><option>28</option><option>32</option><option>36</option><option>44</option>
+              <option>48</option><option>54</option><option>72</option>
+            </select>
+            <button class="tool" id="docGrow" title="增大字号" aria-label="增大字号"><svg><use xlink:href="#i-grow"/></svg></button>
+            <button class="tool" id="docShrink" title="减小字号" aria-label="减小字号"><svg><use xlink:href="#i-shrink"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool glyph" data-cmd="bold" title="加粗" aria-label="加粗"><b>B</b></button>
+            <button class="tool glyph" data-cmd="italic" title="斜体" aria-label="斜体"><i>I</i></button>
+            <button class="tool glyph" data-cmd="underline" title="下划线" aria-label="下划线"><u>U</u></button>
+            <button class="tool glyph" data-cmd="strikeThrough" title="删除线" aria-label="删除线"><s>S</s></button>
+            <button class="tool glyph" id="docSup" title="上标" aria-label="上标">x²</button>
+            <button class="tool glyph" id="docSub" title="下标" aria-label="下标">x₂</button>
+            <span class="tool-sep"></span>
+            <label class="tool color-tool" title="字体颜色">
+              <span class="color-a">A</span><span class="color-bar" id="docColorBar" style="background:#b45309"></span>
+              <input type="color" id="docColor" value="#b45309" aria-label="字体颜色">
+            </label>
+            <label class="tool color-tool" title="突出显示">
+              <svg><use xlink:href="#i-highlight"/></svg>
+              <span class="color-bar" id="docHlBar" style="background:#fde68a"></span>
+              <input type="color" id="docHl" value="#fde68a" aria-label="突出显示颜色">
+            </label>
+            <span class="tool-sep"></span>
+            <button class="tool" id="docClear" title="清除格式" aria-label="清除格式"><svg><use xlink:href="#i-eraser"/></svg></button>
+            <button class="tool" id="docPainter" title="格式刷：复制当前格式后选中目标文字" aria-label="格式刷"><svg><use xlink:href="#i-brush"/></svg></button>
+          </div>
+          <div class="rg-label">字体</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="docBullet" title="项目符号" aria-label="项目符号"><svg><use xlink:href="#i-bullets"/></svg></button>
+            <button class="tool" id="docNumber" title="编号" aria-label="编号"><svg><use xlink:href="#i-numbering"/></svg></button>
+            <button class="tool" id="docIndentLess" title="减少缩进" aria-label="减少缩进"><svg><use xlink:href="#i-indent-dec"/></svg></button>
+            <button class="tool" id="docIndentMore" title="增加缩进" aria-label="增加缩进"><svg><use xlink:href="#i-indent-inc"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool" data-align="left" title="左对齐" aria-label="左对齐"><svg><use xlink:href="#i-align-left"/></svg></button>
+            <button class="tool" data-align="center" title="居中" aria-label="居中"><svg><use xlink:href="#i-align-center"/></svg></button>
+            <button class="tool" data-align="right" title="右对齐" aria-label="右对齐"><svg><use xlink:href="#i-align-right"/></svg></button>
+            <button class="tool" data-align="justify" title="两端对齐" aria-label="两端对齐"><svg><use xlink:href="#i-align-justify"/></svg></button>
+          </div>
+          <div class="rg-label">段落</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <div class="menu-wrap">
+              <button class="tool has-caret" id="docTable" title="插入表格" aria-label="插入表格"><svg><use xlink:href="#i-table"/></svg></button>
+              <div class="tb-menu" id="tableMenu" hidden>
+                <button data-table="2">2 × 2</button>
+                <button data-table="3">3 × 3</button>
+                <button data-table="4">4 × 4</button>
+                <button data-table="5">5 × 5</button>
+              </div>
+            </div>
+            <div class="menu-wrap">
+              <button class="tool has-caret" id="docArt" title="艺术字" aria-label="艺术字"><svg><use xlink:href="#i-art"/></svg></button>
+              <div class="tb-menu art-menu" id="artMenu" hidden>
+                <button data-art="gold">金色楷体</button>
+                <button data-art="blue">海蓝粗黑</button>
+                <button data-art="red">朱红标题</button>
+                <button data-art="soft">淡雅引文</button>
+              </div>
+            </div>
+            <div class="menu-wrap">
+              <button class="tool has-caret" id="docLinkBtn" title="插入链接" aria-label="插入链接"><svg><use xlink:href="#i-link"/></svg></button>
+              <div class="tb-menu" id="linkMenu" hidden>
+                <label class="link-field">链接地址<input id="docLinkInput" placeholder="https://" spellcheck="false"></label>
+                <button class="primary" id="docLinkApply">插入链接</button>
+              </div>
+            </div>
+            <button class="tool" id="docBreak" title="插入分页符" aria-label="插入分页符"><svg><use xlink:href="#i-pagebreak"/></svg></button>
+            <button class="tool" id="docRule" title="插入分隔线" aria-label="插入分隔线"><svg><use xlink:href="#i-rule"/></svg></button>
+            <div class="menu-wrap">
+              <button class="tool has-caret" id="docPage" title="页面设置：页边距、页眉页脚" aria-label="页面设置：页边距、页眉页脚"><svg><use xlink:href="#i-headerfooter"/></svg></button>
+              <div class="tb-menu page-menu" id="pageMenu" hidden>
+                <div class="menu-title">纸张：A4（21 × 29.7 厘米）</div>
+                <div class="menu-title">快速页边距</div>
+                <div class="margin-presets" id="marginPresets" role="group" aria-label="快速页边距">
+                  <button type="button" data-preset="normal">常规</button>
+                  <button type="button" data-preset="narrow">窄</button>
+                  <button type="button" data-preset="moderate">适中</button>
+                  <button type="button" data-preset="wide">宽</button>
+                </div>
+                <div class="menu-title">页边距（厘米）</div>
+                <div class="margin-grid">
+                  <label>上<input id="docMarginTop" type="number" min="0" max="10" step="0.1" value="2.54" aria-label="上边距"></label>
+                  <label>下<input id="docMarginBottom" type="number" min="0" max="10" step="0.1" value="2.54" aria-label="下边距"></label>
+                  <label>左<input id="docMarginLeft" type="number" min="0" max="10" step="0.1" value="3.17" aria-label="左边距"></label>
+                  <label>右<input id="docMarginRight" type="number" min="0" max="10" step="0.1" value="3.17" aria-label="右边距"></label>
+                </div>
+                <label>页眉<input id="docHeaderInput" placeholder="页眉文字"></label>
+                <label>页脚<input id="docFooterInput" placeholder="页脚文字"></label>
+                <label class="check"><input type="checkbox" id="docPageNum"> 显示页码</label>
+                <button class="primary" id="docPageApply">应用</button>
+              </div>
+            </div>
+            <span class="tool-sep"></span>
+            <button class="tool" id="btnAddBlock" title="在末尾添加段落" aria-label="在末尾添加段落"><svg><use xlink:href="#i-plus"/></svg></button>
+          </div>
+          <div class="rg-label">插入</div>
+        </div>
+
+      </div>
+      <div class="doc-ruler" id="docRuler">
+        <div class="ruler-page" id="rulerPage">
+          <div class="ruler-ticks" id="rulerTicks" aria-hidden="true"></div>
+          <span class="ruler-shade" id="rulerShadeLeft" aria-hidden="true"></span>
+          <span class="ruler-shade" id="rulerShadeRight" aria-hidden="true"></span>
+          <button type="button" class="ruler-handle" id="rulerHandleLeft" title="拖动调整左边距，方向键微调" aria-label="左边距"></button>
+          <button type="button" class="ruler-handle" id="rulerHandleRight" title="拖动调整右边距，方向键微调" aria-label="右边距"></button>
+        </div>
+      </div>
+      <div class="doc-scroll" id="docScroll">
+        <div class="doc-pages" id="docEditor"></div>
+      </div>
+    </section>
+
+    <section class="view view-sheet" id="viewSheet" hidden>
+      <div class="sheet-toolbar ribbon">
+
+        <div class="ribbon-group">
+          <div class="rg-row"><span class="sheet-name" id="sheetName">Sheet1</span></div>
+          <div class="rg-label">工作表</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="sheetFont" class="font-select" title="字体"></select>
+            <select id="sheetSize" class="size-select" title="字号">
+              <option value="">字号</option>
+              <option>9</option><option>10</option><option>11</option><option>12</option><option>14</option>
+              <option>16</option><option>18</option><option>20</option><option>24</option><option>28</option>
+              <option>36</option><option>48</option>
+            </select>
+            <button class="tool glyph" id="btnSheetBold" title="加粗" aria-label="加粗"><b>B</b></button>
+            <button class="tool glyph" id="btnSheetItalic" title="斜体" aria-label="斜体"><i>I</i></button>
+            <button class="tool glyph" id="btnSheetUnderline" title="下划线" aria-label="下划线"><u>U</u></button>
+            <label class="tool color-tool" title="字体颜色">
+              <span class="color-a">A</span><span class="color-bar" id="sheetColorBar" style="background:#1c1917"></span>
+              <input type="color" id="sheetColor" value="#1c1917" aria-label="字体颜色">
+            </label>
+            <label class="tool color-tool" title="填充颜色">
+              <svg><use xlink:href="#i-fill"/></svg>
+              <span class="color-bar" id="sheetFillBar" style="background:#fdf0dd"></span>
+              <input type="color" id="sheetFill" value="#fdf0dd" aria-label="填充颜色">
+            </label>
+          </div>
+          <div class="rg-label">字体</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" data-halign="left" title="左对齐" aria-label="左对齐"><svg><use xlink:href="#i-align-left"/></svg></button>
+            <button class="tool" data-halign="center" title="居中" aria-label="居中"><svg><use xlink:href="#i-align-center"/></svg></button>
+            <button class="tool" data-halign="right" title="右对齐" aria-label="右对齐"><svg><use xlink:href="#i-align-right"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool" data-valign="top" title="顶端对齐" aria-label="顶端对齐">⤒</button>
+            <button class="tool" data-valign="center" title="垂直居中" aria-label="垂直居中">⇔</button>
+            <button class="tool" data-valign="bottom" title="底端对齐" aria-label="底端对齐">⤓</button>
+            <span class="tool-sep"></span>
+            <button class="tool" id="btnSheetMerge" title="合并后居中 / 取消合并" aria-label="合并单元格"><svg><use xlink:href="#i-merge"/></svg></button>
+          </div>
+          <div class="rg-label">对齐方式</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="sheetFmt" title="数字格式" class="fmt-select">
+              <option value="">常规</option>
+              <option value="0.00">数值 0.00</option>
+              <option value="0%">百分比</option>
+              <option value="¥#,##0.00">货币</option>
+              <option value="yyyy-mm-dd">日期</option>
+            </select>
+            <button class="tool" id="btnFmtCur" title="货币格式" aria-label="货币格式"><svg><use xlink:href="#i-currency"/></svg></button>
+            <button class="tool" id="btnFmtPct" title="百分比格式" aria-label="百分比格式"><svg><use xlink:href="#i-percent"/></svg></button>
+            <button class="tool" id="btnFmtDec" title="保留两位小数" aria-label="保留两位小数"><svg><use xlink:href="#i-decimal"/></svg></button>
+          </div>
+          <div class="rg-label">数字</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="btnSheetRowAdd" title="在上方插入行" aria-label="插入行"><svg><use xlink:href="#i-row-add"/></svg></button>
+            <button class="tool" id="btnSheetRowDel" title="删除行" aria-label="删除行"><svg><use xlink:href="#i-row-del"/></svg></button>
+            <button class="tool" id="btnSheetColAdd" title="在左侧插入列" aria-label="插入列"><svg><use xlink:href="#i-col-add"/></svg></button>
+            <button class="tool" id="btnSheetColDel" title="删除列" aria-label="删除列"><svg><use xlink:href="#i-col-del"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool" id="btnSheetBorder" title="边框：无 / 细线 / 粗线" aria-label="边框"><svg><use xlink:href="#i-borders"/></svg></button>
+            <button class="tool" id="btnSheetFreeze" title="冻结 / 取消冻结首行" aria-label="冻结窗格"><svg><use xlink:href="#i-freeze"/></svg></button>
+          </div>
+          <div class="rg-label">单元格</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="btnSheetSum" title="自动求和" aria-label="自动求和"><svg><use xlink:href="#i-sigma"/></svg></button>
+            <button class="tool" id="btnSheetSortAsc" title="升序" aria-label="升序"><svg><use xlink:href="#i-sort-asc"/></svg></button>
+            <button class="tool" id="btnSheetSortDesc" title="降序" aria-label="降序"><svg><use xlink:href="#i-sort-desc"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool" id="btnMoreRows" title="增加 20 行" aria-label="增加 20 行"><svg><use xlink:href="#i-row-add"/></svg><span class="tool-num">20</span></button>
+            <button class="tool" id="btnMoreCols" title="增加 5 列" aria-label="增加 5 列"><svg><use xlink:href="#i-col-add"/></svg><span class="tool-num">5</span></button>
+          </div>
+          <div class="rg-label">编辑</div>
+        </div>
+
+      </div>
+      <div class="formula-bar">
+        <span class="cell-ref" id="cellRef">A1</span>
+        <input id="formulaInput" spellcheck="false" placeholder="输入值或 =SUM(A1:A9)">
+      </div>
+      <div class="sheet-scroll" id="sheetScroll">
+        <table class="sheet" id="sheetTable"></table>
+      </div>
+    </section>
+
+    <section class="view view-slide" id="viewSlide" hidden>
+      <div class="slide-toolbar ribbon">
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="btnAddText" title="插入文本框" aria-label="插入文本框"><svg><use xlink:href="#i-textbox"/></svg></button>
+            <button class="tool" id="btnDupElem" title="复制选中对象" aria-label="复制选中对象"><svg><use xlink:href="#i-copy"/></svg></button>
+            <button class="tool" id="btnDelElem" title="删除选中对象" aria-label="删除选中对象"><svg><use xlink:href="#i-trash"/></svg></button>
+          </div>
+          <div class="rg-label">对象</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="elemFont" class="font-select" title="字体"></select>
+            <label class="mini-field" title="字号">字号 <input type="number" id="elemSize" min="8" max="200" value="32"></label>
+            <button class="tool glyph" id="btnElemBold" title="加粗" aria-label="加粗"><b>B</b></button>
+            <button class="tool glyph" id="btnElemItalic" title="斜体" aria-label="斜体"><i>I</i></button>
+            <button class="tool glyph" id="btnElemUnderline" title="下划线" aria-label="下划线"><u>U</u></button>
+            <label class="tool color-tool" title="文字颜色">
+              <span class="color-a">A</span><span class="color-bar" id="elemColorBar" style="background:#1c1917"></span>
+              <input type="color" id="elemColor" value="#1c1917" aria-label="文字颜色">
+            </label>
+            <label class="tool color-tool" title="文本框底色">
+              <svg><use xlink:href="#i-fill"/></svg>
+              <span class="color-bar" id="elemFillBar" style="background:#ffffff"></span>
+              <input type="color" id="elemFill" value="#ffffff" aria-label="文本框底色">
+            </label>
+          </div>
+          <div class="rg-label">字体</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" data-ealign="left" title="左对齐" aria-label="左对齐"><svg><use xlink:href="#i-align-left"/></svg></button>
+            <button class="tool" data-ealign="center" title="居中" aria-label="居中"><svg><use xlink:href="#i-align-center"/></svg></button>
+            <button class="tool" data-ealign="right" title="右对齐" aria-label="右对齐"><svg><use xlink:href="#i-align-right"/></svg></button>
+            <button class="tool" id="btnElemBullet" title="项目符号" aria-label="项目符号"><svg><use xlink:href="#i-bullets"/></svg></button>
+          </div>
+          <div class="rg-label">段落</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="btnElemFront" title="上移一层" aria-label="上移一层"><svg><use xlink:href="#i-layer-up"/></svg></button>
+            <button class="tool" id="btnElemBack" title="下移一层" aria-label="下移一层"><svg><use xlink:href="#i-layer-down"/></svg></button>
+          </div>
+          <div class="rg-label">排列</div>
+        </div>
+
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="btnPrevSlide" title="上一页" aria-label="上一页"><svg><use xlink:href="#i-chevron-left"/></svg></button>
+            <span class="slide-count" id="slideCount">1 / 1</span>
+            <button class="tool" id="btnNextSlide" title="下一页" aria-label="下一页"><svg><use xlink:href="#i-chevron-right"/></svg></button>
+            <span class="tool-sep"></span>
+            <button class="tool" id="btnAddSlide" title="新建幻灯片" aria-label="新建幻灯片"><svg><use xlink:href="#i-slide-add"/></svg></button>
+            <button class="tool" id="btnDelSlide" title="删除幻灯片" aria-label="删除幻灯片"><svg><use xlink:href="#i-slide-del"/></svg></button>
+          </div>
+          <div class="rg-label">幻灯片</div>
+        </div>
+
+      </div>
+      <div class="slide-stage" id="slideStage">
+        <div class="slide-canvas" id="slideCanvas"></div>
+      </div>
+    </section>
+
+    <section class="view view-markdown" id="viewMarkdown" hidden>
+      <div class="md-toolbar">
+        <span class="md-kind">Markdown</span>
+        <span class="tool-sep"></span>
+        <button class="tool" id="btnMdPreview" title="预览" aria-label="预览"><svg><use xlink:href="#i-eye"/></svg></button>
+      </div>
+      <div class="md-split">
+        <textarea id="mdInput" spellcheck="false" aria-label="Markdown 源码"></textarea>
+        <div class="md-preview" id="mdPreview" data-i18n-skip></div>
+      </div>
+    </section>
+
+    <section class="view view-html" id="viewHtml" hidden>
+      <div class="md-toolbar">
+        <span class="md-kind">HTML</span>
+        <span class="tool-sep"></span>
+        <button class="tool" id="btnHtmlPreview" title="刷新预览" aria-label="刷新预览"><svg><use xlink:href="#i-refresh"/></svg></button>
+        <button class="tool" id="btnHtmlOpen" title="新窗口打开" aria-label="新窗口打开"><svg><use xlink:href="#i-external"/></svg></button>
+      </div>
+      <div class="md-split">
+        <textarea id="htmlInput" spellcheck="false" aria-label="HTML 源码"></textarea>
+        <iframe class="html-preview" id="htmlPreview" sandbox="allow-scripts allow-modals" title="HTML 预览"></iframe>
+      </div>
+    </section>
+
+    <section class="view view-pdf" id="viewPdf" hidden>
+      <!-- 保留 Chrome 自带阅读器（搜索、旋转、下载、原生滚动都在），外层只补页码与缩放。 -->
+      <div class="pdf-bar">
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <button class="tool" id="pdfPrev" title="上一页" aria-label="上一页">‹</button>
+            <input class="pdf-page-input" id="pdfPage" type="number" min="1" value="1" aria-label="页码">
+            <span class="pdf-count" id="pdfCount">/ 0</span>
+            <button class="tool" id="pdfNext" title="下一页" aria-label="下一页">›</button>
+          </div>
+          <div class="rg-label">页面</div>
+        </div>
+        <div class="ribbon-group">
+          <div class="rg-row">
+            <select id="pdfZoom" class="style-select" title="显示比例">
+              <option value="page-width">页宽</option>
+              <option value="page-fit">整页</option>
+              <option value="100">100%</option>
+              <option value="150">150%</option>
+              <option value="200">200%</option>
+            </select>
+          </div>
+          <div class="rg-label">显示比例</div>
+        </div>
+        <span class="pdf-spacer"></span>
+        <span class="pdf-meta" id="pdfMeta"></span>
+        <a class="btn pdf-open" id="pdfOpen" href="#" target="_blank" rel="noopener">新窗口打开</a>
+      </div>
+      <div class="pdf-body">
+        <aside class="pdf-thumbs" id="pdfThumbs" aria-label="页面列表"></aside>
+        <iframe class="pdf-frame" id="pdfFrame" title="PDF 预览"></iframe>
+      </div>
+    </section>
+
+    <!-- 工具面板：二维码、公众号排版、X 线程三个离线页面共用一层壳，打开时不离开便捷办公。 -->
+    <div class="tool-mask" id="toolMask" hidden>
+      <div class="tool-shell" role="dialog" aria-labelledby="toolTitle">
+        <div class="tool-head">
+          <span class="tool-title" id="toolTitle">工具</span>
+          <a class="tool-link" id="toolOpen" href="#" target="_blank" rel="noopener">新窗口打开</a>
+          <button class="tool-close" id="toolClose" type="button" title="关闭工具" aria-label="关闭工具">✕</button>
+        </div>
+        <iframe class="tool-frame" id="toolFrame" title="便捷办公工具"></iframe>
+      </div>
+    </div>
+
+  </main>
+
+    <aside class="outline-panel" id="outlinePanel" hidden>
+      <div class="outline-head">
+        <span>大纲</span>
+        <button class="icon-btn" id="btnCloseOutline" aria-label="关闭大纲">✕</button>
+      </div>
+      <div class="outline-list" id="outlineList"></div>
+    </aside>
+
+  </main>
+
+  <footer class="statusbar" id="statusbar">
+    <span class="status-save" id="saveState"></span>
+    <span class="status-info" id="statusInfo"></span>
+    <span class="status-spacer"></span>
+    <span class="status-page" id="docWordStat" hidden></span>
+    <span class="status-page" id="docPageStat"></span>
+    <label class="doc-zoom" id="docZoomWrap" hidden title="显示比例：可选择百分比、页宽、整页，或双页 / 四页同时阅览">
+      <span>显示比例</span>
+      <select id="docZoom" aria-label="显示比例">
+        <option value="50">50%</option>
+        <option value="75">75%</option>
+        <option value="100" selected>100%</option>
+        <option value="125">125%</option>
+        <option value="150">150%</option>
+        <option value="200">200%</option>
+        <option value="pagewidth">页宽</option>
+        <option value="pageheight">整页</option>
+        <option value="twopage">双页</option>
+        <option value="fourpage">四页</option>
+      </select>
+    </label>
+    <span class="status-zoom-hint" id="statusZoomHint"></span>
+  </footer>
+
+  <div class="toast" id="toast" hidden></div>
+
+  <!-- 异常关闭后的恢复提示：只在扫描到 journal / 临时文件时出现。 -->
+  <div class="recovery-bar" id="recoveryBar" hidden>
+    <span class="recovery-text" id="recoveryText"></span>
+    <button class="btn btn-primary" id="btnRecover" type="button">恢复</button>
+    <button class="btn" id="btnDiscardRecovery" type="button">放弃</button>
+  </div>
+</div>
+
+<script src="i18n-office.js"></script>
+<script src="api.js"></script>
+<script src="print.js"></script>
+<script src="formula.js"></script>
+<script src="nexlos-office-init.js"></script>
+<script src="editors.js"></script>
+<script src="fonts.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,83 @@
+name: Bug report
+description: Report a reproducible problem in NexlOS or the Windos2026 theme
+title: "bug: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please remove credentials, private paths, and personal data from logs before pasting them.
+        Security issues must go through the Security tab, not a public issue.
+
+  - type: dropdown
+    id: edition
+    attributes:
+      label: Edition
+      options:
+        - Plugin (DSH host)
+        - Reader application
+        - Documentation or release assets
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Release tag, package version, or commit SHA.
+      placeholder: v0.5.1 / plugin 1.0.0 / commit abc1234
+    validations:
+      required: true
+
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      placeholder: macOS 15.2 arm64 / Windows 11 x64 / Ubuntu 24.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Start with a fresh NEXLOS_HOME
+        2. Open ...
+        3. Click ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: Include the exact error text and whether it reproduces after a restart.
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs or screenshots
+      render: text
+      description: Remove tokens, keys, usernames, and private file paths.
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I searched existing issues and discussions.
+          required: true
+        - label: I reproduced this on a clean workspace or a fresh install.
+          required: true
+        - label: I removed secrets and personal data from the report.
+          required: true

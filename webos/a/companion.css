@@ -1,0 +1,756 @@
+/* 桌面伴侣：窗口之上、任务栏之下。透明区域不挡点击，角色身体上才接管指针。
+   两种形态共用一套渲染器：desktop 是可拖动的立绘，notch 是屏幕顶部中央的刘海胶囊。 */
+.os-companion {
+  position: absolute;
+  z-index: 20;
+  pointer-events: none;
+  filter: drop-shadow(0 10px 18px rgba(20, 26, 28, 0.18));
+}
+/* alpha 命中后只在这一块打开事件：这是“像素级穿透”的开关，不是装饰。 */
+.os-companion.oc-hit { pointer-events: auto; }
+.os-companion.oc-html { pointer-events: auto; }
+.os-companion[hidden] { display: none !important; }
+html[data-appearance="win98"] .os-companion { display: none !important; }
+.os.os-taskview-on .os-companion { display: none; }
+.os-companion.oc-dragging { filter: drop-shadow(0 16px 26px rgba(20, 26, 28, 0.24)); }
+/* GPU 路径自带外发光；再叠 CSS drop-shadow 会变成两层灰影。 */
+.os-companion.oc-gpu,
+.os-companion.oc-gpu.oc-dragging { filter: none; }
+
+.oc-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  touch-action: none;
+}
+.oc-stage[hidden] { display: none !important; }
+.os-companion.oc-html .oc-stage { pointer-events: auto; }
+.os-companion.oc-hit .oc-stage { cursor: grab; }
+.os-companion.oc-dragging .oc-stage { cursor: grabbing; }
+
+/* 画布比立绘大一圈：外发光、轮廓光和墨粒需要透明的溢出空间，
+   否则会被画布边缘整齐切掉，一眼看出是贴图。 */
+.oc-surface {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.oc-canvas {
+  position: absolute;
+  left: -11%;
+  top: -6%;
+  width: 122%;
+  height: 112%;
+  display: block;
+  pointer-events: none;
+  -webkit-user-drag: none;
+}
+
+.oc-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: transparent;
+  pointer-events: auto;
+  color-scheme: light dark;
+}
+.oc-frame[hidden] { display: none !important; }
+
+/* html 生命包没有可采样的 alpha：给一条窄拖动手柄，身体留给 iframe 自己。 */
+.oc-grip {
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  width: 34px;
+  height: 6px;
+  margin-left: -17px;
+  border-radius: 3px;
+  background: rgba(20, 26, 28, 0.28);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.45);
+  opacity: 0;
+  pointer-events: auto;
+  cursor: grab;
+  transition: opacity 120ms ease;
+}
+.oc-grip[hidden] { display: none !important; }
+.os-companion:hover .oc-grip { opacity: 1; }
+.os-companion.oc-dragging .oc-grip { cursor: grabbing; }
+
+/* 拖文件时的落点提示：透明区域平时穿透，拖拽期间临时接管。 */
+.os-companion.oc-drop-ready { pointer-events: auto; }
+.os-companion.oc-drop-ready::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: -6px;
+  right: -6px;
+  bottom: -6px;
+  border: 1px dashed rgba(214, 157, 82, 0.72);
+  border-radius: 18px;
+  pointer-events: none;
+  animation: oc-breathe 1.6s ease-in-out infinite;
+}
+.os-companion.oc-drop-on::after {
+  border-style: solid;
+  background: rgba(255, 196, 120, 0.08);
+}
+@keyframes oc-breathe {
+  0%, 100% { opacity: 0.45; }
+  50% { opacity: 1; }
+}
+
+/* ---------- 拖动文件后的阅读卡（桌面形态） ---------- */
+.oc-readcard {
+  position: absolute;
+  right: 0;
+  bottom: calc(100% + 10px);
+  width: 238px;
+  max-width: 78vw;
+  padding: 9px 11px 10px;
+  border: 1px solid rgba(30, 26, 22, 0.10);
+  border-radius: 13px;
+  background: rgba(255, 253, 248, 0.98);
+  color: #2b2620;
+  box-shadow: 0 18px 38px rgba(20, 26, 28, 0.22);
+  font: 500 12px/1.5 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  pointer-events: auto;
+  cursor: default;
+}
+.oc-readcard[hidden] { display: none !important; }
+.oc-readcard.below { top: calc(100% + 10px); bottom: auto; }
+.os.dark .oc-readcard {
+  background: rgba(32, 30, 27, 0.98);
+  color: #f3ede2;
+  border-color: rgba(255, 255, 255, 0.10);
+}
+.oc-card-head { display: flex; align-items: baseline; margin-bottom: 6px; }
+.oc-card-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.oc-card-meta {
+  flex: 0 0 auto;
+  margin-left: 8px;
+  color: rgba(43, 38, 32, 0.55);
+  font-size: 10.5px;
+}
+.os.dark .oc-card-meta { color: rgba(243, 237, 226, 0.55); }
+.oc-card-close {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: inherit;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.6;
+}
+.oc-card-close:hover { opacity: 1; background: rgba(0, 0, 0, 0.08); }
+.oc-card-body { max-height: 168px; overflow-y: auto; }
+.oc-read-img {
+  display: block;
+  max-width: 100%;
+  max-height: 132px;
+  margin: 0 auto 6px;
+  border-radius: 8px;
+  object-fit: contain;
+}
+.oc-read-text {
+  margin: 0;
+  max-height: 132px;
+  overflow: hidden;
+  white-space: pre-wrap;
+  word-break: break-word;
+  font: 400 11.5px/1.55 var(--mono, ui-monospace, "SF Mono", Menlo, monospace);
+  color: rgba(43, 38, 32, 0.86);
+}
+.os.dark .oc-read-text { color: rgba(243, 237, 226, 0.86); }
+.oc-read-more { display: block; margin-top: 4px; opacity: 0.5; font-size: 10.5px; }
+.oc-read-note { margin: 0; color: rgba(43, 38, 32, 0.72); font-size: 11.5px; }
+.os.dark .oc-read-note { color: rgba(243, 237, 226, 0.72); }
+
+/* ---------- 刘海形态 ---------- */
+.os-companion.oc-notch-mode {
+  position: fixed;
+  left: 50%;
+  top: 0;
+  width: auto;
+  height: auto;
+  transform: translateX(-50%);
+  z-index: 26;
+  filter: none;
+}
+.oc-notch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: env(safe-area-inset-top, 0px);
+  pointer-events: none;
+}
+.oc-notch[hidden] { display: none !important; }
+
+.oc-face {
+  position: absolute;
+  left: 7px;
+  top: calc(4px + env(safe-area-inset-top, 0px));
+  width: var(--face, 46px);
+  height: var(--face, 46px);
+  border-radius: 50%;
+  overflow: hidden;
+  z-index: 3;
+  background:
+    radial-gradient(circle at 50% 42%, rgba(255, 214, 160, 0.16), rgba(8, 9, 10, 0.9) 72%),
+    #08090a;
+  box-shadow:
+    inset 0 0 10px rgba(0, 0, 0, 0.7),
+    0 0 0 1px rgba(255, 255, 255, 0.10),
+    0 6px 14px rgba(0, 0, 0, 0.32);
+  pointer-events: none;
+}
+.oc-face[hidden] { display: none !important; }
+.oc-face .oc-surface {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+.oc-face .oc-canvas {
+  left: var(--canvas-x, -50%);
+  top: var(--canvas-y, -40%);
+  width: var(--canvas-w, 200%);
+  height: var(--canvas-h, 200%);
+}
+.oc-face .oc-frame {
+  width: var(--frame-w, 300%);
+  height: var(--frame-h, 300%);
+  margin-left: var(--frame-x, -100%);
+  margin-top: var(--frame-y, -70%);
+  pointer-events: none;
+}
+
+.oc-pill {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 194px;
+  height: 38px;
+  margin: 0;
+  padding: 0 14px 0 60px;
+  border: 1px solid rgba(255, 255, 255, 0.10);
+  border-top: 0;
+  border-radius: 0 0 20px 20px;
+  background: linear-gradient(180deg, #141517 0%, #08090a 62%, #050506 100%);
+  color: #f4efe6;
+  text-align: left;
+  cursor: pointer;
+  pointer-events: auto;
+  box-shadow:
+    0 12px 26px rgba(0, 0, 0, 0.42),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.07);
+  overflow: hidden;
+  -webkit-tap-highlight-color: transparent;
+}
+.oc-pill::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 84px;
+  height: 2px;
+  margin-left: -42px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, transparent, rgba(255, 198, 128, 0.55), transparent);
+  opacity: 0.7;
+}
+.oc-pill-glow {
+  position: absolute;
+  left: 18px;
+  top: 2px;
+  width: 52px;
+  height: 34px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 183, 102, 0.26), rgba(255, 183, 102, 0) 70%);
+  pointer-events: none;
+}
+.oc-pill-copy {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  line-height: 1.1;
+}
+.oc-pill-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font: 700 12.5px/1.2 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  letter-spacing: 0.04em;
+}
+.oc-pill-sub {
+  margin-top: 2px;
+  color: rgba(244, 239, 230, 0.48);
+  font: 500 9.5px/1.2 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  letter-spacing: 0.12em;
+}
+.oc-pill-dot {
+  flex: 0 0 auto;
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: #8fd0a0;
+  box-shadow: 0 0 8px rgba(143, 208, 160, 0.85);
+}
+.oc-pill-dot.is-tired { background: #8ba6c8; box-shadow: 0 0 8px rgba(139, 166, 200, 0.8); }
+.oc-pill-dot.is-lonely { background: #d5a06a; box-shadow: 0 0 8px rgba(213, 160, 106, 0.8); }
+.oc-pill-dot.is-attached { background: #f0b6c0; box-shadow: 0 0 8px rgba(240, 182, 192, 0.85); }
+.oc-pill:hover { border-color: rgba(255, 255, 255, 0.18); }
+.oc-pill:focus { outline: none; }
+.oc-pill:focus-visible { box-shadow: 0 0 0 2px rgba(255, 198, 128, 0.55), 0 12px 26px rgba(0, 0, 0, 0.42); }
+.os-companion.oc-panel-open .oc-pill { border-radius: 0; }
+
+.oc-panel {
+  position: fixed;
+  left: 50%;
+  top: calc(58px + env(safe-area-inset-top, 0px));
+  width: 320px;
+  max-width: calc(100vw - 20px);
+  transform: translateX(-50%);
+  z-index: 27;
+  padding: 13px 14px 11px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  background: linear-gradient(180deg, rgba(26, 27, 29, 0.985), rgba(13, 14, 15, 0.985));
+  color: #f2ece1;
+  box-shadow: 0 26px 64px rgba(0, 0, 0, 0.48), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  font: 500 12px/1.5 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  pointer-events: auto;
+  animation: oc-panel-in 160ms ease-out;
+}
+.oc-panel[hidden] { display: none !important; }
+@keyframes oc-panel-in {
+  from { opacity: 0; transform: translate(-50%, -6px) scale(0.985); }
+  to { opacity: 1; transform: translate(-50%, 0) scale(1); }
+}
+.oc-panel-head { display: flex; align-items: center; margin-bottom: 10px; }
+.oc-panel-art {
+  flex: 0 0 auto;
+  width: 30px;
+  height: 30px;
+  margin-right: 9px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 42% 36%, rgba(255, 208, 150, 0.34), rgba(255, 208, 150, 0.02) 70%);
+  color: rgba(255, 214, 160, 0.78);
+  font-size: 15px;
+  line-height: 30px;
+  text-align: center;
+}
+.oc-panel-title { display: flex; flex-direction: column; min-width: 0; }
+.oc-panel-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+.oc-panel-sub { margin-top: 1px; color: rgba(242, 236, 225, 0.52); font-size: 10.5px; }
+.oc-meters { margin: 0 0 10px; padding: 8px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.045); }
+.oc-meter { display: flex; align-items: center; font-size: 10.5px; color: rgba(242, 236, 225, 0.6); }
+.oc-meter + .oc-meter { margin-top: 6px; }
+.oc-meter > span:first-child { flex: 0 0 26px; }
+.oc-meter-track {
+  flex: 1 1 auto;
+  height: 4px;
+  margin-left: 8px;
+  border-radius: 3px;
+  background: rgba(255, 255, 255, 0.10);
+  overflow: hidden;
+}
+.oc-meter-fill {
+  display: block;
+  width: 0;
+  height: 100%;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(255, 178, 96, 0.65), rgba(255, 214, 160, 0.95));
+  transition: width 420ms ease;
+}
+.oc-dropzone {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  border: 1px dashed rgba(255, 198, 128, 0.34);
+  border-radius: 11px;
+  background: rgba(255, 198, 128, 0.045);
+  cursor: pointer;
+  transition: border-color 120ms ease, background 120ms ease;
+}
+.oc-dropzone:hover { border-color: rgba(255, 198, 128, 0.62); background: rgba(255, 198, 128, 0.08); }
+.oc-drop-icon {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  margin-right: 9px;
+  border-radius: 9px;
+  background: rgba(255, 198, 128, 0.12);
+  color: rgba(255, 214, 160, 0.9);
+  font-size: 16px;
+  line-height: 28px;
+  text-align: center;
+}
+.oc-drop-copy { display: flex; flex-direction: column; min-width: 0; }
+.oc-drop-name { font-size: 11.5px; font-weight: 600; }
+.oc-drop-hint { margin-top: 2px; color: rgba(242, 236, 225, 0.44); font-size: 10px; }
+.oc-file { display: none; }
+.oc-read-area { margin-top: 10px; }
+.oc-read-empty { margin: 0; color: rgba(242, 236, 225, 0.4); font-size: 11px; }
+.oc-read-card { padding: 9px 10px; border-radius: 10px; background: rgba(255, 255, 255, 0.05); }
+.oc-read-head { display: flex; align-items: baseline; margin-bottom: 6px; }
+.oc-read-head b {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 11.5px;
+}
+.oc-read-head span {
+  flex: 0 0 auto;
+  margin-left: 6px;
+  color: rgba(242, 236, 225, 0.46);
+  font-size: 10px;
+}
+.oc-read-close {
+  flex: 0 0 auto;
+  width: 18px;
+  height: 18px;
+  margin-left: 4px;
+  padding: 0;
+  border: 0;
+  border-radius: 5px;
+  background: transparent;
+  color: inherit;
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.55;
+}
+.oc-read-close:hover { opacity: 1; background: rgba(255, 255, 255, 0.10); }
+.oc-read-card .oc-read-img { max-height: 112px; }
+.oc-read-card .oc-read-text { max-height: 108px; color: rgba(242, 236, 225, 0.84); }
+/* 面板始终是深色底：读卡里的正文与提示不能跟随浅色主题变深。 */
+.oc-panel .oc-read-note { color: rgba(242, 236, 225, 0.66); }
+.oc-panel .oc-card-meta { color: rgba(242, 236, 225, 0.5); }
+.oc-panel-foot { display: flex; align-items: center; margin-top: 10px; }
+.oc-foot-note { flex: 1 1 auto; color: rgba(242, 236, 225, 0.36); font-size: 9.5px; letter-spacing: 0.02em; }
+.oc-foot-btn {
+  flex: 0 0 auto;
+  height: 24px;
+  padding: 0 10px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.06);
+  color: rgba(242, 236, 225, 0.82);
+  font: 600 10.5px/1 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  cursor: pointer;
+}
+.oc-foot-btn:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* 刘海模式也接受拖拽：胶囊和展开面板都是落点。 */
+.os-companion.oc-notch-mode.oc-drop-ready::after { display: none; }
+.os-companion.oc-notch-mode.oc-drop-ready .oc-pill {
+  border-color: rgba(255, 198, 128, 0.72);
+  box-shadow: 0 0 0 2px rgba(255, 198, 128, 0.24), 0 12px 26px rgba(0, 0, 0, 0.42);
+}
+.os-companion.oc-notch-mode.oc-drop-on .oc-pill {
+  border-color: #ffc880;
+  box-shadow: 0 0 0 3px rgba(255, 198, 128, 0.34), 0 12px 26px rgba(0, 0, 0, 0.42);
+}
+
+/* 系统事件：只让轮廓亮一下，不弹文字。 */
+.os-companion.oc-pulse .oc-canvas { animation: oc-pulse 620ms ease-out; }
+@keyframes oc-pulse {
+  0% { filter: brightness(1); }
+  22% { filter: brightness(1.28) saturate(1.12); }
+  100% { filter: brightness(1); }
+}
+.oc-notch-mode.oc-pulse .oc-pill {
+  animation: oc-pill-pulse 620ms ease-out;
+}
+@keyframes oc-pill-pulse {
+  0% { box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42); }
+  24% { box-shadow: 0 0 0 2px rgba(255, 198, 128, 0.38), 0 12px 30px rgba(0, 0, 0, 0.46); }
+  100% { box-shadow: 0 12px 26px rgba(0, 0, 0, 0.42); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-panel { animation: none; }
+  .os-companion.oc-drop-ready::after { animation: none; }
+  .os-companion.oc-pulse .oc-canvas,
+  .oc-notch-mode.oc-pulse .oc-pill { animation: none; }
+}
+
+@media (max-width: 760px) {
+  .oc-readcard { width: 220px; font-size: 11.5px; }
+  .oc-pill { width: 176px; height: 36px; padding-left: 54px; }
+  .oc-face { width: var(--face, 42px); height: var(--face, 42px); }
+  .oc-panel { padding: 12px 12px 10px; }
+  .oc-panel-name { font-size: 12.5px; }
+}
+
+/* ---------- 表演层：状态道具 ----------
+   借鉴 clo 类桌宠的「同一角色分状态表演」：不换素材，用体态 + 道具表达
+   thinking / working / error / sleeping。所有道具是 DOM，不额外占纹理。 */
+.oc-actor {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  pointer-events: none;
+  --oc-accent: #ffb46b;
+}
+.oc-actor > div { position: absolute; opacity: 0; }
+/* HTML 生命包自带表演层；宿主的道具层整体让位。 */
+.os-companion.oc-self-act .oc-actor { display: none; }
+
+/* 思考气泡：三颗墨点轮流抬头。 */
+.oc-think {
+  top: 3%;
+  right: 1%;
+  display: flex;
+  align-items: center;
+  padding: 7px 10px;
+  border-radius: 11px;
+  background: rgba(18, 19, 22, 0.82);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.24);
+  transition: opacity 160ms ease;
+}
+.oc-think::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  bottom: -5px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(18, 19, 22, 0.82);
+  border-right: 1px solid rgba(255, 255, 255, 0.14);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+  transform: rotate(45deg);
+}
+.oc-think i {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--oc-accent);
+  opacity: 0.35;
+}
+.oc-think i + i { margin-left: 3px; }
+.oc-st-thinking .oc-think { opacity: 1; }
+.oc-st-thinking .oc-think i { animation: oc-dot 1.15s ease-in-out infinite; }
+.oc-st-thinking .oc-think i:nth-child(2) { animation-delay: 0.16s; }
+.oc-st-thinking .oc-think i:nth-child(3) { animation-delay: 0.32s; }
+
+/* 干活：一小段正在敲出来的代码行。 */
+.oc-work {
+  left: 2%;
+  bottom: 8%;
+  display: flex;
+  flex-direction: column;
+  padding: 7px 9px;
+  border-radius: 9px;
+  background: rgba(13, 16, 19, 0.78);
+  border: 1px solid rgba(143, 208, 255, 0.18);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.22);
+  transition: opacity 160ms ease;
+}
+.oc-work b {
+  display: block;
+  height: 3px;
+  width: 38px;
+  border-radius: 2px;
+  background: rgba(143, 208, 255, 0.55);
+  transform-origin: left center;
+}
+.oc-work b:nth-child(2) { width: 26px; opacity: 0.7; margin-top: 3px; }
+.oc-work b:nth-child(3) { width: 32px; opacity: 0.45; margin-top: 3px; }
+.oc-work .oc-caret {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  width: 2px;
+  height: 7px;
+  background: var(--oc-accent);
+  opacity: 0;
+}
+.oc-st-working .oc-work,
+.oc-st-executing .oc-work,
+.oc-st-juggling .oc-work { opacity: 1; }
+.oc-st-working .oc-work b,
+.oc-st-executing .oc-work b,
+.oc-st-juggling .oc-work b { animation: oc-type 1.05s steps(6, end) infinite; }
+.oc-st-working .oc-work b:nth-child(2) { animation-delay: 0.22s; }
+.oc-st-working .oc-work b:nth-child(3) { animation-delay: 0.44s; }
+.oc-st-working .oc-caret,
+.oc-st-executing .oc-caret,
+.oc-st-juggling .oc-caret { animation: oc-caret 0.86s steps(2, end) infinite; }
+.oc-st-juggling .oc-work { border-color: rgba(255, 198, 128, 0.34); }
+.oc-st-juggling .oc-work b { background: rgba(255, 198, 128, 0.6); }
+
+/* 完成：七颗星从身体中间散开。 */
+.oc-spark {
+  left: 50%;
+  top: 30%;
+  width: 0;
+  height: 0;
+  transition: opacity 120ms ease;
+}
+.oc-spark i {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 6px;
+  height: 6px;
+  margin: -3px 0 0 -3px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff3d6, var(--oc-accent) 62%, rgba(255, 180, 107, 0) 72%);
+  opacity: 0;
+}
+.oc-st-notification .oc-spark { opacity: 1; }
+.oc-st-notification .oc-spark i { animation: oc-spark 760ms ease-out forwards; }
+.oc-spark i:nth-child(1) { --dx: -46px; --dy: -34px; }
+.oc-spark i:nth-child(2) { --dx: 42px; --dy: -42px; animation-delay: 40ms; }
+.oc-spark i:nth-child(3) { --dx: -30px; --dy: 28px; animation-delay: 80ms; }
+.oc-spark i:nth-child(4) { --dx: 34px; --dy: 26px; animation-delay: 120ms; }
+.oc-spark i:nth-child(5) { --dx: -58px; --dy: 4px; animation-delay: 60ms; }
+.oc-spark i:nth-child(6) { --dx: 56px; --dy: -6px; animation-delay: 100ms; }
+.oc-spark i:nth-child(7) { --dx: 4px; --dy: -58px; animation-delay: 20ms; }
+
+/* 等你：头顶一个短促的感叹号。 */
+.oc-alert {
+  top: 1%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  margin-left: -11px;
+  border-radius: 50%;
+  background: var(--oc-accent);
+  color: #221a10;
+  font: 800 15px/22px var(--sans, -apple-system, "PingFang SC", sans-serif);
+  text-align: center;
+  box-shadow: 0 0 0 3px rgba(255, 180, 107, 0.18), 0 5px 12px rgba(0, 0, 0, 0.24);
+}
+.oc-st-attention .oc-alert { opacity: 1; animation: oc-pop 2.6s ease-out; }
+
+/* 睡眠：Z 字往上飘。 */
+.oc-zzz {
+  top: 2%;
+  right: 4%;
+  width: 34px;
+  height: 44px;
+  transition: opacity 260ms ease;
+}
+.oc-zzz i {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  color: rgba(196, 216, 255, 0.9);
+  font: 700 11px/1 var(--sans, -apple-system, "PingFang SC", sans-serif);
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.35);
+  opacity: 0;
+}
+.oc-zzz i:nth-child(2) { font-size: 14px; left: 9px; }
+.oc-zzz i:nth-child(3) { font-size: 17px; left: 18px; }
+.oc-st-yawning .oc-zzz,
+.oc-st-dozing .oc-zzz,
+.oc-st-sleeping .oc-zzz { opacity: 1; }
+.oc-st-yawning .oc-zzz i,
+.oc-st-dozing .oc-zzz i,
+.oc-st-sleeping .oc-zzz i { animation: oc-zzz 3.4s ease-in-out infinite; }
+.oc-st-dozing .oc-zzz i:nth-child(2),
+.oc-st-sleeping .oc-zzz i:nth-child(2) { animation-delay: 0.9s; }
+.oc-st-dozing .oc-zzz i:nth-child(3),
+.oc-st-sleeping .oc-zzz i:nth-child(3) { animation-delay: 1.8s; }
+
+/* 状态色渗到画布上：GPU 与 Canvas2D 两条路径共用这一层。 */
+.os-companion.oc-st-error .oc-canvas { filter: saturate(1.2) hue-rotate(-8deg) brightness(0.97); }
+.os-companion.oc-st-sleeping .oc-canvas,
+.os-companion.oc-st-dozing .oc-canvas { filter: saturate(0.66) brightness(0.86) hue-rotate(8deg); }
+.os-companion.oc-pulse .oc-canvas { animation: oc-pulse 620ms ease-out; }
+
+.oc-pill-dot.is-busy { background: #8fc0ff; box-shadow: 0 0 8px rgba(143, 192, 255, 0.85); }
+.oc-pill-dot.is-done { background: #ffd08a; box-shadow: 0 0 9px rgba(255, 208, 138, 0.9); }
+.oc-pill-dot.is-error { background: #ff8b7a; box-shadow: 0 0 9px rgba(255, 139, 122, 0.9); }
+.oc-pill-dot.is-sleep { background: #7f8aa0; box-shadow: 0 0 6px rgba(127, 138, 160, 0.6); }
+
+/* 刘海形态：道具缩到胶囊两侧，不遮住脸。 */
+.oc-notch .oc-actor { left: 0; right: 0; top: 0; bottom: 0; }
+.oc-notch .oc-think { top: 10px; right: -46px; }
+.oc-notch .oc-work { left: -54px; bottom: 4px; padding: 5px 7px; transform: scale(0.82); transform-origin: right bottom; }
+.oc-notch .oc-spark { top: 14px; }
+.oc-notch .oc-alert { top: -2px; }
+.oc-notch .oc-zzz { top: 6px; right: -34px; }
+
+@keyframes oc-dot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-3px); }
+}
+@keyframes oc-type {
+  0% { transform: scaleX(0.05); opacity: 0.2; }
+  35% { transform: scaleX(0.7); opacity: 0.7; }
+  70%, 100% { transform: scaleX(1); opacity: 1; }
+}
+@keyframes oc-caret {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+@keyframes oc-spark {
+  0% { opacity: 0; transform: translate(0, 0) scale(0.4); }
+  18% { opacity: 1; }
+  100% { opacity: 0; transform: translate(var(--dx, 20px), var(--dy, -20px)) scale(1); }
+}
+@keyframes oc-pop {
+  0% { opacity: 0; transform: scale(0.5); }
+  12% { opacity: 1; transform: scale(1.12); }
+  20%, 76% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.9); }
+}
+@keyframes oc-zzz {
+  0% { opacity: 0; transform: translateY(4px) scale(0.8); }
+  24% { opacity: 0.85; }
+  100% { opacity: 0; transform: translateY(-24px) scale(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .oc-st-thinking .oc-think i,
+  .oc-st-working .oc-work b,
+  .oc-st-executing .oc-work b,
+  .oc-st-juggling .oc-work b,
+  .oc-st-attention .oc-alert,
+  .oc-st-notification .oc-spark i,
+  .oc-st-yawning .oc-zzz i,
+  .oc-st-dozing .oc-zzz i,
+  .oc-st-sleeping .oc-zzz i { animation: none; }
+  .oc-st-thinking .oc-think,
+  .oc-st-attention .oc-alert,
+  .oc-st-notification .oc-spark,
+  .oc-st-sleeping .oc-zzz { opacity: 1; }
+}

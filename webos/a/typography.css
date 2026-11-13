@@ -1,0 +1,11 @@
+/* The shell consumes the same variables. This file styles only the new controls. */
+.st .st-typography-select { flex: 0 0 auto; width: 176px; max-width: 45%; }
+.st .st-typography-preview { margin: 0 16px 12px; padding: 12px; border: 1px solid #808080; background: #fff; color: #000; }
+.st .st-typography-preview > span { display: block; margin-bottom: 10px; color: #555; }
+.st .st-typography-preview p { margin: 6px 0; font: normal var(--retro-font-size, 12px)/1.5 var(--retro-font-family, sans-serif); overflow-wrap: break-word; }
+.st .st-typography-actions { padding: 0 16px 12px; }
+@media (max-width: 520px) {
+  .st .st-typography .st-row { flex-wrap: wrap; }
+  .st .st-typography .st-row-text { min-width: calc(100% - 48px); }
+  .st .st-typography-select { width: calc(100% - 48px); max-width: none; margin: 8px 0 0 38px; }
+}

@@ -1,0 +1,131 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1200" width="1920" height="1200" preserveAspectRatio="xMidYMid slice">
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0.2" y2="1">
+      <stop offset="0" stop-color="#fdf7e8"/>
+      <stop offset="0.34" stop-color="#f4e8cf"/>
+      <stop offset="0.62" stop-color="#dde4dc"/>
+      <stop offset="0.84" stop-color="#c4d2cd"/>
+      <stop offset="1" stop-color="#b0c3c0"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.215" cy="0.255" r="0.46">
+      <stop offset="0" stop-color="#fffdf3" stop-opacity="1"/>
+      <stop offset="0.22" stop-color="#fdf0cd" stop-opacity="0.78"/>
+      <stop offset="0.55" stop-color="#f7e3b8" stop-opacity="0.28"/>
+      <stop offset="1" stop-color="#f7e3b8" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="far" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#aebfbd"/>
+      <stop offset="1" stop-color="#c8d5d0"/>
+    </linearGradient>
+    <linearGradient id="mid" x1="0" y1="0" x2="0.1" y2="1">
+      <stop offset="0" stop-color="#7e9695"/>
+      <stop offset="1" stop-color="#a4b6b3"/>
+    </linearGradient>
+    <linearGradient id="near" x1="0" y1="0" x2="0.1" y2="1">
+      <stop offset="0" stop-color="#3f5a5d"/>
+      <stop offset="1" stop-color="#5d777a"/>
+    </linearGradient>
+    <linearGradient id="water" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#cfdcd6"/>
+      <stop offset="0.22" stop-color="#b3c6c2"/>
+      <stop offset="0.58" stop-color="#8ea6a4"/>
+      <stop offset="1" stop-color="#657f80"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#fff8e6" stop-opacity="0.7"/>
+      <stop offset="0.6" stop-color="#fff3d8" stop-opacity="0.2"/>
+      <stop offset="1" stop-color="#fff3d8" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="fore" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2f4446"/>
+      <stop offset="1" stop-color="#1d2e30"/>
+    </linearGradient>
+    <radialGradient id="vignette" cx="0.5" cy="0.44" r="0.8">
+      <stop offset="0.5" stop-color="#16211f" stop-opacity="0"/>
+      <stop offset="1" stop-color="#16211f" stop-opacity="0.42"/>
+    </radialGradient>
+    <filter id="haze" x="-30%" y="-80%" width="160%" height="260%">
+      <feGaussianBlur stdDeviation="34"/>
+    </filter>
+    <filter id="soft" x="-10%" y="-30%" width="120%" height="160%">
+      <feGaussianBlur stdDeviation="5"/>
+    </filter>
+    <filter id="grain">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="3" stitchTiles="stitch"/>
+      <feColorMatrix type="saturate" values="0"/>
+      <feComponentTransfer><feFuncA type="linear" slope="0.06"/></feComponentTransfer>
+    </filter>
+  </defs>
+
+  <!-- 天空：左上留大片暖光，给桌面图标可读的落点 -->
+  <rect width="1920" height="1200" fill="url(#sky)"/>
+  <rect width="1920" height="1200" fill="url(#sun)"/>
+
+  <!-- 远山：一条低对比的锯齿脊线，拉开景深 -->
+  <path d="M0 592 L120 566 L236 584 L352 540 L470 574 L600 528 L716 566 L840 522 L968 562 L1096 516 L1224 556 L1352 512 L1478 552 L1604 518 L1732 558 L1852 530 L1920 544 L1920 760 L0 760 Z" fill="url(#far)" opacity="0.78"/>
+
+  <!-- 中景：主峰在左侧偏中，右侧留出湖面开口 -->
+  <path d="M0 716 C96 700 178 664 268 646 C366 626 442 660 528 668 C620 676 700 626 792 606 C884 586 962 632 1052 656 C1144 680 1226 652 1316 630 C1410 606 1492 640 1580 664 C1676 690 1806 676 1920 646 L1920 830 L0 830 Z" fill="url(#mid)"/>
+
+  <!-- 近景山：轮廓更硬，颜色压到墨青 -->
+  <path d="M0 812 C104 792 196 748 304 728 C398 710 470 744 556 758 C654 774 738 720 834 696 C936 670 1018 712 1108 740 C1204 770 1290 744 1382 716 C1482 686 1584 720 1682 752 C1770 780 1856 790 1920 792 L1920 906 L0 906 Z" fill="url(#near)"/>
+
+  <!-- 山脊高光：日光擦过山脊的一条亮边 -->
+  <g fill="none" stroke="#f6efdc" stroke-linecap="round" opacity="0.32">
+    <path d="M268 646 C366 626 442 660 528 668" stroke-width="3"/>
+    <path d="M792 606 C884 586 962 632 1052 656" stroke-width="2.6"/>
+    <path d="M834 696 C936 670 1018 712 1108 740" stroke-width="2.4"/>
+  </g>
+
+  <!-- 山脚雾带 -->
+  <g filter="url(#haze)" opacity="0.8">
+    <ellipse cx="420" cy="772" rx="430" ry="42" fill="#f7f1e3"/>
+    <ellipse cx="1080" cy="790" rx="470" ry="38" fill="#f3eee0"/>
+    <ellipse cx="1660" cy="822" rx="330" ry="32" fill="#efe9db"/>
+  </g>
+
+  <!-- 湖面 -->
+  <rect x="0" y="856" width="1920" height="344" fill="url(#water)"/>
+  <!-- 倒影：先压一层山影，再叠日光柱 -->
+  <path d="M0 862 C170 884 330 866 486 884 C650 902 780 878 936 892 C1102 906 1260 878 1424 894 C1590 910 1770 884 1920 878 L1920 944 L0 944 Z" fill="#3f585a" opacity="0.3" filter="url(#soft)"/>
+  <path d="M286 858 L690 858 L604 1200 L366 1200 Z" fill="url(#glow)" opacity="0.62" filter="url(#soft)"/>
+
+  <!-- 波纹：近处更粗更疏 -->
+  <g stroke="#eef4ee" stroke-linecap="round" fill="none">
+    <path d="M150 890 H470" stroke-width="2" opacity="0.34"/>
+    <path d="M700 906 H1040" stroke-width="2" opacity="0.3"/>
+    <path d="M1140 892 H1520" stroke-width="2" opacity="0.26"/>
+    <path d="M250 956 H740" stroke-width="3" opacity="0.24"/>
+    <path d="M880 980 H1370" stroke-width="3" opacity="0.2"/>
+    <path d="M80 1032 H600" stroke-width="4" opacity="0.17"/>
+    <path d="M760 1064 H1300" stroke-width="4" opacity="0.15"/>
+    <path d="M1410 1040 H1870" stroke-width="4" opacity="0.13"/>
+    <path d="M210 1132 H820" stroke-width="5" opacity="0.11"/>
+    <path d="M980 1166 H1660" stroke-width="5" opacity="0.09"/>
+  </g>
+
+  <!-- 前景：左下角一块伸进湖里的岸与松林，撑住整个画面 -->
+  <path d="M0 1048 C120 1024 232 1006 330 1024 C428 1042 494 1092 542 1200 L0 1200 Z" fill="url(#fore)"/>
+  <path d="M1920 1072 C1810 1054 1716 1058 1634 1088 C1560 1116 1516 1158 1494 1200 L1920 1200 Z" fill="url(#fore)" opacity="0.94"/>
+  <g fill="#1b2b2c">
+    <path d="M118 1046 l10 -46 9 46 z M104 1064 l24 -40 24 40 z"/>
+    <path d="M168 1032 l11 -52 10 52 z M152 1052 l27 -44 27 44 z"/>
+    <path d="M222 1026 l9 -42 9 42 z M208 1044 l23 -38 23 38 z"/>
+    <path d="M276 1032 l10 -48 10 48 z M260 1052 l26 -42 26 42 z"/>
+    <path d="M330 1044 l9 -40 9 40 z M316 1062 l23 -38 23 38 z"/>
+    <path d="M378 1062 l8 -34 8 34 z M366 1078 l20 -32 20 32 z"/>
+    <path d="M1722 1098 l10 -44 9 44 z M1706 1118 l25 -40 25 40 z"/>
+    <path d="M1782 1090 l9 -40 9 40 z M1768 1108 l23 -36 23 36 z"/>
+    <path d="M1840 1100 l8 -36 8 36 z M1828 1116 l20 -32 20 32 z"/>
+  </g>
+
+  <!-- 飞鸟：两笔，给静态画面一点呼吸 -->
+  <g fill="none" stroke="#465a5b" stroke-width="2" stroke-linecap="round" opacity="0.6">
+    <path d="M1292 348 q10 -8 20 0 q10 -8 20 0"/>
+    <path d="M1352 386 q8 -6 16 0 q8 -6 16 0"/>
+    <path d="M1244 404 q7 -5 14 0 q7 -5 14 0"/>
+  </g>
+
+  <rect width="1920" height="1200" fill="url(#vignette)"/>
+  <rect width="1920" height="1200" filter="url(#grain)" opacity="0.55"/>
+</svg>

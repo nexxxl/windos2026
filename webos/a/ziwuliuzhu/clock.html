@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no">
+<title>子午流注钟</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;background:transparent;color:#e8d5b7;font-family:'Songti SC','SimSun',Georgia,serif;overflow:hidden}
+.wrap{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 6px 4px}
+.top{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:0}
+.time{display:none}
+.sc{font-size:13px;color:#d4a843;letter-spacing:1.5px;font-weight:700}
+.tw{display:none}
+.cur{display:inline-block;width:2px;height:13px;background:#c73e3a;vertical-align:middle;animation:bk 1s steps(1) infinite}
+@keyframes bk{0%,50%{opacity:1}51%,100%{opacity:0}}
+svg{width:100%;flex:1;min-height:0;max-width:420px;display:block}
+/* 玻璃衬底在 NEXLOS 外壳里跟着深浅主题走，钟面文字也跟着换色。 */
+html[data-theme="light"] .sc{color:#8a6b24}
+html[data-theme="light"] body{color:#3a3226}
+/* 钟面只在整点换高亮、每秒转指针；扇区与脏腑的选中态用类名切换，不再每秒重建整张 SVG。 */
+#svg .sec-base{fill-opacity:.97;stroke:#2a2a3a;stroke-width:.5}
+#svg .sec.is-active .sec-base{fill-opacity:1;stroke:#c73e3a;stroke-width:2}
+#svg .sec.is-sel .sec-base{fill-opacity:.99;stroke:#4a90d9;stroke-width:2}
+#svg .sec-tint{opacity:0}
+#svg .sec.is-active .sec-tint{opacity:.25}
+#svg .sec.is-sel .sec-tint{fill:#4a90d9;opacity:.2}
+#svg .sec text{fill:#1a1a2e}
+#svg .s-branch{font-size:17px}
+#svg .s-time,#svg .s-action{font-size:12px}
+#svg .sec.is-active .s-branch{fill:#e8d5b7;font-size:19px;font-weight:bold}
+#svg .sec.is-active .s-time,#svg .sec.is-active .s-action{fill:#e8d5b7;font-size:13px;font-weight:bold}
+#svg .sec.is-sel .s-branch{fill:#a8c8f0;font-size:18px;font-weight:bold}
+#svg .sec.is-sel .s-time,#svg .sec.is-sel .s-action{fill:#a8c8f0;font-weight:bold}
+/* 当令扇区同时被选中时，原实现以「当令」配色为准。 */
+#svg .sec.is-active.is-sel .s-branch{fill:#e8d5b7;font-size:19px}
+#svg .sec.is-active.is-sel .s-time,#svg .sec.is-active.is-sel .s-action{fill:#e8d5b7;font-size:13px}
+#svg .organ{fill:#3a3226;font-size:11px}
+#svg .organ.is-active{fill:#c73e3a;font-size:13px;font-weight:bold}
+#svg .organ.is-sel{fill:#4a90d9}
+/* 当令圈保持静态：Chrome 72 对 SVG 子元素的 opacity 动画会整层重栅格化，
+   Pixel C 实测这一枚 14px 小圈的脉冲就把整页从 60fps 拉到 48fps。 */
+#svg #organRing{fill:none;stroke:#c73e3a;stroke-width:1.5;opacity:.85}
+#svg #organSel{fill:none;stroke:#4a90d9;stroke-width:1.2;stroke-dasharray:3 2;opacity:.8}
+html[data-theme="light"] #svg .sec.is-active .s-branch,
+html[data-theme="light"] #svg .sec.is-active .s-time,
+html[data-theme="light"] #svg .sec.is-active .s-action{fill:#3a1a12}
+html[data-theme="light"] #svg .sec.is-sel .s-branch,
+html[data-theme="light"] #svg .sec.is-sel .s-time,
+html[data-theme="light"] #svg .sec.is-sel .s-action{fill:#1e3a5c}
+html[data-theme="light"] #svg .sec.is-active.is-sel .s-branch,
+html[data-theme="light"] #svg .sec.is-active.is-sel .s-time,
+html[data-theme="light"] #svg .sec.is-active.is-sel .s-action{fill:#3a1a12}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><span class="time" id="hm"></span><span class="sc" id="sc"></span></div>
+  <div class="tw" id="tw"></div>
+  <svg id="svg" viewBox="0 0 400 400"></svg>
+</div>
+<script type="module">
+import { clockLocale } from "./locales.js";
+let language = "zh-CN";
+let labels = null;
+const WX={木:'#5FA97C',火:'#E0584A',土:'#D4A843',金:'#C8D6E0',水:'#4A7FB5'};
+const SC=[
+{n:'子',t:'23-01',h:[23,1],m:'胆经',o:'胆',e:'木',a:'忌熬夜耗阳',tip:['半夜十一点到一点，胆经正在值班呢，这时候你最该做的事就是老老实实睡觉，别再刷手机了。','胆气是一阳初生，就像春天第一颗嫩芽，你要是硬撑着不睡，这芽就长不出来，身体慢慢就亏了。','有些人老在半夜这个点醒过来，翻来覆去睡不着，其实就是胆火在捣乱，得好好调理一下了。']},
+{n:'丑',t:'01-03',h:[1,3],m:'肝经',o:'肝',e:'木',a:'忌饮酒怒气',tip:['凌晨一点到三点，肝经上班了。你躺着睡着了，血就乖乖回肝里去，肝帮你把脏血洗成干净血。','你要是这会儿还不睡，肝就没法好好干活，时间一长脸色发暗、眼睛发涩，都是肝在抗议。','丑时千万别说再熬会儿没事，你的肝正在拼命给你造血解毒呢，别给它添乱了。']},
+{n:'寅',t:'03-05',h:[3,5],m:'肺经',o:'肺',e:'金',a:'忌悲忧伤肺',tip:['凌晨三点到五点，肺经把肝处理好的血送到全身各处去了。这会儿还该好好睡着，别起来折腾。','家里老人要是老在三四点就醒了，那多半是肺气不够用了，得补补肺，别不当回事。','寅时身体正从安静慢慢醒来，是气血交接班的时候，你硬要起来锻炼反而伤肺气，不值当的。']},
+{n:'卯',t:'05-07',h:[5,7],m:'大肠经',o:'大肠',e:'金',a:'忌忍便不解',tip:['五点到七点，大肠经催你起床了。先喝杯温开水，去趟厕所把昨天的垃圾排掉，一身轻松。','卯时排便是身体在走天道，一晚上的浊气都攒着呢，该排不排，浊气往上跑，嘴巴都不好闻。','便秘的朋友，试试每天卯时揉肚子一百下，再慢慢喝杯温水，坚持一段时间自然就通了。']},
+{n:'辰',t:'07-09',h:[7,9],m:'胃经',o:'胃',e:'土',a:'忌空腹伤胃',tip:['七点到九点，胃经最活跃，这时候必须吃早餐！别跟我说不饿，你胃都张好嘴等着了。','不吃早餐的人脸色迟早发黄，胃气是后天之本，你不给它吃的，它拿什么给你化气血？','早餐要吃温的！冰牛奶凉面包直接把胃气冻住了，时间一长胃寒胃痛，怪谁呢？']},
+{n:'巳',t:'09-11',h:[9,11],m:'脾经',o:'脾',e:'土',a:'忌久坐思虑',tip:['九点到十一点，脾经当班，它把你吃的早餐变成营养送到全身。上午精神好不好，全看脾给不给力。','别一上午坐着不动，脾主肌肉，你老坐着它也懒得动，起来走走，伸伸胳膊腿，帮脾一把。','脾最怕湿，别喝太多冷饮冰水，寒凉的东西一进去，脾就转不动了，肚子胀、大便稀就是这么来的。']},
+{n:'午',t:'11-13',h:[11,13],m:'心经',o:'心',e:'火',a:'忌大怒大汗',tip:['中午十一点到一点，心经值班。别小看中午这会儿，眯上十五分钟，比晚上多睡一小时都管用。','午时阴阳交接，心肾要好好握个手，你安安静静躺一会儿，下午精神倍儿好。','中午别发火别吵架，心是君主之官，你一激动它就乱套了，血压蹭蹭往上飙。']},
+{n:'未',t:'13-15',h:[13,15],m:'小肠经',o:'小肠',e:'火',a:'忌过时不化',tip:['下午一点到三点，小肠在忙着吸收午饭的营养。所以午饭别吃太晚，小肠等不及就罢工了。','午饭七分饱就得了，留点余量让小肠慢慢干活，吃太撑它消化不完，就变成痰湿了。','未时别再往嘴里塞零食了，小肠正全力以赴处理午饭呢，你再加塞它就顾不过来了。']},
+{n:'申',t:'15-17',h:[15,17],m:'膀胱经',o:'膀胱',e:'水',a:'忌憋尿少饮',tip:['下午三点到五点，膀胱经最忙，多喝水多排尿，把身体里的垃圾冲出去，这是顺势而为。','膀胱经从脚一直走到头顶，是身上最长的一条经。申时拍拍后背，能帮阳气升发，驱走寒湿。','这个时段脑子最清醒，要看书学习赶紧行动，效率比上午还高呢，别浪费了。']},
+{n:'酉',t:'17-19',h:[17,19],m:'肾经',o:'肾',e:'水',a:'忌劳累惊恐',tip:['下午五点到七点，肾经当令。肾是先天之本，这时候别太累了，散散步、搓搓腰，养养肾气。','酉时别剧烈运动，大汗淋漓最伤肾。安安静静揉揉涌泉穴、搓搓后腰，比什么补药都强。','肾开窍于耳，酉时搓搓耳朵、揉揉腰眼，坚持下去腰膝有力，耳朵也不背。']},
+{n:'戌',t:'19-21',h:[19,21],m:'心包经',o:'心包',e:'火',a:'忌大喜大悲',tip:['晚上七点到九点，心包经护着你的心呢。出去溜达溜达，听听曲儿，别闷着，让心情舒畅起来。','心包就是心的保镖，大喜大悲它先挡着。戌时保持心平气和，不急不躁，就是最好的养生。','戌时按按内关穴，就在手腕两寸那里，安神助眠特别灵，简单又管用，人人都能做。']},
+{n:'亥',t:'21-23',h:[21,23],m:'三焦经',o:'三焦',e:'火',a:'忌熬夜不眠',tip:['晚上九点到十一点，三焦经在收尾了，把全身的水道通一通，准备让你好好睡一觉。','亥时该放下手机了，泡泡脚、闭闭眼，让阳气归到根上去。你再不睡，三焦就通不顺畅了。','亥时还不睡的人，交感神经一直在兴奋，时间长了各种毛病都来找你，真不是吓唬人。']}
+];
+const ORGANS=['胆','肝','肺','大肠','胃','脾','心','小肠','膀胱','肾','心包','三焦'];
+
+function si(h){if(h>=23||h<1)return 0;return Math.floor((h+1)/2)}
+function pl(cx,cy,r,d){const a=(d-90)*Math.PI/180;return[cx+r*Math.cos(a),cy+r*Math.sin(a)]}
+function ap(cx,cy,r1,r2,s,e){
+  const s1=pl(cx,cy,r2,s),e1=pl(cx,cy,r2,e),s2=pl(cx,cy,r1,e),e2=pl(cx,cy,r1,s);
+  const l=e-s>180?1:0;
+  return`M${s1[0]} ${s1[1]}A${r2} ${r2} 0 ${l} 1 ${e1[0]} ${e1[1]}L${s2[0]} ${s2[1]}A${r1} ${r1} 0 ${l} 0 ${e2[0]} ${e2[1]}Z`
+}
+
+const CX=200,CY=200,RO=196,RS=188,RD=124,RDI=42,RN=74,RH=56,RTO=118,RTM=106,RTn=112,RHH=80,RMH=98,RSH=108,RC=6;
+const nr=(RS+RD)/2+16,tr=(RS+RD)/2,mr=(RS+RD)/2-16;
+// 圆盘用不透明的双色宋锦底：透明度会把壁纸透进扇区，压掉表盘的纸感。
+const SL='#cbb086',SD='#b79a72';
+
+let selIdx=null,selTmr=null;
+let twi=0,twc=0,twp='t',twt='',prevSi=-1;
+// 外壳通过 nexlos.clockTheme 告知当前深浅；缺省保持原来的暗色玻璃观感。
+let themeDark=document.documentElement.getAttribute('data-theme')!=='light';
+
+let curHour=-1;
+
+/** 静态钟面只建一次；之后每秒只转三根指针，整点才换高亮。
+    旧实现每秒重建整张 SVG（含两枚 feDropShadow 滤镜 + 十余个 SMIL 动画），
+    在 Pixel C 上让主线程常驻 20–30ms/帧；现在钟面静置，指针每秒写三个 rotate。 */
+function buildDial(){
+  const now=new Date(),cur=si(now.getHours());
+  curHour=cur;
+  let o='';
+  // defs：只留径向底色与宋锦纹理，指针不再挂滤镜。
+  o+=`<defs><radialGradient id="sg" cx="50%" cy="45%" r="55%"><stop offset="0%" stop-color="#e8e0cc"/><stop offset="60%" stop-color="#ddd4bb"/><stop offset="100%" stop-color="#c8bda0"/></radialGradient>
+  <pattern id="ck" width="40" height="40" patternUnits="userSpaceOnUse"><line x1="0" y1="0" x2="18" y2="22" stroke="#b5a88a" stroke-width="0.3" opacity="0.35"/><line x1="18" y1="22" x2="40" y2="15" stroke="#b5a88a" stroke-width="0.25" opacity="0.3"/><line x1="22" y1="0" x2="12" y2="38" stroke="#b5a88a" stroke-width="0.2" opacity="0.25"/><line x1="40" y1="32" x2="8" y2="40" stroke="#b5a88a" stroke-width="0.25" opacity="0.3"/><line x1="5" y1="40" x2="30" y2="28" stroke="#b5a88a" stroke-width="0.2" opacity="0.2"/></pattern></defs>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RO}" fill="none" stroke="#2a2a3a" stroke-width="2"/>`;
+
+  // 扇区：底色/文字一次写死，选中与当令只切类名。
+  SC.forEach((s,i)=>{
+    const sd2=i*30-15,ed=(i+1)*30-15,md2=i*30,tr2=md2>90&&md2<270?md2+180:md2;
+    const bg=i%2===0?SD:SL,p=ap(CX,CY,RD,RS,sd2,ed);
+    const np=pl(CX,CY,nr,md2),tp=pl(CX,CY,tr,md2),mp=pl(CX,CY,mr,md2);
+    const actionSize=labels&&language!=='zh-TW'?' style="font-size:7px"':'';
+    o+=`<g class="sec" data-i="${i}" style="cursor:pointer">`;
+    o+=`<path class="sec-base" d="${p}" fill="${bg}"/>`;
+    o+=`<path class="sec-tint" d="${p}" fill="${WX[s.e]||'#d4a843'}"/>`;
+    o+=`<text class="s-branch" x="${np[0]}" y="${np[1]}" text-anchor="middle" dominant-baseline="central" transform="rotate(${tr2},${np[0]},${np[1]})">${labels ? labels.branches[i] : s.n+'时'}</text>`;
+    o+=`<text class="s-time" x="${tp[0]}" y="${tp[1]}" text-anchor="middle" dominant-baseline="central" transform="rotate(${tr2},${tp[0]},${tp[1]})">${s.t}${labels ? '' : '点'}</text>`;
+    o+=`<text class="s-action"${actionSize} x="${mp[0]}" y="${mp[1]}" text-anchor="middle" dominant-baseline="central" transform="rotate(${tr2},${mp[0]},${mp[1]})">${labels ? labels.actions[i] : s.a}</text>`;
+    o+=`</g>`;
+  });
+
+  // 表盘
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RD}" fill="url(#sg)"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RD-1}" fill="url(#ck)" opacity="0.5"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RD}" fill="none" stroke="#3a3226" stroke-width="1.5"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RD-3}" fill="none" stroke="#5a4e3a" stroke-width="0.5" opacity="0.5"/>`;
+
+  // 脏腑：共享两个圈，避免为 12 个标签各带一段 SMIL。
+  o+=`<circle id="organRing" cx="0" cy="0" r="14" style="display:none"/>`;
+  o+=`<circle id="organSel" cx="0" cy="0" r="14" style="display:none"/>`;
+  ORGANS.forEach((org,i)=>{
+    const d=i*30,p=pl(CX,CY,RN,d),r2=d>90&&d<270?d+180:d;
+    const orgSize=labels&&language!=='zh-TW'?' style="font-size:8px"':'';
+    const orgLabel=labels ? (labels.codes && labels.codes[i] ? labels.codes[i] : labels.short[i]) : org;
+    o+=`<text class="organ" data-i="${i}"${orgSize} x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="central" transform="rotate(${r2},${p[0]},${p[1]})">${orgLabel}</text>`;
+  });
+
+  // 24h
+  for(let i=0;i<24;i++){const hr=(i+24)%24||24,d=i*15,p=pl(CX,CY,RH,d),r2=d>90&&d<270?d+180:d,iq=hr%6===0;
+    o+=`<text x="${p[0]}" y="${p[1]}" text-anchor="middle" dominant-baseline="central" fill="${iq?'#5a4e3a':'#8a7e6a'}" font-size="${iq?9:7}" font-weight="${iq?'bold':'normal'}" transform="rotate(${r2},${p[0]},${p[1]})">${hr}</text>`}
+
+  // 刻度
+  for(let i=0;i<60;i++){const d=i*6,im=i%5===0,r1=im?RTM:RTn,p1=pl(CX,CY,r1,d),p2=pl(CX,CY,RTO,d);
+    o+=`<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" stroke="${im?'#3a3226':'#8a7e6a'}" stroke-width="${im?1.2:0.4}" opacity="${im?0.8:0.4}"/>`}
+
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RDI+8}" fill="none" stroke="#8a7e6a" stroke-width="0.4" opacity="0.5"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RDI+2}" fill="none" stroke="#5a4e3a" stroke-width="0.6" opacity="0.6"/>`;
+
+  // 指针：静态几何，每秒只写一个 rotate；去掉 feDropShadow（Pixel C 上每次重绘都要重跑整片滤镜）。
+  o+=`<line id="hHour" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY-RHH}" stroke="#2a2016" stroke-width="5" stroke-linecap="round"/>`;
+  o+=`<line id="hMinute" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY-RMH}" stroke="#3a3026" stroke-width="2.5" stroke-linecap="round"/>`;
+  o+=`<line id="hSecond" x1="${CX}" y1="${CY}" x2="${CX}" y2="${CY-RSH}" stroke="#8b1a1a" stroke-width="1" stroke-linecap="round"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RC}" fill="#8b6914" stroke="#6b4e0a" stroke-width="1"/>`;
+  o+=`<circle cx="${CX}" cy="${CY}" r="${RC-2.5}" fill="#b8922e" opacity="0.6"/>`;
+
+  const svg=document.getElementById('svg');
+  svg.innerHTML=o;
+  // 扇区点击只在重建时绑定一次。
+  svg.querySelectorAll('.sec').forEach(g=>{
+    g.addEventListener('click',function(){
+      selIdx=parseInt(g.dataset.i,10);
+      if(selTmr)clearTimeout(selTmr);
+      selTmr=setTimeout(function(){selIdx=null;applySelection();},10000);
+      applySelection();
+    });
+  });
+  applySelection(cur);
+  updateHands(now);
+}
+
+/** 当令/选中态：只切 24 个类名与两个共享圈。 */
+function applySelection(active){
+  if(active==null)active=si(new Date().getHours());
+  curHour=active;
+  const svg=document.getElementById('svg');
+  if(!svg)return;
+  svg.querySelectorAll('.sec').forEach(g=>{
+    const i=parseInt(g.dataset.i,10);
+    g.classList.toggle('is-active',i===active);
+    g.classList.toggle('is-sel',i===selIdx);
+  });
+  svg.querySelectorAll('.organ').forEach(t=>{
+    const i=parseInt(t.dataset.i,10),isActive=i===active;
+    t.classList.toggle('is-active',isActive);
+    t.classList.toggle('is-sel',i===selIdx&&!isActive);
+  });
+  const a=svg.querySelector('.organ.is-active'),ring=document.getElementById('organRing');
+  if(ring){
+    if(a){ring.setAttribute('cx',a.getAttribute('x'));ring.setAttribute('cy',a.getAttribute('y'));ring.style.display=''}
+    else ring.style.display='none';
+  }
+  const s=svg.querySelector('.organ.is-sel'),sr=document.getElementById('organSel');
+  if(sr){
+    if(s){sr.setAttribute('cx',s.getAttribute('x'));sr.setAttribute('cy',s.getAttribute('y'));sr.style.display=''}
+    else sr.style.display='none';
+  }
+}
+
+/** 每秒：转三根指针；时间/当令文字只在变化时写。 */
+function updateHands(now){
+  const H=now.getHours(),M=now.getMinutes(),S=now.getSeconds();
+  const hd=(H+M/60+S/3600)*15,md=(M+S/60)/60*360,sd=S/60*360;
+  const h=document.getElementById('hHour');if(h)h.setAttribute('transform','rotate('+hd+' '+CX+' '+CY+')');
+  const m=document.getElementById('hMinute');if(m)m.setAttribute('transform','rotate('+md+' '+CX+' '+CY+')');
+  const s=document.getElementById('hSecond');if(s)s.setAttribute('transform','rotate('+sd+' '+CX+' '+CY+')');
+  const hm=document.getElementById('hm'),hmText=String(H).padStart(2,'0')+':'+String(M).padStart(2,'0');
+  if(hm&&hm.textContent!==hmText)hm.textContent=hmText;
+  const sc=document.getElementById('sc'),cur=si(H),row=SC[cur];
+  const scText=labels?(labels.branches[cur]+' · '+labels.organs[cur]):row.n+'时·'+row.m;
+  if(sc&&sc.textContent!==scText)sc.textContent=scText;
+}
+
+function tick(){
+  const now=new Date(),cur=si(now.getHours());
+  if(cur!==curHour){curHour=cur;applySelection(cur)}
+  updateHands(now);
+}
+
+// 打字机
+function twTick(){
+  const tw=document.getElementById('tw');
+  // .tw 在 NEXLOS 里是隐藏的：隐藏时不必每 100ms 重写一次 DOM。
+  if(!tw||tw.offsetParent===null){setTimeout(twTick,30000);return}
+  const cur=si(new Date().getHours()),tips=labels ? [] : (SC[cur]&&SC[cur].tip)||[];
+  if(!tips.length){setTimeout(twTick,1000);return}
+  const tip=tips[twi%tips.length];
+  switch(twp){
+    case't':if(twc<=tip.length){twt=tip.slice(0,twc);twc++;setTimeout(twTick,100)}else{twp='p';setTimeout(twTick,6000)}break;
+    case'p':twp='e';setTimeout(twTick,50);break;
+    case'e':if(twc>0){twc--;twt=tip.slice(0,twc);setTimeout(twTick,50)}else{twp='g';setTimeout(twTick,1000)}break;
+    case'g':twi=(twi+1)%tips.length;twc=0;twp='t';setTimeout(twTick,0);break;
+  }
+  document.getElementById('tw').innerHTML=twt+'<span class="cur"></span>';
+}
+
+// 外壳消息：深浅主题切换后立即重绘；双击（含触摸双击）通知外壳放大 / 还原。
+function applyTheme(dark){
+  themeDark=!!dark;
+  document.documentElement.setAttribute('data-theme',themeDark?'dark':'light');
+  // 主题/语言切换很罕见：重建一次静态钟面，之后继续每秒只转指针。
+  buildDial();
+}
+window.addEventListener('message',function(e){
+  if(e.origin!==location.origin||e.source!==window.parent||!e.data||typeof e.data!=='object')return;
+  if(e.data.type==='nexlos.clockTheme'){
+    // 子午流注是中医文化件：无论外壳什么语言，钟面固定中文，只跟主题深浅。
+    language='zh-CN'; labels=null;
+    document.documentElement.lang='zh-CN'; document.title='子午流注钟';
+    document.getElementById('tw').textContent='';
+    applyTheme(e.data.dark);
+  }
+});
+
+let lastZoomAt=0;
+function askZoom(){
+  if(window.parent===window)return; // 单独打开 clock.html 时不响应
+  const now=Date.now();
+  if(now-lastZoomAt<500)return; // 触摸双击与合成 dblclick 可能把同一次操作各报一回来
+  lastZoomAt=now;
+  window.parent.postMessage({type:'nexlos.clockZoom'},location.origin);
+}
+document.addEventListener('dblclick',function(e){e.preventDefault();askZoom();},{passive:false});
+
+// Chrome 72 的触摸端不一定合成 dblclick，这里自己识别 350ms 内的两次轻触。
+let lastTapAt=0,tapX=0,tapY=0;
+document.addEventListener('touchend',function(e){
+  const t=e.changedTouches&&e.changedTouches[0];
+  if(!t)return;
+  const now=Date.now();
+  if(now-lastTapAt<350&&Math.abs(t.clientX-tapX)<40&&Math.abs(t.clientY-tapY)<40){
+    lastTapAt=0;
+    e.preventDefault();
+    askZoom();
+  }else{
+    lastTapAt=now;tapX=t.clientX;tapY=t.clientY;
+  }
+},{passive:false});
+
+buildDial();setInterval(tick,1000);twTick();
+</script>
+</body>
+</html>

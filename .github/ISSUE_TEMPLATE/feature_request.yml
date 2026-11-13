@@ -1,0 +1,58 @@
+name: Feature request
+description: Propose a capability, integration, or ecosystem app
+title: "feat: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For "I want to port my app" requests, describe the app and the commands it needs.
+        For protocol changes, mention the affected route (`/c/*`, `/s/*`, `/agent/*`).
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Universal kernel
+        - Plugin host
+        - WebOS / theme
+        - App manifest or converter
+        - Office
+        - Agent or permissions
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard or impossible today?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the smallest version that solves the problem.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: What else did you try or consider?
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: This is not a security vulnerability (those go through the Security tab).
+          required: true
+        - label: I checked the roadmap and existing issues.
+          required: true

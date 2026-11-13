@@ -1,0 +1,63 @@
+/* Nexl classic boot: reference composition on a 640 by 400 design plane.
+   The existing startup controller still owns timing, focus and cancellation. */
+.c98-boot {
+  /* Composition scale over the 640 by 400 plane. Keep it here: --boot-u stays the
+     contain unit, so every left/top/font-size written in plane units shrinks together.
+     0.3 keeps the whole lockup near 30 percent of the window width: 455x284 at
+     1516x1058, 432x270 at 1440x900, 384x240 at 1280x800. */
+  --boot-s: .3;
+  --boot-u: calc(.15625vw * var(--boot-s));
+  position: fixed; z-index: 2147483000; inset: 0; overflow: hidden;
+  isolation: isolate; background: #008080; color: #fff; cursor: wait;
+  font-family: 'Source Sans 3', sans-serif; -webkit-font-smoothing: antialiased;
+  user-select: none; touch-action: manipulation;
+}
+.c98-boot *, .c98-boot *::before, .c98-boot *::after { box-sizing: border-box; }
+.c98-boot-art {
+  position: absolute; left: 50%; top: 50%;
+  width: calc(640 * var(--boot-u)); height: calc(400 * var(--boot-u));
+  transform: translate(-50%,-50%);
+}
+.c98-boot-composition { position: relative; width: 100%; height: 100%; }
+/* SVG ink spans 16..240 within 256: this 252-unit box exposes a 220.5-unit mark. */
+.c98-boot-mark {
+  position: absolute; left: calc(184 * var(--boot-u)); top: calc(39 * var(--boot-u));
+  width: calc(252 * var(--boot-u)); height: calc(252 * var(--boot-u));
+}
+.c98-boot-mark > svg { display: block; width: 100%; height: 100%; }
+.c98-boot-wordmark { position: absolute; inset: 0; }
+.c98-boot-maker, .c98-boot-product {
+  position: absolute; display: block; margin: 0; padding: 0; white-space: nowrap;
+  font-family: 'Libre Franklin', 'Source Sans 3', sans-serif;
+  font-style: normal; font-weight: 900; line-height: 1; letter-spacing: 0;
+}
+.c98-boot-maker {
+  left: calc(90 * var(--boot-u)); top: calc(264 * var(--boot-u));
+  font-size: calc(32 * var(--boot-u));
+}
+.c98-boot-product {
+  left: calc(110 * var(--boot-u)); top: calc(286 * var(--boot-u));
+  font-size: calc(65 * var(--boot-u));
+}
+.c98-boot-status {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0,0,0,0); white-space: nowrap;
+}
+.c98-boot-track {
+  position: absolute; left: 50%; bottom: 12px; bottom: max(12px,env(safe-area-inset-bottom));
+  transform: translateX(-50%); width: 64px; height: 2px; overflow: hidden;
+  background: #ffffff38;
+}
+.c98-boot-track > i {
+  display: block; width: 100%; height: 100%; background: #fff;
+  transform-origin: left; animation: c98-boot-load 3.2s linear both;
+}
+@keyframes c98-boot-load { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.c98-boot.is-reduced .c98-boot-track > i { animation: none; }
+/* Same contain calculation without min(), including older Chromium hosts. */
+@media (min-aspect-ratio: 8/5) { .c98-boot { --boot-u: calc(.25vh * var(--boot-s)); } }
+@media (pointer: coarse) {
+}
+@media (prefers-reduced-motion: reduce) { .c98-boot-track > i { animation: none; } }
+/* 复古开机期间不叠现代玻璃启动页：两层同时淡出会看到第二行品牌字。 */
+html[data-appearance='win98'] #boot { display: none; }

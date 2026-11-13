@@ -1,0 +1,334 @@
+/* Windows2026: pixel accents with readable working surfaces.
+   Loaded after the historical control layer; NEXL modern selectors are untouched. */
+html[data-appearance="win98"] {
+  --w26-paper: #f7f8fa;
+  --w26-panel: #e5e9ef;
+  --w26-line: #c9d1dc;
+  --w26-blue: #244a86;
+  --w26-selection: #000080;
+  --w26-caption: linear-gradient(90deg, #000080, #1084d0);
+  --w26-inactive-caption: linear-gradient(90deg, #808080, #b5b5b5);
+  --w26-ink: #182638;
+  --w26-readable: "Source Sans 3", "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", sans-serif;
+  --w26-ui-size: max(14px, var(--retro-font-size, 12px));
+  --w26-small-size: max(12px, calc(var(--w26-ui-size) - 2px));
+  --c98-font-step: max(0px, calc(var(--w26-ui-size) - 14px));
+  --w26-icon-column: calc(100px + var(--c98-font-step) * 3);
+  --w26-icon-row: calc(104px + var(--c98-font-step) * 3);
+  --sans: var(--retro-font-family, var(--w26-readable));
+  --paper: #f7f8fa; --paper-2: #edf0f5; --paper-3: #e5e9ef;
+  --ink: #182638; --ink-2: #34445a; --mute: #687588; --line: #d7dee7;
+  --accent: #244a86; --accent-soft: #e6eefb;
+  --c98-raised: inset 1px 1px #fff, inset -1px -1px #8997aa;
+  --c98-sunken: inset 1px 1px #8997aa, inset -1px -1px #fff;
+  --c98-field: inset 1px 1px #808080, inset -1px -1px #fff, inset 2px 2px #161616, inset -2px -2px #dfdfdf;
+  --c98-window: inset 0 0 0 1px #6f7e93, inset 0 0 0 2px #fff, 0 6px 16px #102a4224;
+  --c98-default: inset 0 0 0 1px #566273, inset 0 0 0 2px #fff;
+}
+html[data-appearance="win98"] body,
+html[data-appearance="win98"] :is(button,input,select,label,textarea,legend) {
+  font-family: var(--sans); font-size: var(--w26-ui-size); font-synthesis: none;
+  -webkit-font-smoothing: antialiased;
+}
+html[data-appearance="win98"] body { font-weight: 400; line-height: 1.5; }
+html[data-appearance="win98"] :is(b,strong) { font-weight: 600; }
+html[data-appearance="win98"] :is(.os,.xp,.st,.mm,.tm,.mv,.ma,.mf,.sc,.br,.c98-dialog,.c98-dialog-body,.c98-item,.c98-result,.c98-button,.c98-field label,.c98-field input,.rail-item,.eyebrow,.chapter-title,.task-col-head b,.task-card b,.mm .mm-editor) {
+  font-family: var(--sans); font-size: var(--w26-ui-size); line-height: 1.4;
+}
+html[data-appearance="win98"] .xp :is(.xp-cmd-btn,.xp-crumb,.xp-side-head,.xp-side-item,.xp-col,.xp-name-text,.xp-group,.xp-tile-name,.xp-selbar-count,.xp-tabs span,.xp-prop-head b,.xp-prop-path,.xp-field,.xp-field > span,.xp-confirm-text,.xp-note-title,.xp-note-menu,.xp-note-body,.xp-menubar-button),
+html[data-appearance="win98"] .st :is(.st-head-title b,.st-account-meta b,.st-tile b,.st-card-head b,.st-app-meta b,.st-theme b,.st-wall-name,.st-search-input,.st-input),
+html[data-appearance="win98"] .mm :is(.mm-group-head,.mm-doc-title,.mm-dialog > b),
+html[data-appearance="win98"] .mf :is(.mf-title,.mf-row,.mf-crumb) { font-size: var(--w26-ui-size); }
+html[data-appearance="win98"] .xp :is(.xp-mod,.xp-type,.xp-size,.xp-group span,.xp-drive-head i,.xp-drive-meta,.xp-search-head,.xp-status,.xp-prop-head i,.xp-note-foot),
+html[data-appearance="win98"] .st :is(.st-note,.st-nav-foot,.st-page-head p,.st-row-text span,.st-card-head span,.st-tile span,.st-app-meta span,.st-app-kind,.st-theme > b + span,.st-net-status span,.st-update span,.st-appearance-copy > span),
+html[data-appearance="win98"] .mm :is(.mm-group-head span,.mm-group-head i,.mm-item-meta,.mm-doc-meta),
+html[data-appearance="win98"] .mf :is(.mf-rowtext i,.mf-rowsize,.mf-status),
+html[data-appearance="win98"] :is(.c98-group-label,.c98-dialog-note,.c98-empty,.chapter-words,.book-body i,.book-body small,.tm .tm-shell,.tm .tm-meta,.tm .tm-hint,.mv-time,.mv-times,.mv-note) {
+  font-size: var(--w26-small-size); line-height: 1.5;
+}
+html[data-appearance="win98"] button { cursor: pointer; }
+html[data-appearance="win98"] button:focus:not(:focus-visible) { outline: none; }
+html[data-appearance="win98"] button:focus-visible { outline: 1px dotted #182638; outline-offset: -4px; }
+html[data-appearance="win98"] button:disabled { text-shadow: none; cursor: default; }
+html[data-appearance="win98"] .os :is(.os-win-title,.os-icon-label,.os-classic-start-label) {
+  font-family: var(--sans); font-size: var(--w26-ui-size);
+  -webkit-font-smoothing: antialiased;
+}
+html[data-appearance="win98"] .os .os-classic-start-label { font-weight: 600; }
+html[data-appearance="win98"] .os .os-window,
+html[data-appearance="win98"] .os .os-window.active { background: #e5e9ef; border-radius: 2px; }
+/* Win98 的窗口即点即到。原生页面视图不跟 CSS transform 走：补间期间它只能
+   按视觉矩形反复重排去追，追不上留下的就是残影。这里关掉窗口几何补间、
+   收边滤镜与神灯裁剪动画，缩放只保留捏合用的 scale(--os-z)。 */
+html[data-appearance="win98"] .os-window { transition: none; }
+html[data-appearance="win98"] .os-window.open { transform: scale(var(--os-z, 1)); }
+html[data-appearance="win98"] .os-window.tucked { filter: none; }
+html[data-appearance="win98"] .os-window.tucking[data-tuck] { animation: none; }
+html[data-appearance="win98"] .os .os-win-bar { grid-template-columns: 18px minmax(0,1fr) auto; padding: 3px 4px; gap: 5px; background: var(--w26-caption); }
+html[data-appearance="win98"] .os .os-win-title { line-height: 1.2; font-weight: 600; }
+html[data-appearance="win98"] .os .os-win-appicon,
+html[data-appearance="win98"] .os .os-win-appicon .appicon { width: 18px; height: 18px; flex: 0 0 18px; }
+html[data-appearance="win98"] .os .os-window:not(.active) .os-win-bar { background: var(--w26-inactive-caption); }
+html[data-appearance="win98"] .os .os-window:not(.active) .os-win-title { color: #f2f2f2; }
+html[data-appearance="win98"] .os .os-win-ctl { background-color: #e5e9ef; }
+/* Win98 的标题栏按钮悬停不变色：保持抬起的面色，只靠按下时的下沉边框给反馈。
+   之前这里给了接近纯白的 #f7f8fa，看起来像现代主题的 hover。 */
+html[data-appearance="win98"] .os .os-win-ctl:hover,
+html[data-appearance="win98"] .os .os-win-ctl.close:hover { background-color: #e5e9ef; }
+html[data-appearance="win98"] .os .os-icons {
+  top: 10px; left: 10px; gap: 4px;
+  grid-template-rows: repeat(auto-fill, var(--w26-icon-row)); grid-auto-columns: var(--w26-icon-column);
+}
+html[data-appearance="win98"] .os .os-icon { width: 100%; min-height: var(--w26-icon-row); padding: 4px 3px; gap: 6px; }
+html[data-appearance="win98"] .os .os-icon-art,
+html[data-appearance="win98"] .os .os-icon-art :is(.appicon,.icon,.nexlos-classic-icon svg) { width: 40px; height: 40px; flex: 0 0 40px; }
+html[data-appearance="win98"] .os .os-icon-label {
+  padding: 2px 4px; max-height: calc((var(--w26-ui-size) + 4px) * 2 + 4px); line-height: calc(var(--w26-ui-size) + 4px);
+  color: #fff; background: #142b4238; text-shadow: 0 1px 2px #10223899; border-radius: 2px; font-weight: 400;
+}
+html[data-appearance="win98"] .os .os-icon:hover:not(.selected) .os-icon-label { background: #142b4238; }
+html[data-appearance="win98"] .os .os-icon.selected .os-icon-label { background: #244a86; }
+html[data-appearance="win98"] .os .os-taskbar { background: #e5e9ef; box-shadow: inset 0 1px #fff, 0 -1px #8d9bae; padding-top: 3px; padding-bottom: calc(3px + var(--os-safe-b,0px)); }
+html[data-appearance="win98"] .os .os-tb-btn,
+html[data-appearance="win98"] .os .os-tb-app,
+html[data-appearance="win98"] .os .os-tb-clock { background-color: #e5e9ef; }
+html[data-appearance="win98"] .os .os-tb-app.active { background: #f7f8fa; box-shadow: inset 0 0 0 1px #8a9db8; background-image: none; }
+html[data-appearance="win98"] .os :is(.os-tb-app-label,.os-theme-toggle,.os-tb-time) { font-size: var(--w26-ui-size); font-weight: 400; line-height: 1.2; }
+html[data-appearance="win98"] .c98-start,
+html[data-appearance="win98"] .os .c98-start,
+html[data-appearance="win98"] .c98-submenu { background: #edf0f5; }
+html[data-appearance="win98"] .c98-item { min-height: calc(32px + var(--c98-font-step)); height: auto; padding: 4px 8px; background: #edf0f5; color: #182638; font-weight: 400; }
+html[data-appearance="win98"] .c98-glyph,
+html[data-appearance="win98"] .c98-glyph > svg { width: 16px; height: 16px; flex: 0 0 16px; }
+html[data-appearance="win98"] .c98-item.selected:not(:disabled),
+html[data-appearance="win98"] .c98-submenu-host.open > .c98-item { background: #244a86; color: #fff; }
+html[data-appearance="win98"] .c98-rail { background: linear-gradient(0deg,#244a86,#5a8daf); }
+html[data-appearance="win98"] .c98-rail > span { font-family: "NexlOS Fusion Pixel", var(--w26-readable); font-weight: 400; }
+html[data-appearance="win98"] .c98-context-menu { padding: 4px; background: #f3f5f8; color: #182638; box-shadow: inset 0 0 0 1px #73849c, inset 0 0 0 2px #fff, 2px 4px 12px #122c4226; }
+html[data-appearance="win98"] .c98-context-menu .c98-context-item { min-height: calc(32px + var(--c98-font-step)); padding: 4px 6px; background: #f3f5f8; color: #182638; font-size: var(--w26-ui-size); font-weight: 400; line-height: 1.35; }
+html[data-appearance="win98"] .c98-context-menu .c98-context-item:is(.selected,.submenu-open):not(:disabled) { background: #244a86; color: #fff; }
+html[data-appearance="win98"] .c98-context-menu .c98-context-item:disabled { color: #8994a4; text-shadow: none; }
+html[data-appearance="win98"] .c98-context-separator { margin: 5px 3px; border-top-color: #c4ceda; }
+
+/* Familiar shell, calmer content. Pixel edges are concentrated at the frame. */
+html[data-appearance="win98"] :is(.primary,.ghost,.xp .xp-btn,.xp .xp-selbar-btn,.st .st-btn,.mm .mm-btn,.tm .tm-btn,.mv .mv-btn,.mf .mf-btn,.ma .ma-btn,.sc .sc-btn) {
+  height: auto; min-height: calc(32px + var(--c98-font-step)); padding: 5px 12px; font-size: var(--w26-ui-size); font-weight: 400; line-height: 1.35;
+  background: #edf0f5; color: #182638; box-shadow: var(--c98-raised); border-radius: 2px;
+}
+html[data-appearance="win98"] :is(.primary,.xp .xp-btn.primary,.st .st-btn.primary,.mm .mm-btn.primary) { background: #edf0f5; color: #182638; box-shadow: var(--c98-default); }
+html[data-appearance="win98"] :is(.primary,.ghost,.xp .xp-btn,.st .st-btn):hover:not(:disabled):not(.danger) { background: #f7f9fd; color: #182638; }
+html[data-appearance="win98"] :is(.field,.xp .xp-crumbs,.xp .xp-search,.xp .xp-rename-input,.st .st-search,.st .st-input,.mm .mm-input,.mv .mv-url,.ma .ma-url) {
+  height: auto; min-height: calc(32px + var(--c98-font-step)); padding: 5px 8px; border-radius: 2px; color: #182638; font-size: var(--w26-ui-size); line-height: 1.35;
+}
+html[data-appearance="win98"] .st .st-head { height: calc(48px + var(--c98-font-step)); flex-basis: calc(48px + var(--c98-font-step)); padding: 0 14px; background: #edf0f5; box-shadow: inset 0 -1px #ced6e1; }
+html[data-appearance="win98"] .st .st-nav { width: 190px; flex-basis: 190px; padding: 12px 8px; background: #edf0f5; border-color: #d0d8e3; }
+html[data-appearance="win98"] .st .st-nav-item { height: auto; min-height: calc(36px + var(--c98-font-step)); padding: 7px 10px; line-height: 1.45; font-size: var(--w26-ui-size); color: #34445a; }
+html[data-appearance="win98"] .st .st-nav-item > span:last-child { min-width: 0; overflow-wrap: break-word; word-break: break-word; }
+html[data-appearance="win98"] .st .st-nav-item:hover { background: #e8edf3; color: #182638; }
+html[data-appearance="win98"] .st .st-nav-item.active { background: #e2e7ee; color: #182638; box-shadow: inset 2px 0 #8a9db8; }
+html[data-appearance="win98"] .st .st-nav-item:is(.active,:hover) .st-nav-ic { color: #34445a; }
+html[data-appearance="win98"] .st .st-main { padding: 22px 26px 30px; background: #f7f8fa; }
+html[data-appearance="win98"] .st .st-page-head { margin-bottom: 20px; }
+html[data-appearance="win98"] .st .st-page-head h1 { font-size: calc(var(--w26-ui-size) + 10px); color: #182638; font-weight: 600; line-height: 1.35; }
+html[data-appearance="win98"] .st .st-page-head p { margin-top: 8px; line-height: 1.7; color: #687588; }
+html[data-appearance="win98"] .st .st-card { margin-bottom: 16px; border: 1px solid #d4dce7; background: #fff; box-shadow: none; }
+html[data-appearance="win98"] .st .st-row { min-height: calc(58px + var(--c98-font-step)); padding: 12px 14px; border-bottom: 1px solid #edf0f5; gap: 12px; }
+html[data-appearance="win98"] .st .st-row:last-child { border-bottom: 0; }
+html[data-appearance="win98"] .st .st-row-text b { font-size: var(--w26-ui-size); color: #24364d; font-weight: 600; }
+html[data-appearance="win98"] .st :is(.st-head-title b,.st-card-head b,.st-tile b,.st-app-meta b,.st-theme b,.st-appearance-copy b) { font-weight: 600; }
+html[data-appearance="win98"] .st .st-row-text span { color: #687588; line-height: 1.6; }
+html[data-appearance="win98"] .st .st-row-ic { color: #506b8a; }
+html[data-appearance="win98"] .st .st-card-head { padding: 14px 14px 7px; }
+html[data-appearance="win98"] .st .st-tile { padding: 16px; background: #fff; border: 1px solid #d4dce7; box-shadow: none; }
+html[data-appearance="win98"] .st .st-tile-ic { color: #506b8a; }
+html[data-appearance="win98"] .st .st-h2 { margin: 24px 0 12px; color: #34445a; font-size: calc(var(--w26-ui-size) + 2px); font-weight: 600; }
+html[data-appearance="win98"] .st .st-appearance-card { background: #fff; border-color: #c9d4e3; box-shadow: none; }
+html[data-appearance="win98"] .st .st-appearance-card.active { border-color: #244a86; box-shadow: inset 0 0 0 1px #244a86; }
+html[data-appearance="win98"] .st .st-appearance-copy b { font-size: calc(var(--w26-ui-size) + 2px); }
+html[data-appearance="win98"] .st .st-appearance-copy > span { color: #687588; line-height: 1.6; }
+html[data-appearance="win98"] .st .st-appearance-art { overflow: hidden; }
+html[data-appearance="win98"] .st .st-appearance-card.win98 .st-appearance-title { font: 600 12px/1.3 "Source Sans 3",sans-serif; }
+html[data-appearance="win98"] .st .st-appearance-badge { background: #244a86; }
+html[data-appearance="win98"] .st .st-preview { background: #e5e9ef; box-shadow: inset 0 0 0 1px #c9d1dc; }
+html[data-appearance="win98"] .st .st-usage-bar { height: 8px; padding: 0; background: #e5e9ef; box-shadow: none; }
+html[data-appearance="win98"] .xp .xp-cmd,
+html[data-appearance="win98"] .xp .xp-addr,
+html[data-appearance="win98"] .xp .xp-status,
+html[data-appearance="win98"] .xp .xp-selbar { background: #edf0f5; color: #34445a; border-color: #d4dce7; }
+html[data-appearance="win98"] .xp .xp-addr { height: calc(36px + var(--c98-font-step)); flex-basis: calc(36px + var(--c98-font-step)); padding: 4px 8px; }
+html[data-appearance="win98"] .xp .xp-side { padding: 12px 6px; background: #f7f8fa; box-shadow: inset -1px 0 #d7dee7; }
+html[data-appearance="win98"] .xp .xp-side-item { height: auto; min-height: calc(32px + var(--c98-font-step)); padding-top: 6px; padding-bottom: 6px; }
+html[data-appearance="win98"] .xp .xp-listwrap { margin: 0; box-shadow: none; }
+html[data-appearance="win98"] .xp .xp-cols { height: calc(28px + var(--c98-font-step)); background: #f1f4f8; }
+html[data-appearance="win98"] .xp .xp-col { height: calc(28px + var(--c98-font-step)); padding: 5px 8px; box-shadow: none; border-right: 1px solid #e0e5ec; color: #687588; }
+html[data-appearance="win98"] .xp .xp-row { height: calc(30px + var(--c98-font-step)); border-bottom: 1px solid #f0f3f7; }
+html[data-appearance="win98"] .xp .xp-row:not(.selected):hover { background: #f0f5fc; }
+html[data-appearance="win98"] .xp .xp-drive { background: #fff; box-shadow: none; border: 1px solid #d4dce7; padding: 14px; }
+html[data-appearance="win98"] .xp .xp-drive-bar { height: 8px; padding: 0; background: #e5e9ef; box-shadow: none; }
+html[data-appearance="win98"] .xp .xp-status { box-shadow: inset 0 1px #d7dee7; margin: 0; height: calc(27px + var(--c98-font-step)); flex-basis: calc(27px + var(--c98-font-step)); }
+html[data-appearance="win98"] .xp .xp-note-foot { background: #edf0f5; }
+html[data-appearance="win98"] .c98-dialog { background: #e5e9ef; }
+html[data-appearance="win98"] .c98-dialog-title { background: var(--w26-caption); }
+html[data-appearance="win98"] .c98-button { min-height: calc(28px + var(--c98-font-step)); background: #edf0f5; }
+
+/* Browser chrome follows the same text scale; remote page pixels keep their scale. */
+html[data-appearance="win98"] .br { background: var(--w26-paper); color: var(--w26-ink); }
+html[data-appearance="win98"] .br :is(.br-chrome,.br-status,.br-find) { background: #edf0f5; color: #34445a; border-color: #d4dce7; }
+html[data-appearance="win98"] .br .br-tabs { height: calc(40px + var(--c98-font-step)); }
+html[data-appearance="win98"] .br .br-tab { max-width: 240px; height: calc(32px + var(--c98-font-step)); font-size: var(--w26-ui-size); line-height: 1.3; }
+html[data-appearance="win98"] .br .br-tab.active { background: var(--w26-paper); color: var(--w26-ink); border-color: #d4dce7; }
+html[data-appearance="win98"] .br :is(.br-tab:hover,.br-btn:hover) { background: #e3e9f2; color: #244a86; border-color: #c9d1dc; }
+html[data-appearance="win98"] .br .br-tab-close { width: calc(24px + var(--c98-font-step)); height: calc(24px + var(--c98-font-step)); font-size: var(--w26-ui-size); line-height: 1; }
+html[data-appearance="win98"] .br .br-bar { height: calc(44px + var(--c98-font-step)); padding: 4px 6px; }
+html[data-appearance="win98"] .br .br-btn { height: calc(32px + var(--c98-font-step)); min-width: 32px; padding: 0 6px; font-size: var(--w26-ui-size); line-height: 1; }
+html[data-appearance="win98"] .br :is(.br-addr,.br-compose,.br-find-input,.br-ext-input,.br-set-input,.br-set-select) {
+  height: calc(32px + var(--c98-font-step)); padding: 0 8px; background: #fff; color: var(--w26-ink);
+  border-color: #bac5d3; border-radius: 3px; font-family: var(--sans); font-size: var(--w26-ui-size); line-height: 1.35;
+}
+html[data-appearance="win98"] .br :is(.br-addr:focus,.br-compose:focus) { background: #fff; border-color: #bac5d3; outline: none; box-shadow: var(--c98-field); }
+html[data-appearance="win98"] .br :is(.br-go,.br-type,.br-bookmarks,.br-type .br-btn) { background: var(--w26-paper); color: var(--w26-ink); border-color: #d4dce7; }
+html[data-appearance="win98"] .br .br-bookmarks { height: calc(32px + var(--c98-font-step)); }
+html[data-appearance="win98"] .br :is(.br-bm,.br-mi,.br-set-row,.br-panel-head b,.br-item-main b,.br-panel-empty) { font-size: var(--w26-ui-size); line-height: 1.4; }
+html[data-appearance="win98"] .br :is(.br-status,.br-mi-key,.br-find-state,.br-item-main i,.br-item-del,.br-group,.br-hint,.br-empty-hint) { font-size: var(--w26-small-size); line-height: 1.4; }
+html[data-appearance="win98"] .br .br-status { height: calc(28px + var(--c98-font-step)); padding: 3px 8px; }
+html[data-appearance="win98"] .br .br-menu { top: calc(84px + var(--c98-font-step) * 2); max-height: calc(100% - 90px - var(--c98-font-step) * 2); overflow-y: auto; background: var(--w26-paper); }
+html[data-appearance="win98"] .br .br-mi { min-height: calc(32px + var(--c98-font-step)); padding: 5px 8px; }
+html[data-appearance="win98"] .br .br-panel-card { background: var(--w26-paper); }
+html[data-appearance="win98"] .br .br-empty { background: #fff; border-color: #d4dce7; }
+html[data-appearance="win98"] .br .br-empty-title { font-family: var(--sans); font-size: calc(var(--w26-ui-size) + 3px); color: var(--w26-ink); font-weight: 600; }
+html[data-appearance="win98"] .br .br-empty-body { font-size: var(--w26-ui-size); color: #34445a; }
+html[data-appearance="win98"] .br .br-set-row { flex-wrap: wrap; gap: 8px; }
+@media (pointer:coarse), (max-width:760px) {
+  html[data-appearance="win98"] .c98-context-menu .c98-context-item { min-height: max(36px,calc(var(--w26-ui-size) + 12px)); }
+}
+@media (max-width:760px) {
+  html[data-appearance="win98"] .st .st-main { padding: 16px; }
+  html[data-appearance="win98"] .st .st-nav { padding: 8px 4px; }
+}
+html[data-appearance="win98"] body { background: #f7f8fa; color: #182638; }
+html[data-appearance="win98"] .os { --os-accent: #244a86 !important; }
+html[data-appearance="win98"] :is(.xp,.st,.mm) { --xp-accent: #244a86 !important; --st-accent: #244a86 !important; --mm-accent: #244a86 !important; }
+html[data-appearance="win98"] :is(.rail,.topbar,.chapters-head,.chapter-list,.editor-bar,.mm .mm-bar,.mm .mm-docbar,.tm .tm-bar,.tm .tm-foot,.mv-bar,.mv-srcrow) { background: #edf0f5; color: #34445a; border-color: #d4dce7; }
+html[data-appearance="win98"] .pane { background: #f7f8fa; padding-top: 24px; }
+html[data-appearance="win98"] :is(.book-card,.app-card,.task-card) { background: #fff; border: 1px solid #d4dce7; box-shadow: none; }
+html[data-appearance="win98"] :is(.book-card,.app-card):hover { outline: 1px solid #9eb6d5; outline-offset: -1px; }
+html[data-appearance="win98"] :is(.rail-item.active,.chapter-row.active) { background: #244a86; }
+html[data-appearance="win98"] .book-spine { background: #244a86; }
+html[data-appearance="win98"] .os :is(.os-native,.os-native-meta > div,.os-win-freeze) { background: #f7f8fa; color: #34445a; }
+@media (pointer:coarse), (max-width:760px) {
+  html[data-appearance="win98"] :is(.primary,.ghost,.xp .xp-btn,.st .st-btn,.mm .mm-btn,.tm .tm-btn,.mv .mv-btn,.mf .mf-btn,.ma .ma-btn,.sc .sc-btn) { min-height: max(36px,calc(29px + var(--c98-font-step))); }
+}
+@media (max-width:520px) {
+  html[data-appearance="win98"] .os .os-icons {
+    left: 4px; right: 4px; grid-auto-flow: row; grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-template-rows: none; grid-auto-rows: var(--w26-icon-row); justify-items: stretch;
+  }
+  html[data-appearance="win98"] .st .st-nav { width: 48px; flex-basis: 48px; padding: 8px 2px; }
+  html[data-appearance="win98"] .st .st-nav-item { min-height: calc(38px + var(--c98-font-step)); padding: 4px 0; justify-content: center; }
+  html[data-appearance="win98"] .st .st-nav-ic { margin-right: 0; }
+  html[data-appearance="win98"] .st .st-search { width: 116px; }
+  html[data-appearance="win98"] .st .st-head { padding: 0 8px; }
+}
+@media (max-width:720px) {
+  html[data-appearance="win98"] .br .br-tab { max-width: 180px; }
+  html[data-appearance="win98"] .br .br-bar { overflow-x: auto; padding: 4px; }
+  html[data-appearance="win98"] .br .br-bar .br-btn { min-width: 28px; padding: 0 4px; }
+  html[data-appearance="win98"] .br .br-addr { min-width: 88px; margin-left: 2px; padding: 0 6px; }
+  html[data-appearance="win98"] .br .br-status-meta { display: none; }
+  html[data-appearance="win98"] .br .br-panel-actions { overflow-x: auto; min-width: 0; }
+}
+/* Compact menus follow the small-icon reference without shrinking text. */
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item { height: auto; min-height: calc(40px + var(--c98-font-step)); padding: 4px 8px 4px 3px; gap: 8px; }
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item > .c98-glyph,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item > .c98-glyph { width: 32px; height: 32px; flex-basis: 32px; }
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item > .c98-glyph > svg,
+html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item > .c98-glyph > svg { width: 32px; height: 32px; flex: 0 0 32px; }
+html[data-appearance="win98"] .xp .xp-row.selected,
+html[data-appearance="win98"] .xp .xp-row.selected:hover { background: #e2e7ee; color: #182638; }
+@media (pointer:coarse), (max-width:760px) {
+  html[data-appearance="win98"] .c98-start > .c98-menu > .c98-item,
+  html[data-appearance="win98"] .c98-start > .c98-menu > .c98-submenu-host > .c98-item { min-height: calc(40px + var(--c98-font-step)); }
+}
+html[data-appearance="win98"] .st .st-appearance-card.win98 .st-appearance-window { background: #e5e9ef; border-color: #fff #6f7e93 #6f7e93 #fff; box-shadow: none; }
+html[data-appearance="win98"] .st .st-appearance-card.win98 .st-appearance-title { background: var(--w26-caption); }
+html[data-appearance="win98"] .st .st-appearance-card.win98 .st-appearance-taskbar { background: #e5e9ef; }
+html[data-appearance="win98"] .c98-dialog-title { height: calc(var(--os-titlebar-h,32px)); flex-basis: calc(var(--os-titlebar-h,32px)); }
+html[data-appearance="win98"] .c98-dialog-title strong { line-height: 1.1; font-weight: 600; }
+html[data-appearance="win98"] .c98-dialog.c98-dialog-sounds { width: 430px; }
+@media (pointer:coarse), (max-width:760px) {
+  html[data-appearance="win98"] .c98-dialog-title { height: var(--os-titlebar-h,36px); flex-basis: var(--os-titlebar-h,36px); }
+}
+
+/* State roles: caption gradients, focused selections, and neutral control faces. */
+html[data-appearance="win98"] ::selection { background: var(--w26-selection); color: #fff; }
+html[data-appearance="win98"] .os .os-icon.selected .os-icon-label { outline: none; }
+html[data-appearance="win98"] .os .os-icon.selected:focus .os-icon-label { outline: 1px dotted #fff; }
+html[data-appearance="win98"] .c98-start .c98-item:is(:hover,:focus):not(:disabled) { background: #edf0f5; color: #182638; }
+html[data-appearance="win98"] .c98-start .c98-item.selected:not(:disabled),
+html[data-appearance="win98"] .c98-start .c98-submenu-host.open > .c98-item:not(:disabled) { background: var(--w26-blue); color: #fff; }
+html[data-appearance="win98"] .c98-context-menu .c98-context-item:is(:hover,:focus):not(:disabled) { background: #f3f5f8; color: #182638; }
+html[data-appearance="win98"] .c98-context-menu .c98-context-item:is(.selected,.submenu-open):not(:disabled) { background: var(--w26-blue); color: #fff; }
+html[data-appearance="win98"] .xp :is(.xp-dialog-bar,.xp-note-bar),
+html[data-appearance="win98"] .ms .ms-dialog-title,
+html[data-appearance="win98"] .os :is(.os-peek-shotbar,.os-switch-shotbar) { background: var(--w26-caption); color: #fff; }
+html[data-appearance="win98"] .os .os-tb-app.active { color: #182638; }
+html[data-appearance="win98"] .os :is(.os-tb-btn,.os-tb-app,.os-tb-clock,.os-classic-quickbtn):hover { background-color: #edf0f5; color: #182638; }
+html[data-appearance="win98"] .os .os-tb-btn.active:not(.os-tb-app) { background: #e5e9ef var(--c98-checker); color: #182638; box-shadow: var(--c98-sunken); }
+html[data-appearance="win98"] .os .os-tb-clock:hover .os-tb-time { color: #182638; }
+/* 快速启动：图标直接落在任务栏工作面，默认不画灰底和立体阴影 */
+html[data-appearance="win98"] .os .os-classic-quicklaunch {
+  gap: 2px; padding: 0 3px 0 5px; margin-right: 2px;
+  border-left: 1px solid #bac5d3; border-right: 0;
+}
+html[data-appearance="win98"] .os .os-classic-quickbtn {
+  width: 24px; height: 22px; background: transparent; box-shadow: none; border-radius: 2px;
+}
+html[data-appearance="win98"] .os .os-classic-quickbtn:hover {
+  background: #edf0f5; box-shadow: inset 0 0 0 1px #b9c6d6;
+}
+html[data-appearance="win98"] .os .os-classic-quickbtn:active {
+  background: #e2e7ee; box-shadow: inset 0 0 0 1px #8a9db8;
+}
+/* 账户按钮：悬停只提亮工作面，深色偏好下也不落成黑块 */
+html[data-appearance="win98"] .st .st-account:hover,
+html[data-appearance="win98"] .st.st-dark .st-account:hover { background: #dfe4ea; }
+html[data-appearance="win98"] .st .st-avatar {
+  background: #f7f8fa; color: #244a86;
+  box-shadow: inset 0 0 0 1px #8a9db8;
+}
+html[data-appearance="win98"] .st .st-account-meta b { color: #182638; }
+html[data-appearance="win98"] .st .st-account-meta i { color: #5b6b80; }
+html[data-appearance="win98"] .st .st-nav-item.active:hover { background: #e2e7ee; color: #182638; }
+html[data-appearance="win98"] :is(.primary,.ghost,.xp-btn,.xp-selbar-btn,.st-btn,.mm-btn,.tm-btn,.mv-btn,.mf-btn,.ma-btn,.sc-btn,.c98-button,.ms-button):hover:not(:disabled):not(.danger) { background-color: #f7f9fd; color: #182638; }
+html[data-appearance="win98"] .br .br-tab { border-radius: 3px 3px 0 0; }
+html[data-appearance="win98"] .br .br-tab.active { background: #f7f8fa; color: #182638; border-color: #bac5d3; box-shadow: inset 1px 1px #fff; }
+html[data-appearance="win98"] .br .br-tab:hover:not(.active) { background: #e8edf3; color: #182638; border-color: #c9d1dc; }
+html[data-appearance="win98"] .br .br-tab-close { color: #687588; border-radius: 2px; }
+html[data-appearance="win98"] .br .br-tab-close:hover { background: #e3e9f2; color: #182638; outline: none; }
+html[data-appearance="win98"] .br .br-retry { background: #edf0f5; color: #182638; border-color: #bac5d3; box-shadow: var(--c98-raised); }
+html[data-appearance="win98"] .br .br-retry:hover { background: #f7f9fd; color: #182638; border-color: #8997aa; }
+html[data-appearance="win98"] :is(.field,.st-input,.mm-input,.xp-search,.br-addr,.br-compose,.br-find-input,.br-ext-input,.br-set-input,.br-set-select):focus-visible { outline: 1px dotted #8997aa; outline-offset: -3px; }
+html[data-appearance="win98"] .xp :is(.xp-row,.xp-tile).selected { background: #e2e7ee; color: #182638; }
+html[data-appearance="win98"] .xp :is(.xp-row,.xp-tile).selected :is(.xp-name-text,.xp-tile-name) { color: #182638; }
+html[data-appearance="win98"] .xp .xp-row.selected :is(.xp-date,.xp-type,.xp-size) { color: #687588; }
+html[data-appearance="win98"] .xp .xp-listwrap:focus-within :is(.xp-row,.xp-tile).selected { background: var(--w26-selection); color: #fff; }
+html[data-appearance="win98"] .xp .xp-listwrap:focus-within :is(.xp-row,.xp-tile).selected :is(.xp-name-text,.xp-tile-name,.xp-date,.xp-type,.xp-size) { color: #fff; }
+html[data-appearance="win98"] .xp .xp-side-item.active { background: #e2e7ee; color: #182638; }
+html[data-appearance="win98"] .xp .xp-side:focus-within .xp-side-item.active { background: var(--w26-selection); color: #fff; }
+html[data-appearance="win98"] .xp .xp-side-item:hover:not(.active) { background: #edf0f5; color: #182638; }
+/* 导航选中与真实焦点同源：焦点在导航里用真实选择色，焦点离开退回浅底深字。
+   这两条排在悬停之后，鼠标停在选中项上也不会把聚焦态刷回浅色。 */
+html[data-appearance="win98"] .st .st-nav:focus-within .st-nav-item.active,
+html[data-appearance="win98"] .st .st-nav:focus-within .st-nav-item.active:hover { background: var(--w26-selection); color: #fff; box-shadow: none; }
+html[data-appearance="win98"] .st .st-nav:focus-within .st-nav-item.active .st-nav-ic { color: #fff; }
+html[data-appearance="win98"] .xp .xp-side:focus-within .xp-side-item.active:hover { background: var(--w26-selection); color: #fff; }
+/* 深蓝底上看不见默认的深色虚线框，聚焦态换成白色虚线。 */
+html[data-appearance="win98"] .st .st-nav-item.active:focus-visible,
+html[data-appearance="win98"] .xp .xp-side-item.active:focus-visible { outline: 1px dotted #fff; outline-offset: -3px; }
+html[data-appearance="win98"] .xp .xp-crumb:hover { background: #e8edf3; color: #182638; }
+html[data-appearance="win98"] .rail-item.active { background: #e2e7ee; color: #182638; box-shadow: inset 2px 0 #8a9db8; }
+html[data-appearance="win98"] .chapter-row.active { background: #e3e9f2; color: #182638; }
+html[data-appearance="win98"] .chapter-row:is(.active,:hover) .chapter-words { color: #687588; }
+html[data-appearance="win98"] :is(.rail-item,.chapter-row):hover:not(:disabled) { background: #edf0f5; color: #182638; }
+html[data-appearance="win98"] .c98-datetime .c98-dt-day:hover:not(.selected) { background: #edf0f5; color: #182638; }

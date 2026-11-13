@@ -1,0 +1,47 @@
+/* FontStructions by lou, CC BY-SA 3.0. See README.md and source/regular/license.txt.
+   WOFF2 bytes are unmodified from the pinned 98.css commit in sources.json. */
+@font-face {
+  font-family: 'NexlOS MS Sans Serif';
+  src: url('./ms_sans_serif.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+/* Adobe Source Sans 3, unmodified upstream WOFF2. SIL OFL 1.1;
+   pinned commits and byte hashes are recorded in sources.json. */
+@font-face {
+  font-family: 'Source Sans 3';
+  src: url('./source-sans-3-variable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 200 900;
+  font-display: swap;
+}
+
+/* Upright boot wordmark only. Libre Franklin Black, unmodified upstream,
+   SIL OFL 1.1. See libre-franklin-OFL.txt and sources.json. */
+@font-face {
+  font-family: 'Libre Franklin';
+  src: url('./libre-franklin-black.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 900;
+  font-display: swap;
+}
+
+/* Fusion Pixel by TakWolf and upstream contributors, SIL OFL 1.1.
+   Native 12px proportional Simplified Chinese; see fusion-pixel-LICENSE-OFL.txt. */
+@font-face {
+  font-family: 'NexlOS Fusion Pixel';
+  src: url('./fusion-pixel-12px-proportional-zh_hans.otf.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'NexlOS MS Sans Serif';
+  src: url('./ms_sans_serif_bold.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+}

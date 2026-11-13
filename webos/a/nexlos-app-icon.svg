@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="NexlOS liquid glass application icon" data-nexl-variant="B-clipped" data-app-icon="liquid-glass" data-app-icon-density="compact-12" data-handoff-gap="16" data-white-outline="uniform-20">
+  <defs>
+    <path id="glass-tile" d="M286 64H738C892 64 960 132 960 286V738C960 892 892 960 738 960H286C132 960 64 892 64 738V286C64 132 132 64 286 64Z"/>
+    <clipPath id="glass-clip"><use href="#glass-tile"/></clipPath>
+    <linearGradient id="glass-body" x1="0.1" y1="0" x2="0.9" y2="1">
+      <stop stop-color="#FAFCFD" stop-opacity="0.52"/>
+      <stop offset="0.38" stop-color="#E1E6E9" stop-opacity="0.30"/>
+      <stop offset="0.72" stop-color="#B6BEC3" stop-opacity="0.29"/>
+      <stop offset="1" stop-color="#F9FBFC" stop-opacity="0.48"/>
+    </linearGradient>
+    <radialGradient id="glass-reflection" cx="0.24" cy="0.04" r="0.88">
+      <stop stop-color="#FFFFFF" stop-opacity="0.23"/>
+      <stop offset="0.62" stop-color="#FFFFFF" stop-opacity="0.025"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="glass-rim" x1="0.1" y1="0" x2="0.8" y2="1">
+      <stop stop-color="#FFFFFF" stop-opacity="0.75"/>
+      <stop offset="0.42" stop-color="#FFFFFF" stop-opacity="0.26"/>
+      <stop offset="0.75" stop-color="#FFFFFF" stop-opacity="0.16"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.60"/>
+    </linearGradient>
+    <linearGradient id="glass-bottom" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0.62" stop-color="#FFFFFF" stop-opacity="0"/>
+      <stop offset="0.86" stop-color="#FFFFFF" stop-opacity="0.12"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0.44"/>
+    </linearGradient>
+    <filter id="tile-lift" x="-0.10" y="-0.10" width="1.2" height="1.24" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="12" stdDeviation="12" flood-color="#17212A" flood-opacity="0.11"/>
+    </filter>
+    <filter id="mark-lift" x="-0.16" y="-0.16" width="1.32" height="1.36" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="2.5" stdDeviation="2" flood-color="#1D2730" flood-opacity="0.18"/>
+    </filter>
+    <path id="app-band-red" d="M33.92,16 105.6,16 105.6,33.92 123.52,33.92 123.52,51.84 141.44,51.84 141.44,87.68 105.6,87.68 105.6,69.76 87.68,69.76 87.68,51.84 51.84,51.84 51.84,98.56 16,98.56 16,33.92 33.92,33.92Z"/>
+    <path id="app-band-green" d="M240,33.92 240,105.6 222.08,105.6 222.08,123.52 204.16,123.52 204.16,141.44 168.32,141.44 168.32,105.6 186.24,105.6 186.24,87.68 204.16,87.68 204.16,51.84 157.44,51.84 157.44,16 222.08,16 222.08,33.92Z"/>
+    <path id="app-band-yellow" d="M222.08,240 150.4,240 150.4,222.08 132.48,222.08 132.48,204.16 114.56,204.16 114.56,168.32 150.4,168.32 150.4,186.24 168.32,186.24 168.32,204.16 204.16,204.16 204.16,157.44 240,157.44 240,222.08 222.08,222.08Z"/>
+    <path id="app-band-blue" d="M16,222.08 16,150.4 33.92,150.4 33.92,132.48 51.84,132.48 51.84,114.56 87.68,114.56 87.68,150.4 69.76,150.4 69.76,168.32 51.84,168.32 51.84,204.16 98.56,204.16 98.56,240 33.92,240 33.92,222.08Z"/>
+  </defs>
+  <!-- The canvas is transparent. Every glass fill uses alpha; no wallpaper is embedded. -->
+  <use href="#glass-tile" fill="url(#glass-body)" filter="url(#tile-lift)"/>
+  <g clip-path="url(#glass-clip)">
+    <use href="#glass-tile" fill="url(#glass-reflection)"/>
+    <use href="#glass-tile" transform="translate(16 16) scale(0.96875)" fill="none" stroke="url(#glass-bottom)" stroke-width="12"/>
+  </g>
+  <use href="#glass-tile" fill="none" stroke="#53616C" stroke-opacity="0.10" stroke-width="2"/>
+  <use href="#glass-tile" transform="translate(3 3) scale(0.994140625)" fill="none" stroke="url(#glass-rim)" stroke-width="8"/>
+  <!-- Color bands keep16-unit gaps. Uniform source20 white backing may connect; Arc outer edge stays28. -->
+  <g transform="translate(153.6 153.6) scale(2.8)" data-nexl-mark="open-link" data-nexl-variant="B-clipped" filter="url(#mark-lift)">
+    <g fill="none" stroke="#FFFFFF" stroke-width="20" stroke-linejoin="round">
+      <use href="#app-band-red"/>
+      <use href="#app-band-green"/>
+      <use href="#app-band-yellow"/>
+      <use href="#app-band-blue"/>
+    </g>
+    <g>
+      <path data-link-band="red" fill="#EF4B23" d="M33.92,16 105.6,16 105.6,33.92 123.52,33.92 123.52,51.84 141.44,51.84 141.44,87.68 105.6,87.68 105.6,69.76 87.68,69.76 87.68,51.84 51.84,51.84 51.84,98.56 16,98.56 16,33.92 33.92,33.92Z"/>
+      <path data-link-band="green" fill="#73B534" d="M240,33.92 240,105.6 222.08,105.6 222.08,123.52 204.16,123.52 204.16,141.44 168.32,141.44 168.32,105.6 186.24,105.6 186.24,87.68 204.16,87.68 204.16,51.84 157.44,51.84 157.44,16 222.08,16 222.08,33.92Z"/>
+      <path data-link-band="yellow" fill="#F4D632" d="M222.08,240 150.4,240 150.4,222.08 132.48,222.08 132.48,204.16 114.56,204.16 114.56,168.32 150.4,168.32 150.4,186.24 168.32,186.24 168.32,204.16 204.16,204.16 204.16,157.44 240,157.44 240,222.08 222.08,222.08Z"/>
+      <path data-link-band="blue" fill="#438FD2" d="M16,222.08 16,150.4 33.92,150.4 33.92,132.48 51.84,132.48 51.84,114.56 87.68,114.56 87.68,150.4 69.76,150.4 69.76,168.32 51.84,168.32 51.84,204.16 98.56,204.16 98.56,240 33.92,240 33.92,222.08Z"/>
+    </g>
+  </g>
+</svg>

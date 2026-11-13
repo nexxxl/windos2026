@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-own-pinch>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>宋韵画笺 · NexlOS</title>
+<link rel="stylesheet" href="/a/draw/board.css">
+<style>
+/* NexlOS 承载层：只做窗口适配，不改画板内部的任何布局与绘制规则。 */
+html, body { margin: 0; width: 100%; height: 100%; overflow: hidden; background: #F9F5EB; }
+#song-board.sb-maximized .sb-win-ctrl { display: none; }   /* 窗口按钮由 NexlOS 标题栏负责 */
+/* Chrome for Android 的 100vh 取“地址栏收起后”的高度，会把底部工具栏藏到地址栏后面。
+   这里用当前可视高度覆盖，resize 时同步。 */
+#song-board.sb-maximized { height: var(--nexlos-vh, 100vh); }
+.nexlos-save {
+  position: fixed; top: 8px; right: 8px; z-index: 100000;
+  height: 30px; padding: 0 12px; border-radius: 15px;
+  background: rgba(6,82,121,.82); color: #F9F5EB; font-size: 12px;
+  font-family: "STKaiti","Kaiti SC","PingFang SC",serif; letter-spacing: .08em;
+  border: 1px solid rgba(249,245,235,.22); box-shadow: 0 2px 10px rgba(6,82,121,.25);
+  cursor: pointer;
+}
+.nexlos-save:active { transform: scale(.96); }
+.nexlos-toast {
+  position: fixed; left: 50%; top: 48px; transform: translate(-50%, -8px); z-index: 100001;
+  padding: 7px 14px; border-radius: 7px; background: rgba(6,52,63,.92); color: #F9F5EB;
+  font-size: 12px; opacity: 0; pointer-events: none; transition: opacity .2s, transform .2s;
+}
+.nexlos-toast.show { opacity: 1; transform: translate(-50%, 0); }
+/* Chrome 72 兼容层：inset 简写从 Chrome 87 才有，原版画框会塌成 4×4 像素。
+   只在本机承载层展开四边属性，board.css / board.js 保持原版字节不变。 */
+#song-board::before, #sb-canvas, .sb-aged-mat, .rc-viewfinder, .rc-vf-grid, .rc-flash,
+.sb-frame-xuanhe, .sb-frame-linbiao { top: 0; right: 0; bottom: 0; left: 0; }
+.sb-win-btn::after { top: -11px; right: -11px; bottom: -11px; left: -11px; }
+.sb-frame-juanzhou, .sb-aged-mat.mat-juanzhou { top: 12px; right: 8px; bottom: 12px; left: 8px; }
+.sb-frame-shanmian, .sb-aged-mat.mat-shanmian { top: 5%; right: 8%; bottom: 5%; left: 8%; }
+.rc-vf-shutter::after { top: 5px; right: 5px; bottom: 5px; left: 5px; }
+</style>
+</head>
+<body>
+<div id="song-board">
+  <div class="sb-win-ctrl">
+    <div class="sb-win-btn sb-close" id="sb-close" title="关闭"></div>
+    <div class="sb-win-btn sb-min" id="sb-min" title="最小化"></div>
+    <div class="sb-win-btn sb-max" id="sb-max" title="最大化"></div>
+  </div>
+  <div class="sb-canvas-wrap">
+    <div class="sb-aged-mat" id="sb-aged-mat"></div>
+    <div class="sb-frame sb-frame-none" id="sb-frame"></div>
+    <canvas id="sb-canvas"></canvas>
+    <textarea class="sb-text-input" id="sb-text-input" rows="1"></textarea>
+    <div id="sb-photos" class="sb-photos"></div>
+  </div>
+  <div class="sb-toolbar" id="sb-toolbar">
+    <div class="sb-toolbar-row">
+      <div class="sb-tool active" data-tool="brush" title="毛笔"><span class="sb-tool-tip">毛笔</span>笔</div>
+      <div class="sb-tool" data-tool="pencil" title="铅笔"><span class="sb-tool-tip">铅笔</span>铅</div>
+      <div class="sb-tool" data-tool="spray" title="喷枪"><span class="sb-tool-tip">喷枪</span>雾</div>
+      <div class="sb-tool" data-tool="eraser" title="橡皮"><span class="sb-tool-tip">橡皮</span>擦</div>
+      <div class="sb-tool" data-tool="color" title="色彩"><span class="sb-tool-tip">色彩</span>色</div>
+    </div>
+    <div class="sb-toolbar-row">
+      <div class="sb-tool" data-tool="line" title="直线"><span class="sb-tool-tip">直线</span>╱</div>
+      <div class="sb-tool" data-tool="rect" title="矩形"><span class="sb-tool-tip">矩形</span>▭</div>
+      <div class="sb-tool" data-tool="circle" title="圆形"><span class="sb-tool-tip">圆形</span>◯</div>
+      <div class="sb-tool" data-tool="lasso" title="套索"><span class="sb-tool-tip">套索</span>⫘</div>
+      <div class="sb-tool" data-tool="frame" title="画框"><span class="sb-tool-tip">画框</span>框</div>
+      <div class="sb-tool" data-tool="undo" title="撤销"><span class="sb-tool-tip">撤销</span>↶</div>
+      <div class="sb-tool" data-tool="redo" title="重做"><span class="sb-tool-tip">重做</span>↷</div>
+      <div class="sb-tool" data-tool="clear" title="清空"><span class="sb-tool-tip">清空</span>✕</div>
+    </div>
+    <div class="sb-size-float" id="sb-size-float">
+      <span class="sb-size-label" id="sb-size-val">2</span>
+      <input type="range" class="sb-size-slider" id="sb-size-slider" min="1" max="20" value="2">
+    </div>
+    <div class="sb-brush-float" id="sb-brush-float">
+      <div class="sb-brush-opt active" data-brush="ink">墨</div>
+      <div class="sb-brush-opt" data-brush="watercolor">水</div>
+      <div class="sb-brush-opt" data-brush="crayon">蜡</div>
+    </div>
+  </div>
+  <div class="sb-color-panel" id="sb-color-panel"></div>
+  <div class="sb-frame-panel" id="sb-frame-panel">
+    <div class="sb-frame-opt active" data-frame="none"><span>📜</span><span class="sb-frame-opt-label">无框</span></div>
+    <div class="sb-frame-opt" data-frame="xuanhe"><span>🔶</span><span class="sb-frame-opt-label">宣和</span></div>
+    <div class="sb-frame-opt" data-frame="linbiao"><span>🏯</span><span class="sb-frame-opt-label">绫裱</span></div>
+    <div class="sb-frame-opt" data-frame="juanzhou"><span>📜</span><span class="sb-frame-opt-label">卷轴</span></div>
+    <div class="sb-frame-opt" data-frame="shanmian"><span>🪭</span><span class="sb-frame-opt-label">扇面</span></div>
+  </div>
+
+  <div class="sb-minibar" id="sb-minibar">
+    <div class="sb-minibar-dot"></div>
+    <span>宋韵画笺</span>
+  </div>
+</div>
+
+
+<div id="rc-viewfinder" class="rc-viewfinder" style="display:none">
+  <!-- 磨砂黑遮罩层 -->
+  <div class="rc-vf-mask rc-vf-mask-top" id="rc-mask-top"></div>
+  <div class="rc-vf-mask rc-vf-mask-bottom" id="rc-mask-bottom"></div>
+  <div class="rc-vf-mask rc-vf-mask-left" id="rc-mask-left"></div>
+  <div class="rc-vf-mask rc-vf-mask-right" id="rc-mask-right"></div>
+  <!-- 取景区（1:1方形） -->
+  <div class="rc-vf-viewport" id="rc-viewport">
+    <video id="rc-video" autoplay playsinline muted></video>
+    <canvas id="rc-snap" style="display:none"></canvas>
+    <!-- 取景框角标 -->
+    <div class="rc-vf-corner rc-vf-corner-tl"></div>
+    <div class="rc-vf-corner rc-vf-corner-tr"></div>
+    <div class="rc-vf-corner rc-vf-corner-bl"></div>
+    <div class="rc-vf-corner rc-vf-corner-br"></div>
+    <!-- 构图辅助线 -->
+    <div class="rc-vf-grid"></div>
+    <!-- 对焦动画 -->
+    <div class="rc-vf-focus" id="rc-focus"></div>
+  </div>
+  <!-- 右上角切换+关闭 -->
+  <div class="rc-vf-topright" id="rc-topright">
+    <button class="rc-vf-btn rc-vf-switch" id="rc-btn-switch"><svg viewBox="0 0 28 28" width="28" height="28"><circle cx="14" cy="15" r="5.5" fill="none" stroke="#fff" stroke-width="1.6"/><circle cx="14" cy="15" r="2.2" fill="#fff" opacity=".5"/><rect x="3" y="9" width="22" height="15" rx="3" fill="none" stroke="#fff" stroke-width="1.6"/><path d="M10 9l1.5-3.5h5L18 9" fill="none" stroke="#fff" stroke-width="1.4" stroke-linejoin="round"/><path d="M22 5.5a9 9 0 010 5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"/><path d="M22 5.5l1.8 1.2M22 5.5l-1.2 1.8" fill="none" stroke="#fff" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    <button class="rc-vf-btn rc-vf-close" id="rc-btn-close">✕</button>
+  </div>
+  <!-- 变焦拖杆 -->
+  <div class="rc-zoom-bar" id="rc-zoom-bar">
+    <div class="rc-zoom-track" id="rc-zoom-track">
+      <div class="rc-zoom-fill" id="rc-zoom-fill"></div>
+      <div class="rc-zoom-thumb" id="rc-zoom-thumb"></div>
+    </div>
+    <div class="rc-zoom-label" id="rc-zoom-val">1.2×</div>
+  </div>
+  <!-- 滤镜条 -->
+  <div class="rc-filter-strip" id="rc-filter-strip"></div>
+  <!-- 胶片模拟条 -->
+  <div class="rc-film-strip" id="rc-film-strip"></div>
+  <!-- 底部控制 -->
+  <div class="rc-vf-bottom">
+    <button class="rc-vf-btn rc-vf-upload" id="rc-btn-upload" title="从相册选择"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+    <button class="rc-vf-btn rc-vf-shutter" id="rc-btn-shutter"></button>
+    <input type="file" id="rc-file-input" accept="image/*" style="display:none">
+  </div>
+  <div class="rc-flash" id="rc-flash"></div>
+</div>
+
+<button class="nexlos-save" id="nexlos-save" type="button" title="保存笔迹到工作区 /outbox">保存</button>
+<div class="nexlos-toast" id="nexlos-toast"></div>
+<script src="/a/draw/board.js"></script>
+<script>
+/* 渲染优化层：不改画板源码，只替换“整幅快照恢复”的实现。
+   原版每帧 putImageData(整张 2560×1448 的 ImageData) 是 CPU 回写，Pixel C 上会掉到 30fps。
+   ImageData 只转一次离屏 canvas，之后用 drawImage + copy 合成，走 GPU，语义完全一致。 */
+(function () {
+  var canvas = document.getElementById('sb-canvas');
+  if (!canvas || !canvas.getContext) return;
+  var ctx = canvas.getContext('2d');
+  var nativePut = ctx.putImageData;
+  var cache = new WeakMap();
+
+  ctx.putImageData = function (img, dx, dy) {
+    if (!img || img.width !== canvas.width || img.height !== canvas.height) {
+      return nativePut.apply(this, arguments);
+    }
+    var copy = cache.get(img);
+    if (!copy) {
+      copy = document.createElement('canvas');
+      copy.width = img.width;
+      copy.height = img.height;
+      copy.getContext('2d').putImageData(img, 0, 0);
+      cache.set(img, copy);
+    }
+    // copy 会把透明像素也覆盖掉，和 putImageData 的“整幅替换”一致。
+    this.save();
+    this.setTransform(1, 0, 0, 1, 0, 0);
+    this.globalCompositeOperation = 'copy';
+    this.drawImage(copy, 0, 0);
+    this.restore();
+  };
+})();
+</script>
+<script>
+// 原版入口：灵动岛点击后执行的就是 show()。NexlOS 里直接进最大化，占满窗口。
+(function () {
+  if (!window.SongBoard) return;
+  SongBoard.show();
+  SongBoard.maximize();
+
+  // 画板自己的 resizeCanvas 挂在 window.resize 上；改完高度后补发一次 resize。
+  var fitting = false;
+  function fitViewport() {
+    if (fitting) return;
+    fitting = true;
+    document.documentElement.style.setProperty('--nexlos-vh', window.innerHeight + 'px');
+    window.dispatchEvent(new Event('resize'));
+    fitting = false;
+  }
+  fitViewport();
+  window.addEventListener('resize', fitViewport);
+  if (window.visualViewport) window.visualViewport.addEventListener('resize', fitViewport);
+})();
+
+/* NexlOS 适配：导出当前画布到宿主工作区。画框是 DOM 装饰，不进入 PNG。 */
+(function () {
+  var toast = document.getElementById('nexlos-toast');
+  var timer = 0;
+  function say(text, bad) {
+    toast.textContent = text;
+    toast.style.background = bad ? 'rgba(150,42,32,.94)' : 'rgba(6,52,63,.92)';
+    toast.classList.add('show');
+    clearTimeout(timer);
+    timer = setTimeout(function () { toast.classList.remove('show'); }, 2600);
+  }
+  function stamp() {
+    var d = new Date(), p = function (n) { return String(n).padStart(2, '0'); };
+    return d.getFullYear() + p(d.getMonth() + 1) + p(d.getDate()) + '-' +
+      p(d.getHours()) + p(d.getMinutes()) + p(d.getSeconds());
+  }
+  function save() {
+    var src = document.getElementById('sb-canvas');
+    if (!src || !src.width) { say('画布还没准备好', true); return; }
+    var out = document.createElement('canvas');
+    out.width = src.width;
+    out.height = src.height;
+    var g = out.getContext('2d');
+    // 原画布是透明的，导出时补一层宣纸底色，和屏幕上看到的一致。
+    g.fillStyle = '#F9F5EB';
+    g.fillRect(0, 0, out.width, out.height);
+    g.drawImage(src, 0, 0);
+    var name = '画板-' + stamp() + '.png';
+    out.toBlob(function (blob) {
+      if (!blob) { say('导出失败', true); return; }
+      var fd = new FormData();
+      fd.append('file', blob, name);
+      say('正在保存…');
+      fetch('/u?path=/outbox', { method: 'POST', headers: { 'X-NEXLOS-Upload': '1' }, body: fd })
+        .then(function (r) { return r.json(); })
+        .then(function (res) {
+          if (!res || !res.ok) throw new Error((res && res.error) || '保存失败');
+          say('已保存到 /outbox/' + name);
+        })
+        .catch(function (e) { say('保存失败：' + e.message, true); });
+    }, 'image/png');
+  }
+  document.getElementById('nexlos-save').addEventListener('click', save);
+  window.addEventListener('keydown', function (e) {
+    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') { e.preventDefault(); save(); }
+  });
+})();
+</script>
+</body>
+</html>

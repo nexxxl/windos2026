@@ -1,0 +1,81 @@
+/* Windows classic property-sheet content; the desktop owns the outer frame. */
+.c98-datetime {
+  --dt-face: #c0c0c0; --dt-highlight: #fff; --dt-shadow: #808080; --dt-frame: #000;
+  box-sizing: border-box; display: flex; flex-direction: column; min-width: 0;
+  width: 100%; padding: 7px; background: var(--dt-face); color: #000;
+  font-family: var(--sans, Tahoma, sans-serif); font-size: var(--w26-ui-size, var(--retro-font-size, 12px));
+  line-height: 1.35; text-align: left; letter-spacing: 0;
+}
+.c98-datetime *, .c98-datetime *::before, .c98-datetime *::after { box-sizing: border-box; }
+.c98-datetime button, .c98-datetime input, .c98-datetime select { font: inherit; color: #000; letter-spacing: 0; }
+.c98-datetime button { -webkit-appearance: none; appearance: none; cursor: default; border-radius: 0; text-transform: none; }
+.c98-datetime button:focus-visible { outline: 1px dotted #000; outline-offset: -4px; }
+.c98-dt-tabs { display: flex; align-items: flex-end; padding: 0 2px; gap: 0; }
+.c98-datetime .c98-dt-tab {
+  position: relative; min-height: 1.85em; margin: 0 0 -1px; padding: 3px 10px;
+  border: 1px solid; border-color: #fff #000 transparent #fff; border-radius: 3px 3px 0 0;
+  background: #c0c0c0; box-shadow: inset -1px 0 #808080; line-height: 1.2; white-space: nowrap;
+}
+.c98-datetime .c98-dt-tab.active { z-index: 1; min-height: 2.05em; margin-left: -2px; padding-left: 12px; padding-right: 12px; border-bottom: 1px solid #c0c0c0; }
+.c98-dt-panel {
+  min-width: 0; padding: 11px 10px 8px; background: #c0c0c0;
+  box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #c0c0c0;
+}
+.c98-dt-columns { display: flex; align-items: stretch; flex-wrap: wrap; gap: 10px; }
+.c98-datetime fieldset {
+  min-width: 0; margin: 0; padding: 8px 8px 9px;
+  border: 1px solid #808080; box-shadow: 1px 1px #fff, inset 1px 1px #fff;
+}
+.c98-datetime legend { padding: 0 3px; margin: 0; font: inherit; color: #000; }
+.c98-dt-date { flex: 1.42 1 184px; }
+.c98-dt-time { flex: 1 1 124px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; }
+.c98-dt-selectors { display: flex; gap: 7px; margin-bottom: 7px; }
+.c98-datetime select, .c98-datetime input {
+  min-width: 0; min-height: calc(1em + 9px); padding: 2px 4px; margin: 0;
+  background: #fff; border: 0; border-radius: 0;
+  box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #c0c0c0, inset 2px 2px #000;
+}
+.c98-dt-month { flex: 1 1 96px; width: 60%; }
+.c98-dt-year { flex: 0 1 6em; width: 6em; }
+.c98-dt-calendar { padding: 3px; background: #fff; box-shadow: inset -1px -1px #fff, inset 1px 1px #808080, inset -2px -2px #c0c0c0, inset 2px 2px #000; }
+.c98-dt-calendar-row { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); }
+.c98-dt-weekdays { margin: 1px 1px 2px; padding-bottom: 2px; border-bottom: 1px solid #808080; }
+.c98-dt-weekdays > span { text-align: center; padding: 2px 0; line-height: 1.2; }
+.c98-datetime .c98-dt-day, .c98-dt-empty {
+  display: flex; align-items: center; justify-content: center; width: 100%; min-width: 0;
+  min-height: 1.55em; padding: 1px; border: 0; background: transparent; box-shadow: none;
+  font-size: inherit; line-height: 1.25; font-weight: 400;
+}
+.c98-datetime .c98-dt-day.today { font-weight: 700; }
+.c98-datetime .c98-dt-day.selected { background: #000080; color: #fff; }
+.c98-datetime .c98-dt-day.selected:focus { outline: 1px dotted #fff; outline-offset: -2px; }
+.c98-dt-clock { display: block; flex: 0 0 auto; width: 122px; height: 122px; max-width: 100%; }
+.c98-datetime .c98-dt-time-input { display: block; width: 100%; max-width: 12em; text-align: center; cursor: default; }
+.c98-dt-note, .c98-dt-zone-note { margin: 9px 2px 0; padding: 0; color: #000; font: inherit; line-height: 1.4; }
+.c98-dt-status { min-height: 2.1em; padding: 7px 2px 4px; color: #000; font: inherit; }
+.c98-dt-footer { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 7px; padding: 4px 0 0; }
+.c98-datetime .c98-dt-button {
+  min-width: 6.3em; min-height: 2em; padding: 4px 12px; border: 0; border-radius: 0;
+  background: #c0c0c0; box-shadow: inset -1px -1px #000, inset 1px 1px #fff, inset -2px -2px #808080, inset 2px 2px #c0c0c0;
+  line-height: 1.2; font-weight: 400;
+}
+.c98-datetime .c98-dt-button:disabled { color: #808080; text-shadow: 1px 1px #fff; }
+.c98-datetime .c98-dt-button.default { border: 1px solid #000; padding: 3px 11px; }
+.c98-datetime .c98-dt-button:active { box-shadow: inset 1px 1px #000, inset 2px 2px #808080, inset -1px -1px #fff; padding: 5px 11px 3px 13px; }
+.c98-datetime .c98-dt-button.default:active { padding: 4px 10px 2px 12px; }
+.c98-dt-map { display: block; width: 100%; height: auto; border: 2px solid; border-color: #808080 #fff #fff #808080; }
+.c98-dt-zone-label { display: flex; flex-direction: column; gap: 6px; margin: 10px 0 0; }
+.c98-datetime .c98-dt-zone-input { width: 100%; }
+@media (max-width: 480px) {
+  .c98-datetime { padding: 6px; }
+  .c98-dt-panel { padding: 9px 8px; }
+  .c98-dt-columns { flex-direction: column; gap: 8px; }
+  .c98-dt-date { flex: 0 0 auto; }
+  .c98-dt-time { flex: 0 0 auto; }
+  .c98-dt-clock { width: 108px; height: 108px; }
+  .c98-dt-tab { white-space: normal; }
+}
+@media (pointer: coarse) {
+  .c98-datetime .c98-dt-day { min-height: 30px; min-height: max(1.55em, 30px); }
+  .c98-datetime .c98-dt-button, .c98-datetime .c98-dt-tab, .c98-datetime input, .c98-datetime select { min-height: 34px; min-height: max(2em, 34px); }
+}

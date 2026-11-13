@@ -1,0 +1,132 @@
+/* 自带模型对话框：沿用桌面外壳的玻璃面板与发丝线，暗色偏好下靠 token 自动切换。 */
+.byok-layer {
+  position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 120;
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  background: rgba(12, 18, 28, .34);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+}
+
+.byok {
+  /* Chrome 72 没有 min()：宽高用定值 + max-* 表达。 */
+  width: 520px;
+  max-width: 100%;
+  max-height: 86vh;
+  overflow: auto;
+  border-radius: 20px;
+  border: 1px solid var(--nx-border, rgba(120, 140, 160, .28));
+  background-image: var(--nx-panel, linear-gradient(#fbfcfe, #f2f5f9));
+  box-shadow: var(--nx-shadow, 0 24px 60px rgba(16, 26, 40, .28)),
+              var(--nx-liquid-rim, inset 0 1px 0 rgba(255, 255, 255, .7));
+  color: var(--nx-text, #1c2632);
+  font-size: 13px;
+}
+
+.byok-head {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 14px;
+  padding: 18px 20px 12px;
+}
+.byok-title { display: block; font-size: 15px; letter-spacing: .01em; }
+.byok-sub {
+  margin: 5px 0 0; font-size: 11.5px; line-height: 1.55;
+  color: var(--nx-text-dim, #64707e);
+}
+.byok-close {
+  flex: 0 0 auto; width: 26px; height: 26px; border-radius: 50%;
+  border: 1px solid transparent; background: none;
+  color: var(--nx-text-dim, #64707e); font-size: 17px; line-height: 1;
+  cursor: pointer;
+}
+.byok-close:hover { background: var(--nx-hover, rgba(28, 38, 50, .07)); color: var(--nx-text, #1c2632); }
+
+.byok-body { display: flex; flex-direction: column; gap: 11px; padding: 0 20px 8px; }
+.byok-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
+.byok-field { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.byok-label {
+  font-size: 10px; letter-spacing: .07em; text-transform: uppercase;
+  color: var(--nx-text-dim, #64707e);
+}
+.byok-input {
+  width: 100%; height: 34px; padding: 0 10px;
+  border-radius: 9px;
+  border: 1px solid var(--nx-hairline, rgba(120, 140, 160, .3));
+  background: var(--nx-glass-soft, rgba(255, 255, 255, .72));
+  color: inherit; font: inherit; font-size: 12.5px;
+  outline: none;
+  /* 外壳对整块桌面关了文本选择，输入框必须单独放开。 */
+  user-select: text; -webkit-user-select: text;
+}
+.byok-input:focus {
+  border-color: var(--nx-accent, #2f6df6);
+  box-shadow: 0 0 0 3px rgba(47, 109, 246, .14);
+}
+select.byok-input { appearance: none; -webkit-appearance: none; cursor: pointer; }
+
+.byok-note {
+  margin: 0; min-height: 17px; font-size: 11px; line-height: 1.55;
+  color: var(--nx-text-dim, #64707e);
+}
+.byok-note[data-kind="ok"] { color: #1c7a4a; }
+.byok-note[data-kind="err"] { color: #b3261e; }
+.byok-note[data-kind="warn"] { color: #8a6100; }
+
+.byok-models {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 8px; border-radius: 11px;
+  background: var(--nx-active, rgba(47, 109, 246, .08));
+}
+.byok-models-label {
+  width: 100%; font-size: 10px; letter-spacing: .06em;
+  color: var(--nx-text-dim, #64707e); text-transform: uppercase;
+}
+.byok-model {
+  max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  height: 24px; padding: 0 9px; border-radius: 999px;
+  border: 1px solid var(--nx-hairline, rgba(120, 140, 160, .3));
+  background: var(--nx-glass-soft, rgba(255, 255, 255, .8));
+  color: inherit; font: inherit; font-size: 11px; cursor: pointer;
+}
+.byok-model:hover { border-color: var(--nx-accent, #2f6df6); color: var(--nx-accent, #2f6df6); }
+
+.byok-current {
+  margin: 2px 0 0; padding: 10px 12px; border-radius: 12px;
+  border: 1px solid var(--nx-hairline, rgba(120, 140, 160, .3));
+  background: var(--nx-glass-soft, rgba(255, 255, 255, .6));
+}
+.byok-current-row { display: flex; align-items: center; gap: 8px; font-size: 12px; }
+.byok-current-dot { width: 7px; height: 7px; border-radius: 50%; background: #2fa36b; }
+.byok-current-tag { margin-left: auto; font-size: 10px; color: var(--nx-text-dim, #64707e); }
+.byok-current-meta {
+  margin: 6px 0 8px; font-size: 10.5px; word-break: break-all;
+  color: var(--nx-text-dim, #64707e);
+}
+
+.byok-foot {
+  display: flex; align-items: center; justify-content: flex-end; gap: 12px;
+  padding: 12px 20px 18px;
+}
+.byok-foot-right { display: flex; align-items: center; gap: 8px; flex: 0 0 auto; }
+
+.byok-btn {
+  height: 32px; padding: 0 14px; border-radius: 9px;
+  border: 1px solid var(--nx-hairline, rgba(120, 140, 160, .32));
+  background: var(--nx-glass-soft, rgba(255, 255, 255, .8));
+  color: inherit; font: inherit; font-size: 12px; cursor: pointer;
+}
+.byok-btn:hover { background: var(--nx-hover, rgba(28, 38, 50, .07)); }
+.byok-btn:disabled { opacity: .55; cursor: default; }
+.byok-btn.is-primary {
+  border-color: transparent;
+  background: var(--nx-accent, #2f6df6);
+  color: #fff; font-weight: 600;
+}
+.byok-btn.is-primary:hover { filter: brightness(1.05); }
+.byok-btn.is-quiet { height: 26px; padding: 0 10px; font-size: 11px; }
+
+@media (max-width: 560px) {
+  .byok-layer { padding: 12px; align-items: flex-end; }
+  .byok { max-height: 92vh; border-radius: 18px; }
+  .byok-grid { grid-template-columns: 1fr; }
+  .byok-foot-right { justify-content: flex-end; }
+}

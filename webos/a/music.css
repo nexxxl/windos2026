@@ -1,0 +1,458 @@
+/* 音乐卡片样式：独立成一份，音乐页只用这几 KB，不再下载桌面外壳的整张样式表。 */
+
+:root {
+  --paper: #f5efe4;
+  --paper-2: #efe7d8;
+  --ink: #1f1b17;
+  --mute: #857a6a;
+  --line: #d8cbb6;
+  --serif: "Songti SC", "Noto Serif CJK SC", "Source Han Serif SC", ui-serif, Georgia, serif;
+  --sans: -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--sans);
+  -webkit-font-smoothing: antialiased;
+  overflow: hidden;
+}
+button, input { font: inherit; color: inherit; }
+button { background: none; border: 0; padding: 0; cursor: pointer; }
+.music-host { height: 100%; display: flex; }
+.icon {
+  width: 20px; height: 20px; fill: none; stroke: currentColor;
+  stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
+}
+
+/* 卡片就是应用本体：403×462，等于子午流注钟的 1.4 倍。
+   抽屉展开时窗口变宽，卡片仍钉在左边，所以宽度写死而不是 100%。 */
+.ma {
+  /* 卡面跟窗口一起用冷白玻璃：墨色偏蓝灰，线条是一层淡淡的石板灰。
+     曲库抽屉 (.ma-lib) 仍用自己的暖纸变量，不受这里影响。 */
+  --ma-ink: #1b2230;
+  --ma-ink-2: rgba(27, 34, 48, 0.62);
+  --ma-ink-3: rgba(27, 34, 48, 0.46);
+  --ma-line: rgba(27, 34, 48, 0.14);
+  --ma-hover: rgba(27, 34, 48, 0.06);
+  position: relative;
+  flex: 0 0 auto;
+  width: 403px; height: 462px;
+  max-width: 100%; max-height: 100%;
+  margin: auto auto auto 0;
+  display: flex; flex-direction: column;
+  overflow: hidden;
+  color: var(--ma-ink);
+  font-family: var(--sans);
+}
+html[data-theme="dark"] .ma {
+  --ma-ink: #eef3ff;
+  --ma-ink-2: rgba(226, 236, 255, 0.66);
+  --ma-ink-3: rgba(226, 236, 255, 0.44);
+  --ma-line: rgba(255, 255, 255, 0.22);
+  --ma-hover: rgba(255, 255, 255, 0.10);
+}
+/* 屏幕右侧没空间时抽屉翻到左边：卡片靠右，屏幕上仍停在原位。 */
+.ma[data-lib-side="left"] { margin: auto 0 auto auto; }
+.ma[data-lib-side="left"] .ma-lib { left: auto; right: 415px; }
+
+/* ---- 播放区 ---- */
+.ma-main {
+  flex: 1; min-height: 0;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 26px 20px 12px;
+}
+.ma-cover {
+  position: relative; flex: 0 0 auto;
+  width: 188px; height: 188px; border-radius: 20px;
+  display: grid; place-items: center;
+  overflow: hidden;
+  background: rgba(27, 34, 48, 0.055);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.85);
+  transition: transform 120ms ease;
+}
+html[data-theme="dark"] .ma-cover {
+  background: rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+}
+.ma-cover:active { transform: scale(0.985); }
+.ma-cover img {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0;
+  width: 100%; height: 100%; object-fit: cover; display: block;
+}
+.ma-cover img[hidden] { display: none; }
+.ma-coveryph { color: rgba(27, 34, 48, 0.24); pointer-events: none; }
+html[data-theme="dark"] .ma-coveryph { color: rgba(226, 236, 255, 0.32); }
+.ma-coveryph .icon { width: 54px; height: 54px; stroke-width: 1.1; }
+
+.ma-meta { width: 100%; margin-top: 18px; text-align: center; }
+.ma-title {
+  margin: 0; font-size: 23px; font-weight: 700;
+  letter-spacing: -0.01em; line-height: 1.2;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ma-artist {
+  margin: 5px 0 0; font-size: 12.5px; color: var(--ma-ink-2);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.ma-seekrow {
+  width: 100%; margin-top: 20px;
+  display: grid; grid-template-columns: 34px 1fr 34px; align-items: center; gap: 8px;
+}
+.ma-time { font-size: 10.5px; color: var(--ma-ink-3); font-variant-numeric: tabular-nums; }
+.ma-time:last-child { text-align: right; }
+
+/* 进度与音量共用一条细轨：Chrome 72 只有 -webkit- 伪元素。 */
+.ma-seek, .ma-vol {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; height: 18px; margin: 0;
+  background: transparent; cursor: pointer;
+}
+.ma-seek::-webkit-slider-runnable-track,
+.ma-vol::-webkit-slider-runnable-track {
+  height: 3px; border-radius: 2px; background: var(--ma-line);
+}
+.ma-seek::-webkit-slider-thumb,
+.ma-vol::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 11px; height: 11px; margin-top: -4px;
+  border-radius: 50%; background: #fff; border: 0;
+  box-shadow: 0 1px 3px rgba(20, 26, 40, 0.3);
+}
+.ma-seek:disabled { opacity: 0.4; cursor: default; }
+
+.ma-transport {
+  display: flex; align-items: center; justify-content: center; gap: 34px;
+  margin-top: 6px;
+}
+.ma-btn {
+  width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--ma-ink);
+  transition: background 120ms ease, transform 120ms ease;
+}
+.ma-btn:hover { background: var(--ma-hover); }
+.ma-btn:active { transform: scale(0.94); }
+.ma-btn .icon { width: 21px; height: 21px; stroke-width: 1.8; }
+.ma-play {
+  width: 52px; height: 52px; border-radius: 50%;
+  display: grid; place-items: center;
+  color: var(--ma-ink);
+  transition: background 120ms ease, transform 120ms ease;
+}
+.ma-play:hover { background: var(--ma-hover); }
+.ma-play:active { transform: scale(0.96); }
+.ma-play .icon { width: 30px; height: 30px; stroke-width: 1.6; }
+
+/* 底栏只留必需项：曲库、播放模式、音量。 */
+.ma-bottom {
+  display: flex; align-items: center; gap: 2px;
+  width: 100%; margin-top: auto; padding-top: 8px;
+  color: var(--ma-ink-3);
+}
+.ma-bottom .ma-btn { width: 30px; height: 30px; }
+.ma-bottom .ma-btn .icon { width: 15px; height: 15px; stroke-width: 1.7; }
+.ma-bottom .ma-btn.on { color: var(--ma-ink); }
+.ma-volwrap { display: flex; align-items: center; gap: 6px; margin-left: auto; }
+.ma-volwrap .icon { width: 13px; height: 13px; }
+.ma-vol { width: 62px; }
+
+/* 提示是一枚浮在底部的胶囊：出现时不挤动布局。 */
+.ma-note {
+  position: absolute; z-index: 6; left: 50%; bottom: 50px;
+  transform: translateX(-50%);
+  max-width: 88%; margin: 0; padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(20, 26, 40, 0.76); color: rgba(255, 255, 255, 0.94);
+  font-size: 10.5px; line-height: 1.4; text-align: center;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ma-note:empty { display: none; }
+.ma-note[data-kind="error"] { background: rgba(166, 38, 30, 0.86); }
+
+/* ---- 曲库抽屉：卡片右边钉住，窗口右边缘外扩，开合不做动效 ---- */
+.ma-lib {
+  position: fixed; z-index: 12; top: 10px; bottom: 10px;
+  left: 415px; width: 282px;
+  display: flex; flex-direction: column; min-height: 0;
+  background: var(--paper-2);
+  border: 1px solid #ddd0bb;
+  border-radius: 18px;
+  box-shadow: 0 12px 28px rgba(31, 27, 23, 0.10), inset 0 1px 0 #fffdf8;
+  color: var(--ink);
+  overflow: hidden;
+  visibility: hidden; pointer-events: none;
+}
+.ma-lib-open .ma-lib { visibility: visible; pointer-events: auto; }
+
+.ma-libhead {
+  display: flex; align-items: center; gap: 8px;
+  padding: 14px 12px 8px 16px;
+}
+.ma-libhead h2 {
+  margin: 0; font-family: var(--serif); font-size: 21px; font-weight: 600;
+  letter-spacing: 0.01em;
+}
+.ma-count { font-size: 10.5px; color: var(--mute); margin-top: 5px; }
+.ma-libacts { display: flex; gap: 4px; margin-left: auto; }
+.ma-iconbtn {
+  width: 30px; height: 30px; border-radius: 9px;
+  display: grid; place-items: center;
+  color: #4a4239; background: #f2ebdf; border: 1px solid #ddd0bb;
+}
+.ma-iconbtn:hover { background: #e9e0d0; color: var(--ink); }
+.ma-iconbtn[hidden] { display: none; }
+.ma-iconbtn .icon { width: 15px; height: 15px; }
+
+.ma-sources {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 0 10px 8px;
+  max-height: 38%; overflow: auto; -webkit-overflow-scrolling: touch;
+}
+.ma-source {
+  display: grid; grid-template-columns: 20px 1fr auto; align-items: center; gap: 8px;
+  width: 100%; padding: 8px 10px; border-radius: 10px; text-align: left;
+  color: #4a4239; font-size: 12px;
+}
+.ma-source:hover { background: #e9e0d0; color: var(--ink); }
+.ma-source.on { background: var(--ink); color: #fff; }
+.ma-source .icon { width: 15px; height: 15px; color: var(--mute); }
+.ma-source.on .icon { color: #fff; }
+.ma-source span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ma-source i {
+  font-style: normal; font-size: 10px; color: #9b8f7e;
+  font-variant-numeric: tabular-nums;
+}
+.ma-source.on i { color: rgba(255, 255, 255, 0.62); }
+.ma-sourceadd {
+  color: var(--mute); margin-top: 2px;
+  border-top: 1px dashed #ddd0bb; border-radius: 0 0 10px 10px;
+}
+.ma-sourceadd:hover { color: var(--ink); }
+
+.ma-searchwrap { padding: 0 12px 10px; }
+.ma-searchwrap[hidden] { display: none; }
+.ma-search {
+  width: 100%; height: 32px; padding: 0 10px;
+  background: #f2ebdf; border: 1px solid #ddd0bb; border-radius: 9px;
+  color: var(--ink); font-size: 12px;
+}
+.ma-search:focus { outline: none; border-color: #c9bba4; background: #fffdf8; }
+.ma-search::placeholder { color: #a1968a; }
+
+.ma-list {
+  flex: 1; min-height: 0; overflow: auto; -webkit-overflow-scrolling: touch;
+  padding: 2px 8px 10px;
+}
+.ma-row {
+  display: grid; grid-template-columns: 20px 1fr auto 24px; align-items: center; gap: 8px;
+  padding: 8px 8px; border-radius: 9px; color: #4a4239; font-size: 12px;
+}
+.ma-row:hover { background: #f2ebdf; color: var(--ink); }
+.ma-row.on { background: #efe6d6; color: #111114; }
+.ma-rowicon { display: grid; place-items: center; color: var(--mute); }
+.ma-row.on .ma-rowicon { color: #1c1c22; }
+.ma-rowicon .icon { width: 15px; height: 15px; }
+.ma-rowtext { display: grid; gap: 1px; min-width: 0; }
+.ma-rowtext b {
+  font-size: 12.5px; font-weight: 500;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ma-rowtext i {
+  font-style: normal; font-size: 10.5px; color: var(--mute);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.ma-rowtime { font-size: 10.5px; color: var(--mute); font-variant-numeric: tabular-nums; }
+.ma-rowdel {
+  width: 24px; height: 24px; display: none; place-items: center;
+  color: var(--mute); border-radius: 6px;
+}
+.ma-row:hover .ma-rowdel { display: grid; }
+.ma-rowdel:hover { background: #e9e0d0; color: #a33a2c; }
+.ma-rowdel .icon { width: 12px; height: 12px; }
+.ma-empty { padding: 16px 12px; color: var(--mute); font-size: 11.5px; line-height: 1.7; }
+
+.ma-add {
+  display: flex; gap: 6px; padding: 8px 10px;
+  border-top: 1px solid #e3d8c6;
+}
+.ma-add[hidden] { display: none; }
+.ma-url {
+  flex: 1; min-width: 0; height: 32px; padding: 0 10px;
+  background: #f2ebdf; border: 1px solid #ddd0bb; border-radius: 9px;
+  color: var(--ink); font-size: 11.5px;
+}
+.ma-url:focus { outline: none; border-color: #c9bba4; background: #fffdf8; }
+.ma-addbtn {
+  height: 32px; padding: 0 12px; border-radius: 9px;
+  background: var(--ink); color: #fff; font-size: 11.5px;
+}
+.ma-addbtn:hover { background: #332c25; }
+.ma-addbtn:disabled { opacity: 0.5; }
+
+/* ---- 插件面板 ---- */
+.ma-sheet {
+  position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 20;
+  display: grid; place-items: center;
+  background: rgba(31, 27, 23, 0.34);
+}
+.ma-sheet[hidden] { display: none; }
+.ma-sheetpanel {
+  width: 92%; max-width: 520px; max-height: 86%; overflow: auto;
+  padding: 18px 20px 16px;
+  border-radius: 20px;
+  background: #fffdf8; color: var(--ink);
+  box-shadow: 0 30px 80px rgba(20, 26, 48, 0.28);
+}
+.ma-sheethead {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  margin-bottom: 6px;
+}
+.ma-sheethead b { font-family: var(--serif); font-size: 17px; font-weight: 600; }
+.ma-panelx {
+  width: 28px; height: 28px; display: grid; place-items: center;
+  border-radius: 8px; color: #6d6d75;
+}
+.ma-panelx:hover { background: #f1ebdf; color: var(--ink); }
+.ma-panelx .icon { width: 14px; height: 14px; }
+.ma-sheetnote { margin: 0 0 10px; font-size: 11.5px; line-height: 1.6; color: #6d6d75; }
+.ma-install { display: flex; gap: 6px; margin-bottom: 8px; }
+.ma-installrow { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.ma-ghostbtn {
+  height: 30px; padding: 0 11px; border-radius: 9px;
+  font-size: 11px; color: var(--ink);
+  border: 1px solid #e0d6c6; background: #f7f1e6;
+}
+.ma-ghostbtn:hover { background: #efe6d6; }
+.ma-sameline { font-size: 10px; line-height: 1.5; color: var(--mute); }
+.ma-pluginlist { margin: 4px 0 8px; }
+.ma-plug {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
+  padding: 11px 0; border-top: 1px solid #efe7d8;
+}
+.ma-plugmain { min-width: 0; display: grid; gap: 2px; }
+.ma-plugmain b { font-size: 12.5px; font-weight: 600; }
+.ma-plugmain span { font-size: 10.5px; color: var(--mute); }
+.ma-plugmain em { font-style: normal; font-size: 10.5px; line-height: 1.5; color: #9a8f7e; }
+.ma-plugacts { display: flex; gap: 6px; flex: none; }
+.ma-chip {
+  height: 26px; padding: 0 10px; border-radius: 8px;
+  font-size: 10.5px; color: #3d4048;
+  border: 1px solid #e0d6c6; background: #f7f1e6;
+}
+.ma-chip:hover { background: #efe6d6; color: var(--ink); }
+.ma-chip.on { color: var(--ink); border-color: #c9bba4; background: #efe6d6; }
+.ma-chip.danger:hover { color: #a33a2c; border-color: #e8c4be; background: #fdf4f3; }
+
+/* 窄窗再收一档，卡片本身仍是 403，这里只服务窗口被压窄的极端情况。 */
+@media (max-width: 392px) {
+  .ma-main { padding: 20px 16px 10px; }
+  .ma-cover { width: 168px; height: 168px; }
+  .ma-title { font-size: 21px; }
+  .ma-transport { gap: 28px; }
+  .ma-play { width: 50px; height: 50px; }
+  .ma-lib { top: 8px; bottom: 8px; width: 262px; }
+}
+
+/* ==========================================================================
+   Windos2026 (win98) 皮肤：只换右边曲库抽屉。
+   左边卡片与底栏保持 NEXL 现代视觉（用户确认这就是本系统的视觉语言），
+   所以选择器一律锁在 .ma-lib 内部，不碰 .ma 本身。
+   ========================================================================== */
+html[data-appearance="win98"] .ma-lib {
+  border: 0; border-radius: 0;
+  background: #c0c0c0; color: #000;
+  font-family: "NexlOS Fusion Pixel", "NexlOS MS Sans Serif", SimSun, "Songti SC", sans-serif;
+  box-shadow:
+    inset -1px -1px #0a0a0a, inset 1px 1px #c0c0c0,
+    inset -2px -2px #808080, inset 2px 2px #fff;
+}
+html[data-appearance="win98"] .ma-libhead { padding: 10px 6px 6px 8px; gap: 6px; }
+html[data-appearance="win98"] .ma-libhead h2 {
+  font-family: inherit; font-size: 18px; font-weight: 700; letter-spacing: 0;
+}
+html[data-appearance="win98"] .ma-count { font-size: 11px; color: #000; }
+html[data-appearance="win98"] .ma-libacts { gap: 3px; }
+html[data-appearance="win98"] .ma-iconbtn {
+  width: 24px; height: 22px; border: 0; border-radius: 0;
+  color: #000; background: #c0c0c0;
+  box-shadow:
+    inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+    inset -2px -2px #808080, inset 2px 2px #c0c0c0;
+}
+html[data-appearance="win98"] .ma-iconbtn:hover { background: #c0c0c0; color: #000; }
+html[data-appearance="win98"] .ma-iconbtn:active {
+  box-shadow:
+    inset -1px -1px #fff, inset 1px 1px #0a0a0a,
+    inset -2px -2px #c0c0c0, inset 2px 2px #808080;
+}
+html[data-appearance="win98"] .ma-sources { padding: 0 4px 6px; gap: 0; }
+html[data-appearance="win98"] .ma-source {
+  border-radius: 0; padding: 4px 6px; color: #000; font-size: 12px;
+}
+html[data-appearance="win98"] .ma-source:hover { background: #c0c0c0; outline: 1px dotted #000; outline-offset: -1px; }
+/* 音源只是分组标题，不做选中强调，用户不需要视觉引导到这里。 */
+html[data-appearance="win98"] .ma-source.on {
+  background: transparent; color: #000; outline: 0; box-shadow: none;
+}
+html[data-appearance="win98"] .ma-source .icon { color: #000; }
+html[data-appearance="win98"] .ma-source i { color: #000; }
+
+/* 正在播放的曲目才做选中标记：任务栏激活键的 50% 点阵 + 下沉边框，
+   灰阶里读得出状态，又没有大面积纯蓝。 */
+html[data-appearance="win98"] .ma-row.on {
+  background: #dfdfdf url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='2' height='2'%3E%3Cpath fill='%23fff' d='M0 0h2v2H0z'/%3E%3Cpath fill='%23dfdfdf' d='M0 0h1v1H0zM1 1h1v1H1z'/%3E%3C/svg%3E");
+  color: #000;
+  box-shadow: inset 1px 1px #808080, inset -1px -1px #fff;
+  outline: 1px dotted #000; outline-offset: -3px;
+}
+html[data-appearance="win98"] .ma-sourceadd { border-top: 1px solid #808080; margin-top: 4px; border-radius: 0; color: #000; }
+
+/* 输入框：白底凹陷字段。 */
+html[data-appearance="win98"] .ma-search,
+html[data-appearance="win98"] .ma-url {
+  height: 24px; padding: 0 5px; border: 0; border-radius: 0;
+  background: #fff; color: #000; font-size: 12px;
+  box-shadow:
+    inset -1px -1px #fff, inset 1px 1px #808080,
+    inset -2px -2px #c0c0c0, inset 2px 2px #0a0a0a;
+}
+html[data-appearance="win98"] .ma-search:focus,
+html[data-appearance="win98"] .ma-url:focus {
+  outline: 1px dotted #000; outline-offset: -3px;
+  border: 0; background: #fff;
+}
+html[data-appearance="win98"] .ma-search::placeholder,
+html[data-appearance="win98"] .ma-url::placeholder { color: #808080; }
+
+html[data-appearance="win98"] .ma-list { padding: 2px 4px 6px; }
+html[data-appearance="win98"] .ma-row {
+  border-radius: 0; color: #000; font-size: 12px; padding: 4px 6px; gap: 6px;
+}
+html[data-appearance="win98"] .ma-row:hover:not(.on) { background: #c0c0c0; outline: 1px dotted #000; outline-offset: -1px; }
+html[data-appearance="win98"] .ma-row.on .ma-rowicon,
+html[data-appearance="win98"] .ma-row.on .ma-rowtime,
+html[data-appearance="win98"] .ma-row.on .ma-rowtext i { color: #000; }
+html[data-appearance="win98"] .ma-rowtext b { font-weight: 700; }
+html[data-appearance="win98"] .ma-rowtime { color: #000; }
+html[data-appearance="win98"] .ma-rowdel { border-radius: 0; color: #000; }
+html[data-appearance="win98"] .ma-rowdel:hover { background: #c0c0c0; outline: 1px dotted #000; color: #000; }
+html[data-appearance="win98"] .ma-empty { color: #555; font-size: 12px; }
+
+html[data-appearance="win98"] .ma-add { gap: 4px; padding: 6px 4px; border-top: 1px solid #808080; }
+html[data-appearance="win98"] .ma-addbtn {
+  height: 24px; padding: 0 12px; border-radius: 0;
+  background: #c0c0c0; color: #000;
+  box-shadow:
+    inset -1px -1px #0a0a0a, inset 1px 1px #fff,
+    inset -2px -2px #808080, inset 2px 2px #c0c0c0;
+}
+html[data-appearance="win98"] .ma-addbtn:hover { background: #c0c0c0; }
+html[data-appearance="win98"] .ma-addbtn:active {
+  box-shadow:
+    inset -1px -1px #fff, inset 1px 1px #0a0a0a,
+    inset -2px -2px #c0c0c0, inset 2px 2px #808080;
+}

@@ -1,0 +1,20 @@
+NexlOS Plugin Edition
+Copyright (c) 2026 NexlOS Authors
+
+This directory contains the standalone plugin edition. Plugin source and the
+existing public documentation retain the Apache License, Version 2.0; see LICENSE.
+Companion sources in applications/ and tools/ retain their own existing licensing
+boundaries. This split grants them no new overall license.
+
+Third-party components and assets remain under their own licenses. See
+THIRD_PARTY_NOTICES.md and the license files shipped next to each asset.
+
+NexlOS, Windos2026, their logos and icons are marks claimed by NexlOS Authors.
+Apache-2.0 does not grant trademark rights; see TRADEMARK.md.
+
+The separately distributed universal binaries remain subject to EULA.md.
+Universal source is not included in this plugin directory.
+
+NexlOS and the Windos2026 theme are independent projects, not affiliated with,
+endorsed by or sponsored by Microsoft Corporation or another operating system
+vendor. Windows is a trademark of Microsoft Corporation.

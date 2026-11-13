@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- 桌面锁死浏览器缩放：双指缩放交给窗口自己做（CSS zoom），
+     否则整页会被放大到 5 倍，表头被挤出屏幕、触摸坐标还按 1/scale 折算。
+     interactive-widget=resizes-content 让软键盘真正压缩可视区而不是盖住输入框。 -->
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover,interactive-widget=resizes-content">
+<title>NexlOS</title>
+<meta name="description" content="A writing OS that fits in one binary: desktop, windows, media, scanning, and creative spaces.">
+<meta name="theme-color" content="#f5efe4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171512" media="(prefers-color-scheme: dark)">
+<meta name="color-scheme" content="light dark">
+<meta name="application-name" content="NexlOS">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="NexlOS">
+<meta name="format-detection" content="telephone=no,email=no,date=no,address=no">
+<link rel="manifest" href="/a/manifest.webmanifest">
+<link rel="icon" type="image/png" href="/a/icon-192.png">
+<link rel="apple-touch-icon" sizes="180x180" href="/a/icon-apple-touch-180.png">
+<script>
+// Paint the saved skin before styles load; settings.get reconciles this cache.
+try {
+  var nexlosAppearance = localStorage.getItem('nexlos.appearance.v1');
+  if (nexlosAppearance === 'win98') document.documentElement.setAttribute('data-appearance', nexlosAppearance);
+} catch (e) { /* The default appearance also works without local storage. */ }
+</script>
+<link rel="stylesheet" href="/a/app.css">
+<link rel="stylesheet" href="/a/hello.css">
+<!-- 音乐卡片自带一份样式：独立入口 /a/music.html 只加载它，不再等整张 app.css。 -->
+<link rel="stylesheet" href="/a/music.css">
+<link rel="stylesheet" href="/a/vendor/xterm.css">
+<link rel="stylesheet" href="/a/vendor/retro-font/retro-font.css">
+<link rel="stylesheet" href="/a/win98.css">
+<link rel="stylesheet" href="/a/typography.css">
+<link rel="stylesheet" href="/a/companion.css">
+<link rel="stylesheet" href="/a/minesweeper.css" data-nexlos-minesweeper>
+<link rel="stylesheet" href="/a/classic-datetime.css" data-nexlos-classic-datetime>
+<link rel="stylesheet" href="/a/classic-sounds.css" data-nexlos-classic-sounds>
+<link rel="stylesheet" href="/a/classic-boot.css">
+<link rel="stylesheet" href="/a/classic-contextmenu.css" data-nexlos-classic-contextmenu>
+<link rel="stylesheet" href="/a/window2026.css">
+<link rel="stylesheet" href="/a/browser.css">
+<link rel="stylesheet" href="/a/store.css">
+<link rel="stylesheet" href="/a/byok.css">
+<script src="/a/vendor/xterm.js"></script>
+<script src="/a/vendor/xterm-addon-fit.js"></script>
+<script src="/a/vendor/xterm-addon-webgl.js"></script>
+</head>
+<body>
+  <div id="boot" class="boot">
+    <b class="boot-name"><span class="boot-maker">Nexl</span><span class="boot-product">Windos2026</span></b>
+    <span class="boot-bar"><i></i></span>
+    <p class="boot-error-text" hidden></p>
+  </div>
+  <div id="app" hidden></div>
+  <script>
+  // 首帧就进入雾面：先给 body 加 booting，避免白底闪一下再变黑。
+  try {
+    if (sessionStorage.getItem('nexlos.booted') !== '1') document.body.classList.add('booting');
+  } catch (e) { /* 隐私模式：不加也不影响启动 */ }
+  // 模块或样式加载失败时，启动遮罩会一直停在“正在打开桌面”。
+  // 把失败的文件名直接写在遮罩上，避免把资源错误伪装成慢启动。
+  window.addEventListener('error', function (e) {
+    var boot = document.getElementById('boot');
+    if (!boot || boot.classList.contains('done') || !e.target || e.target === window) return;
+    var p = boot.querySelector('.boot-error-text');
+    var file = e.target.src || e.target.href || '';
+    if (p && file) {
+      var zh = document.documentElement.lang === 'zh-CN';
+      p.hidden = false;
+      p.textContent = (zh ? '启动失败：' : 'Startup failed: ') + file.replace(location.origin, '');
+    }
+    boot.classList.add('boot-error');
+  }, true);
+  </script>
+  <script src="/a/bridge.host.js"></script>
+  <script type="module" src="/a/app.js"></script>
+</body>
+</html>

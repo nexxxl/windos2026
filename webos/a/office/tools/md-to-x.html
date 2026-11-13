@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>
+  // 嵌入便捷办公时父级传入 ?embed=1；单独双击打开时保持原样。
+  if (/(?:^|[?&])embed=1(?:&|$)/.test(location.search)) {
+    document.documentElement.className += ' embed';
+  }
+</script>
+<script src="../i18n-office.js"></script>
+<title>Markdown 转 X 线程</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font: 15px/1.55 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #18181b; background: #f4f4f5; -webkit-text-size-adjust: 100%;
+  }
+  .bar {
+    display: flex; flex-wrap: wrap; align-items: center;
+    padding: 12px 16px; background: #fff; border-bottom: 1px solid #e4e4e7;
+  }
+  .bar-title { font-size: 15px; font-weight: 600; margin-right: 10px; }
+  .bar-note { font-size: 12px; color: #8a8a93; margin-right: 10px; }
+  .bar-actions { margin-left: auto; display: flex; flex-wrap: wrap; }
+  .bar-actions > * { margin-left: 8px; margin-top: 4px; margin-bottom: 4px; }
+
+  .btn {
+    padding: 8px 14px; font: inherit; font-size: 13px; border-radius: 8px;
+    border: 1px solid #d4d4d8; background: #fff; color: #18181b; cursor: pointer;
+  }
+  .btn:hover { border-color: #18181b; }
+  .btn-primary { background: #18181b; border-color: #18181b; color: #fff; }
+  .btn-primary:hover { background: #000; }
+  .btn-sm { padding: 4px 10px; font-size: 12px; border-radius: 6px; }
+
+  .controls {
+    display: flex; flex-wrap: wrap; align-items: center;
+    padding: 10px 16px; background: #fff; border-bottom: 1px solid #e4e4e7;
+    font-size: 12px; color: #71717a;
+  }
+  .controls label { display: flex; align-items: center; margin-right: 18px; margin-top: 3px; margin-bottom: 3px; cursor: pointer; }
+  .controls input[type="checkbox"] { margin-right: 6px; }
+  .controls .hint { color: #a1a1aa; }
+
+  .layout { max-width: 1180px; margin: 0 auto; padding: 16px; display: flex; flex-wrap: wrap; align-items: stretch; }
+  .pane { width: 100%; background: #fff; border: 1px solid #e4e4e7; border-radius: 10px; display: flex; flex-direction: column; min-width: 0; }
+  .pane-input { margin-bottom: 16px; }
+  @media (min-width: 880px) {
+    .pane-input { width: 46%; margin-right: 16px; margin-bottom: 0; }
+    .pane-thread { width: calc(54% - 16px); }
+    .pane-input, .pane-thread { height: calc(100vh - 160px); min-height: 460px; }
+  }
+  .pane-head {
+    padding: 9px 14px; font-size: 12px; color: #71717a;
+    border-bottom: 1px solid #f0f0f1; display: flex; align-items: center;
+  }
+  .pane-head .right { margin-left: auto; font-size: 11px; color: #a1a1aa; }
+
+  #md {
+    flex: 1 1 auto; width: 100%; min-height: 300px; padding: 14px;
+    font: 13px/1.7 "SF Mono", Menlo, Consolas, monospace;
+    color: #18181b; background: #fafafa; border: 0; outline: none; resize: vertical;
+  }
+  @media (min-width: 880px) { #md { resize: none; } }
+
+  .thread { flex: 1 1 auto; overflow-y: auto; padding: 14px; background: #ececee; }
+  .thread-empty { padding: 50px 16px; text-align: center; font-size: 13px; color: #a1a1aa; background: #fff; border-radius: 8px; }
+
+  .card { background: #fff; border: 1px solid #e4e4e7; border-radius: 10px; margin-bottom: 12px; }
+  .card.over { border-color: #fca5a5; }
+  .card-head { display: flex; align-items: center; padding: 8px 12px; border-bottom: 1px solid #f4f4f5; font-size: 12px; color: #71717a; }
+  .card-index { font-weight: 600; color: #3f3f46; margin-right: 10px; }
+  .card-count { margin-left: auto; font: 12px/1 "SF Mono", Menlo, monospace; color: #a1a1aa; }
+  .card-count.near { color: #b45309; }
+  .card-count.over { color: #dc2626; font-weight: 600; }
+  .card textarea {
+    display: block; width: 100%; border: 0; outline: none; resize: none;
+    padding: 10px 12px; font: 14px/1.6 -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", sans-serif;
+    color: #18181b; background: #fff; border-radius: 0 0 10px 10px;
+    overflow: hidden; min-height: 74px;
+  }
+  .card-actions { display: flex; flex-wrap: wrap; padding: 0 12px 10px; }
+  .card-actions > * { margin-right: 8px; }
+
+  .msg { margin: 10px 14px 14px; font-size: 12px; line-height: 1.6; padding: 8px 10px; border-radius: 8px; display: none; }
+  .msg.show { display: block; }
+  .msg.ok { background: #f0fdf4; color: #15803d; }
+  .msg.warn { background: #fffbeb; color: #92400e; }
+  .msg.err { background: #fef2f2; color: #b91c1c; }
+
+  /* ---------- 嵌入便捷办公：动作条与选项条压成 Office 工具栏 ---------- */
+  html.embed body {
+    font: 12.5px/1.5 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    color: #1c1917; background: #faf8f4;
+  }
+  /* 标题已经在工具窗标题栏里显示，这里只保留动作按钮。 */
+  html.embed .bar {
+    padding: 4px 10px; background: #f3f3f3; border-bottom: 1px solid #c9c9c9;
+  }
+  html.embed .bar-title, html.embed .bar-note { display: none; }
+  html.embed .bar-actions { margin-left: 0; }
+  html.embed .bar-actions > * { margin: 0 8px 0 0; }
+  html.embed .controls {
+    padding: 5px 10px; background: #f1ede5; border-bottom: 1px solid #ded6c8;
+    font-size: 11.5px; color: #57534e;
+  }
+  html.embed .controls label { margin-right: 14px; margin-top: 2px; margin-bottom: 2px; }
+  html.embed .controls .hint { color: #8a817a; }
+  html.embed .btn {
+    padding: 5px 12px; font-size: 12px; border-color: #c9c0b2; border-radius: 3px;
+    background: #fbf9f5;
+  }
+  html.embed .btn:hover { border-color: #1c1917; background: #fff; }
+  html.embed .btn-primary { background: #1c1917; border-color: #1c1917; color: #fff; }
+  html.embed .btn-primary:hover { background: #000; border-color: #000; }
+  html.embed .btn-sm { padding: 3px 8px; font-size: 11.5px; border-radius: 3px; }
+  html.embed .layout { max-width: none; padding: 10px 12px 12px; }
+  html.embed .pane { border-color: #ded6c8; border-radius: 4px; }
+  html.embed .pane-head {
+    padding: 6px 10px; font-size: 11.5px; color: #57534e;
+    background: #f7f3ec; border-bottom-color: #ded6c8;
+  }
+  html.embed .pane-head .right { font-size: 10.5px; color: #8a817a; }
+  html.embed #md { padding: 10px 12px; font-size: 12.5px; background: #fff; }
+  html.embed .thread { padding: 10px; background: #f1ede5; }
+  html.embed .thread-empty { padding: 36px 14px; font-size: 12px; border-radius: 3px; }
+  html.embed .card { border-color: #ded6c8; border-radius: 4px; margin-bottom: 9px; }
+  html.embed .card-head { padding: 6px 10px; border-bottom-color: #f1ede5; font-size: 11.5px; }
+  html.embed .card-count { font-size: 11px; }
+  html.embed .card textarea { padding: 8px 10px; font-size: 13px; border-radius: 0 0 4px 4px; min-height: 64px; }
+  html.embed .card-actions { padding: 0 10px 8px; }
+  html.embed .msg { margin: 8px 12px 10px; font-size: 11.5px; border-radius: 3px; }
+  /* 原生复选框的蓝色勾选框与纸张配色冲突，换成墨色小方框。 */
+  html.embed input[type="checkbox"] {
+    -webkit-appearance: none; appearance: none; position: relative;
+    width: 12px; height: 12px; border: 1px solid #a89f90; border-radius: 2px;
+    background: #fff; vertical-align: -1px;
+  }
+  html.embed input[type="checkbox"]:checked { background: #1c1917; border-color: #1c1917; }
+  html.embed input[type="checkbox"]:checked::after {
+    content: ''; position: absolute; left: 3px; top: 0; width: 3px; height: 7px;
+    border: solid #fff; border-width: 0 2px 2px 0; -webkit-transform: rotate(45deg); transform: rotate(45deg);
+  }
+  @media (min-width: 880px) {
+    /* 工具窗自己的标题栏 + 动作条 + 选项条约占 96px。 */
+    html.embed .pane-input, html.embed .pane-thread { height: calc(100vh - 116px); min-height: 380px; }
+  }
+  @media (max-width: 600px) {
+    html.embed .layout { padding: 8px 10px 12px; }
+    html.embed .btn { padding: 7px 12px; }
+    html.embed .controls { padding: 5px 8px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bar">
+  <div class="bar-title">Markdown 转 X 线程</div>
+  <div class="bar-note">按 280 字符自动分条，URL 一律按 23 字符计</div>
+  <div class="bar-actions">
+    <button type="button" class="btn" id="splitBtn">重新拆分</button>
+    <button type="button" class="btn btn-primary" id="copyAllBtn">复制全部</button>
+  </div>
+</div>
+
+<div class="controls">
+  <label><input type="checkbox" id="numbering" checked>每条加上「1/n」编号</label>
+  <span class="hint">计数口径：ASCII 计 1，中文、日文、韩文与 emoji 计 2，链接计 23（与 X 一致）</span>
+</div>
+
+<div class="layout">
+  <section class="pane pane-input">
+    <div class="pane-head">Markdown 原文<span class="right" id="stats">0 字</span></div>
+    <textarea id="md" spellcheck="false" placeholder="在这里粘贴 Markdown。标题、列表、引用、代码块、表格都会转成纯文本。"></textarea>
+  </section>
+
+  <section class="pane pane-thread">
+    <div class="pane-head">线程预览<span class="right" id="threadStats"></span></div>
+    <div class="thread" id="thread"><div class="thread-empty">左侧输入后，这里自动分成多条</div></div>
+    <div class="msg" id="msg"></div>
+  </section>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var LIMIT = 280;
+  var URL_WEIGHT = 23;
+
+  /* ---------------- 计数 ---------------- */
+
+  // X（twitter-text v3）权重：码点在下列范围内的计 1，其余（CJK、emoji 等）计 2
+  function charWeight(cp) {
+    if (cp <= 4351) return 1;
+    if (cp >= 8192 && cp <= 8205) return 1;
+    if (cp >= 8208 && cp <= 8223) return 1;
+    if (cp >= 8242 && cp <= 8247) return 1;
+    return 2;
+  }
+
+  var URL_RE = /https?:\/\/[^\s\u3000-\u303f\uff00-\uffef]+/g;
+
+  function weightedLength(str) {
+    if (!str) return 0;
+    var total = 0;
+    var last = 0;
+    var m;
+    URL_RE.lastIndex = 0;
+    while ((m = URL_RE.exec(str)) !== null) {
+      total += weightOfPlain(str.slice(last, m.index));
+      total += URL_WEIGHT;
+      last = m.index + m[0].length;
+    }
+    total += weightOfPlain(str.slice(last));
+    return total;
+  }
+
+  function weightOfPlain(s) {
+    var chars = Array.from(s);
+    var total = 0;
+    for (var i = 0; i < chars.length; i++) {
+      total += charWeight(chars[i].codePointAt(0));
+    }
+    return total;
+  }
+
+  /* ---------------- Markdown → 纯文本 ---------------- */
+
+  function stripInline(text) {
+    var s = String(text);
+
+    s = s.replace(/`([^`\n]+)`/g, '$1');
+    s = s.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1');
+    s = s.replace(/\[([^\]]+)\]\(([^)\s]+)\)/g, function (all, label, href) {
+      if (label.trim() === href.trim()) return href;
+      return label + ' ' + href;
+    });
+    s = s.replace(/<\/?[a-zA-Z][^>]*>/g, '');
+    s = s.replace(/\*\*(?=\S)([\s\S]*?\S)\*\*/g, '$1');
+    s = s.replace(/__(?=\S)([\s\S]*?\S)__/g, '$1');
+    s = s.replace(/\*(?=\S)([\s\S]*?\S)\*/g, '$1');
+    s = s.replace(/(^|[^\w])_(?=\S)([\s\S]*?\S)_(?![\w])/g, '$1$2');
+    s = s.replace(/~~(?=\S)([\s\S]*?\S)~~/g, '$1');
+    s = s.replace(/\\([\\`*_{}\[\]()#+\-.!>~|])/g, '$1');
+    return s.trim();
+  }
+
+  var FENCE_RE = /^ {0,3}(```+|~~~+)\s*([A-Za-z0-9_+#-]*)\s*$/;
+  var HEADING_RE = /^ {0,3}(#{1,6})\s+(.*?)\s*#*\s*$/;
+  var HR_RE = /^ {0,3}([-*_])(?:\s*\1){2,}\s*$/;
+  var LIST_RE = /^(\s*)([-*+]|\d{1,9}[.)])\s+(.*)$/;
+  var QUOTE_RE = /^ {0,3}>\s?/;
+
+  // 返回按段落切好的纯文本块，块之间用 \n\n 连
+  function toPlainParagraphs(md) {
+    var lines = md.replace(/\r\n?/g, '\n').split('\n');
+    var paras = [];
+    var i = 0;
+    var n = lines.length;
+
+    function flush(list) {
+      if (list.length) paras.push(list.join('\n'));
+    }
+
+    while (i < n) {
+      var line = lines[i];
+      if (!line.trim()) { i++; continue; }
+
+      var m = FENCE_RE.exec(line);
+      if (m) {
+        i++;
+        var code = [];
+        while (i < n) {
+          var close = /^ {0,3}(```+|~~~+)\s*$/.exec(lines[i]);
+          if (close && close[1].charAt(0) === m[1].charAt(0)) { i++; break; }
+          code.push(lines[i]);
+          i++;
+        }
+        paras.push(code.join('\n').replace(/\s+$/, ''));
+        continue;
+      }
+
+      m = HEADING_RE.exec(line);
+      if (m) { paras.push(stripInline(m[2])); i++; continue; }
+
+      if (HR_RE.test(line)) { paras.push('———'); i++; continue; }
+
+      if (QUOTE_RE.test(line)) {
+        var quote = [];
+        while (i < n && QUOTE_RE.test(lines[i])) {
+          quote.push(stripInline(lines[i].replace(QUOTE_RE, '')));
+          i++;
+        }
+        paras.push(quote.join('\n'));
+        continue;
+      }
+
+      if (line.indexOf('|') >= 0 && i + 1 < n && /^\s*\|?[\s:-]*-[\s:|-]*$/.test(lines[i + 1])) {
+        var rows = [];
+        var j = i;
+        while (j < n && lines[j].indexOf('|') >= 0 && lines[j].trim()) { rows.push(lines[j]); j++; }
+        var out = [];
+        for (var r = 0; r < rows.length; r++) {
+          if (r === 1 && /^\s*\|?[\s:-]*-[\s:|-]*$/.test(rows[r])) continue;
+          var cells = rows[r].replace(/^\s*\|/, '').replace(/\|\s*$/, '').split('|');
+          var clean = [];
+          for (var c = 0; c < cells.length; c++) clean.push(stripInline(cells[c]));
+          out.push(clean.join(' · '));
+        }
+        paras.push(out.join('\n'));
+        i = j;
+        continue;
+      }
+
+      m = LIST_RE.exec(line);
+      if (m) {
+        var listLines = [];
+        while (i < n) {
+          var lm = LIST_RE.exec(lines[i]);
+          if (lm) {
+            var depth = Math.floor(lm[1].replace(/\t/g, '    ').length / 2);
+            var bullet = /\d/.test(lm[2]) ? lm[2] : (depth > 0 ? '◦' : '•');
+            listLines.push((depth > 0 ? '  ' : '') + bullet + ' ' + stripInline(lm[3]));
+            i++;
+            continue;
+          }
+          if (lines[i].trim() && /^\s{2,}/.test(lines[i]) && listLines.length) {
+            listLines.push('  ' + stripInline(lines[i]));
+            i++;
+            continue;
+          }
+          break;
+        }
+        paras.push(listLines.join('\n'));
+        continue;
+      }
+
+      var para = [];
+      while (i < n && lines[i].trim()) {
+        if (FENCE_RE.test(lines[i]) || HEADING_RE.test(lines[i]) || HR_RE.test(lines[i]) ||
+            QUOTE_RE.test(lines[i]) || LIST_RE.test(lines[i])) break;
+        para.push(stripInline(lines[i]));
+        i++;
+      }
+      paras.push(para.join('\n'));
+    }
+
+    return paras.filter(function (p) { return p.trim().length > 0; });
+  }
+
+  /* ---------------- 分条 ---------------- */
+
+  // 按句子切分，同时保留原有的换行位置
+  function splitSentences(block) {
+    var lines = block.split('\n');
+    var out = [];
+    for (var i = 0; i < lines.length; i++) {
+      var segs = [];
+      var re = /[^。！？!?\.]+[。！？!?\.]*[”’"』」）)]*/g;
+      var m;
+      while ((m = re.exec(lines[i])) !== null) {
+        if (!m[0].length) { re.lastIndex++; continue; }
+        segs.push(m[0]);
+      }
+      if (!segs.length) segs.push(lines[i]);
+      if (i < lines.length - 1) segs[segs.length - 1] += '\n';
+      for (var s = 0; s < segs.length; s++) {
+        if (segs[s]) out.push(segs[s]);
+      }
+    }
+    return out.length ? out : [block];
+  }
+
+  // 把超长片段按权重硬切开
+  function hardSplit(text, budget) {
+    var chars = Array.from(text);
+    var parts = [];
+    var cur = '';
+    var weight = 0;
+    for (var i = 0; i < chars.length; i++) {
+      var w = charWeight(chars[i].codePointAt(0));
+      if (weight + w > budget && cur.length) {
+        parts.push(cur);
+        cur = '';
+        weight = 0;
+      }
+      cur += chars[i];
+      weight += w;
+    }
+    if (cur.length) parts.push(cur);
+    return parts;
+  }
+
+  function packChunks(chunks, reserve) {
+    var budget = LIMIT - reserve;
+    var posts = [];
+    var cur = '';
+
+    function push(text) { if (text) posts.push(text); }
+
+    for (var i = 0; i < chunks.length; i++) {
+      var chunk = chunks[i];
+      var sep = cur ? chunk.sep : '';
+      if (weightedLength(cur + sep + chunk.text) <= budget) {
+        cur = cur + sep + chunk.text;
+        continue;
+      }
+      if (cur) { push(cur); cur = ''; }
+
+      if (weightedLength(chunk.text) <= budget) { cur = chunk.text; continue; }
+
+      // 整段放不下：先按句子，再按字符硬切
+      var sentences = splitSentences(chunk.text);
+      for (var s = 0; s < sentences.length; s++) {
+        var sent = sentences[s];
+        if (weightedLength(cur + sent) <= budget) { cur += sent; continue; }
+        if (cur) { push(cur); cur = ''; }
+        if (weightedLength(sent) <= budget) { cur = sent; continue; }
+        var hard = hardSplit(sent, budget);
+        for (var h = 0; h < hard.length; h++) {
+          if (h < hard.length - 1) push(hard[h]);
+          else cur = hard[h];
+        }
+      }
+    }
+    if (cur) push(cur);
+    return posts;
+  }
+
+  function buildChunks(md) {
+    var paras = toPlainParagraphs(md);
+    var chunks = [];
+    for (var i = 0; i < paras.length; i++) {
+      chunks.push({ text: paras[i], sep: i === 0 ? '' : '\n\n' });
+    }
+    return chunks;
+  }
+
+  function splitToPosts(md, numbering) {
+    var chunks = buildChunks(md);
+    if (!chunks.length) return [];
+    var posts;
+    var reserve = 0;
+    for (var pass = 0; pass < 4; pass++) {
+      posts = packChunks(chunks, reserve);
+      var next = numbering ? (String(posts.length).length * 2 + 3) : 0;
+      if (next === reserve) break;
+      reserve = next;
+    }
+    return posts;
+  }
+
+  /* ---------------- 状态与渲染 ---------------- */
+
+  var state = {
+    posts: [],
+    numbering: true
+  };
+
+  var elMd = document.getElementById('md');
+  var elThread = document.getElementById('thread');
+  var elMsg = document.getElementById('msg');
+  var elStats = document.getElementById('stats');
+  var elThreadStats = document.getElementById('threadStats');
+  var elNumbering = document.getElementById('numbering');
+
+  function prefixFor(index) {
+    if (!state.numbering) return '';
+    return (index + 1) + '/' + state.posts.length + ' ';
+  }
+
+  function showMsg(text, kind) {
+    if (!text) { elMsg.className = 'msg'; elMsg.textContent = ''; return; }
+    elMsg.className = 'msg show ' + kind;
+    elMsg.textContent = text;
+  }
+
+  function refreshCounts() {
+    var cards = elThread.querySelectorAll('.card');
+    var totalWeight = 0;
+    for (var i = 0; i < cards.length; i++) {
+      var text = state.posts[i] || '';
+      var used = weightedLength(prefixFor(i) + text);
+      totalWeight += used;
+      var badge = cards[i].querySelector('.card-count');
+      badge.textContent = used + ' / ' + LIMIT;
+      badge.className = 'card-count' + (used > LIMIT ? ' over' : (used > LIMIT * 0.9 ? ' near' : ''));
+      if (used > LIMIT) cards[i].classList.add('over');
+      else cards[i].classList.remove('over');
+      var idx = cards[i].querySelector('.card-index');
+      idx.textContent = OT('第 {0} 条', i + 1);
+    }
+    elThreadStats.textContent = OT('{0} 条 · 合计 {1} 字符', state.posts.length, totalWeight);
+  }
+
+  function autoGrow(ta) {
+    ta.style.height = 'auto';
+    ta.style.height = Math.max(74, ta.scrollHeight + 2) + 'px';
+  }
+
+  function renderThread() {
+    elThread.innerHTML = '';
+    if (!state.posts.length) {
+      elThread.innerHTML = '<div class="thread-empty">' + OT('左侧输入后，这里自动分成多条') + '</div>';
+      elThreadStats.textContent = '';
+      return;
+    }
+
+    for (var i = 0; i < state.posts.length; i++) {
+      var card = document.createElement('div');
+      card.className = 'card';
+      card.setAttribute('data-index', String(i));
+
+      var head = document.createElement('div');
+      head.className = 'card-head';
+      var idx = document.createElement('span');
+      idx.className = 'card-index';
+      idx.textContent = OT('第 {0} 条', i + 1);
+      var count = document.createElement('span');
+      count.className = 'card-count';
+      head.appendChild(idx);
+      head.appendChild(count);
+
+      var ta = document.createElement('textarea');
+      ta.value = state.posts[i];
+      ta.spellcheck = false;
+      ta.setAttribute('data-index', String(i));
+      ta.addEventListener('input', onPostInput);
+
+      var actions = document.createElement('div');
+      actions.className = 'card-actions';
+
+      var copyBtn = document.createElement('button');
+      copyBtn.type = 'button';
+      copyBtn.className = 'btn btn-sm';
+      copyBtn.textContent = OT('复制这条');
+      copyBtn.addEventListener('click', makeCopyHandler(i));
+
+      var splitBtn = document.createElement('button');
+      splitBtn.type = 'button';
+      splitBtn.className = 'btn btn-sm';
+      splitBtn.textContent = OT('在此拆分');
+      splitBtn.addEventListener('click', makeSplitHandler(i, ta));
+
+      var delBtn = document.createElement('button');
+      delBtn.type = 'button';
+      delBtn.className = 'btn btn-sm';
+      delBtn.textContent = OT('删除这条');
+      delBtn.addEventListener('click', makeDeleteHandler(i));
+
+      actions.appendChild(copyBtn);
+      actions.appendChild(splitBtn);
+      actions.appendChild(delBtn);
+
+      card.appendChild(head);
+      card.appendChild(ta);
+      card.appendChild(actions);
+      elThread.appendChild(card);
+    }
+
+    var areas = elThread.querySelectorAll('textarea');
+    for (var k = 0; k < areas.length; k++) autoGrow(areas[k]);
+    refreshCounts();
+  }
+
+  function onPostInput(e) {
+    var ta = e.currentTarget;
+    var i = parseInt(ta.getAttribute('data-index'), 10);
+    state.posts[i] = ta.value;
+    autoGrow(ta);
+    refreshCounts();
+  }
+
+  function makeCopyHandler(i) {
+    return function () {
+      var text = prefixFor(i) + state.posts[i];
+      copyText(text, OT('已复制第 {0} 条。', i + 1));
+    };
+  }
+
+  function makeSplitHandler(i, ta) {
+    return function () {
+      var value = state.posts[i];
+      var pos = ta.selectionStart;
+      if (pos <= 0 || pos >= value.length) pos = Math.floor(value.length / 2);
+      var head = value.slice(0, pos).replace(/\s+$/, '');
+      var tail = value.slice(pos).replace(/^\s+/, '');
+      if (!head || !tail) { showMsg(OT('这条太短，没法再拆。'), 'warn'); return; }
+      state.posts.splice(i, 1, head, tail);
+      renderThread();
+      showMsg(OT('已拆成两条。'), 'ok');
+    };
+  }
+
+  function makeDeleteHandler(i) {
+    return function () {
+      state.posts.splice(i, 1);
+      renderThread();
+      showMsg(OT('已删除第 {0} 条。', i + 1), 'ok');
+    };
+  }
+
+  /* ---------------- 复制 ---------------- */
+
+  function copyText(text, okMsg) {
+    function fallback() {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.top = '-1000px';
+      document.body.appendChild(ta);
+      ta.select();
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) showMsg(okMsg, 'ok');
+      else showMsg(OT('复制被浏览器拦截，请手动选中文本复制。'), 'err');
+    }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(function () {
+        showMsg(okMsg, 'ok');
+      }).catch(fallback);
+    } else {
+      fallback();
+    }
+  }
+
+  function fullThreadText() {
+    var out = [];
+    for (var i = 0; i < state.posts.length; i++) {
+      out.push(prefixFor(i) + state.posts[i]);
+    }
+    return out.join('\n\n');
+  }
+
+  /* ---------------- 交互 ---------------- */
+
+  var timer = null;
+
+  function doSplit(keepQuiet) {
+    var md = elMd.value;
+    if (!md.trim()) {
+      state.posts = [];
+      renderThread();
+      elStats.textContent = OT('0 字');
+      return;
+    }
+    state.posts = splitToPosts(md, state.numbering);
+    elStats.textContent = OT('{0} 字 · {1} 行', md.replace(/\s/g, '').length, md.split('\n').length);
+    renderThread();
+    if (!keepQuiet) {
+      var over = countOver();
+      if (over > 0) showMsg(OT('有 {0} 条超过 280，请手动精简。', over), 'warn');
+      else showMsg(OT('已分成 {0} 条。', state.posts.length), 'ok');
+    }
+  }
+
+  function countOver() {
+    var n = 0;
+    for (var i = 0; i < state.posts.length; i++) {
+      if (weightedLength(prefixFor(i) + state.posts[i]) > LIMIT) n++;
+    }
+    return n;
+  }
+
+  // 视口变化后重新按新宽度计算行高，避免文本被截断
+  var resizeTimer = null;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(function () {
+      var areas = elThread.querySelectorAll('textarea');
+      for (var r = 0; r < areas.length; r++) autoGrow(areas[r]);
+    }, 120);
+  });
+
+  elMd.addEventListener('input', function () {
+    clearTimeout(timer);
+    timer = setTimeout(function () { doSplit(true); }, 220);
+  });
+
+  elNumbering.addEventListener('change', function () {
+    state.numbering = elNumbering.checked;
+    refreshCounts();
+  });
+
+  document.getElementById('splitBtn').addEventListener('click', function () {
+    doSplit(false);
+  });
+
+  document.getElementById('copyAllBtn').addEventListener('click', function () {
+    if (!state.posts.length) { showMsg(OT('还没有内容。'), 'warn'); return; }
+    copyText(fullThreadText(), OT('已复制全部 {0} 条，条与条之间空一行。', state.posts.length));
+  });
+
+  // 初始化示例
+  var sample = [
+    '# Example heading',
+    '',
+    'Paragraph one: say what this thread covers. Use **bold** for the key point and a [link](https://example.com) for the source.',
+    '',
+    'Paragraph two: posts split at 280 characters. CJK characters count as two, so one post holds about 140 Chinese characters.',
+    '',
+    '- Lists keep their bullets',
+    '- Nested items keep their indent',
+    '',
+    '> Quotes lose the quote marker.',
+    '',
+    'One more paragraph to show how a long thread splits into 1/2, 2/2, and so on.',
+    '',
+    '```js',
+    'const x = 1;',
+    '```'
+  ].join('\n');
+
+  elMd.value = sample;
+  doSplit(true);
+})();
+</script>
+</body>
+</html>

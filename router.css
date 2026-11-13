@@ -1,0 +1,177 @@
+/* NexlOS plugin-edition runtime picker: DSH model + permission, no BYOK. */
+
+.nxrt-panel {
+  --nxrt-fg: #1d2430;
+  --nxrt-dim: #5f6a7a;
+  --nxrt-line: rgba(30, 45, 70, 0.16);
+  --nxrt-card: rgba(255, 255, 255, 0.58);
+  --nxrt-bg: linear-gradient(180deg, rgba(255, 253, 247, 0.98), rgba(244, 239, 229, 0.97));
+  --nxrt-accent: var(--os-accent, #0078d4);
+  position: fixed;
+  z-index: 1002;
+  max-height: min(70vh, 560px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--nxrt-line);
+  border-radius: 15px;
+  background: var(--nxrt-bg);
+  box-shadow: 0 24px 64px rgba(20, 28, 42, 0.3), 0 2px 0 rgba(255, 255, 255, 0.5) inset;
+  color: var(--nxrt-fg);
+  font: 12px/1.5 Tahoma, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+}
+.nxrt-panel[hidden] { display: none !important; }
+.os.dark .nxrt-panel {
+  --nxrt-fg: #e7eef8;
+  --nxrt-dim: #9fb0c7;
+  --nxrt-line: rgba(160, 190, 225, 0.18);
+  --nxrt-card: rgba(255, 255, 255, 0.06);
+  --nxrt-bg: linear-gradient(180deg, rgba(18, 27, 42, 0.98), rgba(11, 18, 30, 0.97));
+  box-shadow: 0 26px 68px rgba(0, 0, 0, 0.58), 0 1px 0 rgba(255, 255, 255, 0.06) inset;
+}
+html[data-appearance="win98"] .nxrt-panel {
+  --nxrt-fg: #111;
+  --nxrt-dim: #4a4a4a;
+  --nxrt-line: #808080;
+  --nxrt-card: #dfdfdf;
+  --nxrt-bg: #c0c0c0;
+  border-radius: 0;
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf;
+  box-shadow: 2px 2px 0 rgba(0, 0, 0, 0.28);
+}
+.nxrt-headbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px 8px;
+  border-bottom: 1px solid var(--nxrt-line);
+}
+html[data-appearance="win98"] .nxrt-headbar { background: linear-gradient(90deg, #000080, #1084d0); color: #fff; }
+.nxrt-title { display: flex; flex-direction: column; flex: 1; min-width: 0; }
+.nxrt-title b { font-size: 12px; font-weight: 700; }
+.nxrt-sub { font-size: 9.5px; color: var(--nxrt-dim); letter-spacing: 0.04em; }
+html[data-appearance="win98"] .nxrt-sub { color: #dbe8ff; }
+.nxrt-close {
+  width: 22px;
+  height: 22px;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--nxrt-dim);
+  font: 14px/1 Tahoma, sans-serif;
+  cursor: pointer;
+}
+.nxrt-close:hover { background: var(--nxrt-card); border-color: var(--nxrt-line); color: var(--nxrt-fg); }
+html[data-appearance="win98"] .nxrt-close { border: 1px solid #808080; background: #c0c0c0; color: #111; border-radius: 0; }
+.nxrt-body { flex: 1; min-height: 0; overflow: auto; padding: 9px 11px 10px; display: flex; flex-direction: column; gap: 8px; }
+.nxrt-body::-webkit-scrollbar { width: 8px; }
+.nxrt-body::-webkit-scrollbar-thumb { background: rgba(80, 110, 150, 0.25); border-radius: 8px; border: 2px solid transparent; background-clip: padding-box; }
+.nxrt-note { font-size: 10px; line-height: 1.55; color: var(--nxrt-dim); padding: 0 1px 4px; }
+.nxrt-section { display: flex; flex-direction: column; gap: 3px; }
+.nxrt-head {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 1px 2px;
+  font-size: 8.5px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--nxrt-dim);
+}
+.nxrt-head::after { content: ''; flex: 1; height: 1px; background: var(--nxrt-line); }
+.nxrt-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 7px 8px;
+  border: 1px solid transparent;
+  border-radius: 9px;
+  background: var(--nxrt-card);
+  color: var(--nxrt-fg);
+  text-align: left;
+  cursor: pointer;
+  font: inherit;
+}
+.nxrt-row:hover { border-color: var(--nxrt-accent); }
+.nxrt-row.is-current { border-color: var(--nxrt-accent); box-shadow: 0 0 0 1px var(--nxrt-accent) inset; }
+.nxrt-row.is-risky .nxrt-row-icon { color: #b7791f; }
+.nxrt-row-icon { width: 14px; flex: none; text-align: center; color: var(--nxrt-dim); font-size: 11px; line-height: 1.5; }
+.nxrt-row.is-current .nxrt-row-icon { color: var(--nxrt-accent); }
+.nxrt-row-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.nxrt-row-main b { font-size: 11.5px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nxrt-row-main small { font-size: 9.5px; line-height: 1.45; color: var(--nxrt-dim); display: block; }
+.nxrt-check { flex: none; color: var(--nxrt-accent); font-size: 12px; font-weight: 700; align-self: center; }
+.nxrt-confirm { font-style: normal; font-size: 9.5px; color: #a65b00; margin-top: 2px; }
+.os.dark .nxrt-confirm { color: #ffc861; }
+.nxrt-efforts { display: flex; gap: 3px; flex-wrap: wrap; flex: none; max-width: 46%; justify-content: flex-end; }
+.nxrt-effort {
+  height: 20px;
+  padding: 0 6px;
+  border: 1px solid var(--nxrt-line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--nxrt-dim);
+  font: 9.5px/1 Tahoma, "PingFang SC", sans-serif;
+  cursor: pointer;
+}
+.nxrt-effort:hover { border-color: var(--nxrt-accent); color: var(--nxrt-fg); }
+.nxrt-effort.is-on { background: rgba(0, 120, 212, 0.14); border-color: var(--nxrt-accent); color: var(--nxrt-accent); }
+html[data-appearance="win98"] .nxrt-row, html[data-appearance="win98"] .nxrt-effort { border-radius: 0; border-color: #808080; }
+.nxrt-group { padding: 5px 2px 1px; font-size: 9px; color: var(--nxrt-dim); letter-spacing: 0.06em; }
+.nxrt-none { padding: 4px 2px; font-size: 10px; color: var(--nxrt-dim); }
+.nxrt-empty { padding: 20px 8px; text-align: center; color: var(--nxrt-dim); font-size: 10.5px; }
+.nxrt-error {
+  padding: 6px 8px;
+  border: 1px solid rgba(192, 57, 43, 0.35);
+  border-radius: 7px;
+  background: rgba(192, 57, 43, 0.08);
+  color: #a93226;
+  font-size: 10px;
+  line-height: 1.5;
+}
+.os.dark .nxrt-error { color: #ffb4ab; }
+.nxrt-retry { margin-top: 8px; height: 24px; padding: 0 10px; border: 1px solid var(--nxrt-line); border-radius: 6px; background: var(--nxrt-card); color: var(--nxrt-fg); cursor: pointer; font: inherit; }
+.nxrt-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-top: 7px;
+  border-top: 1px solid var(--nxrt-line);
+  color: var(--nxrt-dim);
+  font-size: 9px;
+}
+.nxrt-link { border: 0; background: transparent; color: var(--nxrt-accent); font: inherit; cursor: pointer; padding: 0; }
+.nxrt-link:hover { text-decoration: underline; }
+@media (prefers-reduced-motion: reduce) {
+  .nxrt-panel * { transition: none !important; animation: none !important; }
+}
+
+/* Plugin edition: the state space is a run trace. Team detail lives in the
+ * Agent Cluster floater and the final report lives in the notification center,
+ * so hide the expanded console / team / subagent blocks here. */
+.os-agentspace .os-console,
+.os-agentspace .os-team,
+.os-agentspace .os-cluster,
+.os-agentspace .os-agent,
+.os-agentspace .os-space-expand { display: none !important; }
+.nxrt-foot-links { display: inline-flex; align-items: center; gap: 10px; }
+.nxrt-container small { word-break: break-all; }
+.nxrt-container-actions { display: flex; justify-content: flex-end; padding-top: 4px; }
+
+.nxrt-cluster {
+  flex: none;
+  height: 22px;
+  padding: 0 7px;
+  border: 1px solid var(--nxrt-line);
+  border-radius: 6px;
+  background: var(--nxrt-card);
+  color: var(--nxrt-dim);
+  font: 9.5px/1 Tahoma, "PingFang SC", sans-serif;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.nxrt-cluster:hover { border-color: var(--nxrt-accent); color: var(--nxrt-accent); }
+html[data-appearance="win98"] .nxrt-cluster { border-radius: 0; border-color: #808080; background: #c0c0c0; color: #111; }
