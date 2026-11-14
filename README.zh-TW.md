@@ -30,7 +30,7 @@ plugin_manager install_bundle target=/absolute/path/to/windos2026
 powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 ```
 
-需要 Node.js 22+ 和可載入本機 bundle 的 DSH。npm 套件尚未發布，`npm install @nexlos/os` 目前會回傳 404。
+需要 Node.js 22+ 和可載入本機 bundle 的 DSH。沒有 npm 發佈，請用上面的倉庫安裝或本機腳本。
 
 ## 使用
 

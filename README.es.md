@@ -32,7 +32,7 @@ O instalar en el perfil local sin conversación:
 powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 ```
 
-Requiere Node.js 22+ y una versión de DSH que pueda cargar bundles locales. El paquete npm aún no está publicado; `npm install @nexlos/os` devuelve 404 por ahora.
+Requiere Node.js 22+ y una versión de DSH que pueda cargar bundles locales. No hay publicación en npm; instálelo desde este repositorio o con el script local de arriba.
 
 ## Uso
 

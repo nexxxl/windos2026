@@ -32,7 +32,7 @@ plugin_manager install_bundle target=/absolute/path/to/windos2026
 powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 ```
 
-Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。npm パッケージは未公開で、`npm install @nexlos/os` は現在 404 を返します。
+Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。npm での公開はありません。上のリポジトリまたはローカルスクリプトからインストールしてください。
 
 ## 使い方
 
