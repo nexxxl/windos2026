@@ -8,7 +8,7 @@
 | `NotoSerifSC-400/700.woff2` | 思源宋体 Noto Serif SC（GB2312 子集，按字重实例化，woff2） | © 2014-2021 Adobe，Reserved Font Name "Source"；Google Fonts |
 | `LXGWWenKai-500.woff` | 霞鹜文楷 LXGW WenKai（子集） | © 2021-2025 LXGW；© 2020 The Klee Project Authors；github.com/lxgw/LxgwWenKai |
 | `LXGWNeoZhiSong-gb.woff2` | 霞鹜新致宋 LXGW Neo ZhiSong（GB2312 子集，woff2） | © LXGW；github.com/lxgw/LxgwNeoZhiSong |
-| `SmileySans-Oblique.woff2` | 得意黑 Smiley Sans Oblique | © 2022-2024 atelierAnchor，Reserved Font Name "Smiley"/"得意黑"；github.com/atelier-anchor/smiley-sans |
+| `SmileySans-Oblique.woff2` | 得意黑 Smiley Sans Oblique | © 2022-2024 artcraftportAnchor，Reserved Font Name "Smiley"/"得意黑"；github.com/artcraftport-anchor/smiley-sans |
 | `Inter-var.woff` | Inter（可变字重） | © 2016 The Inter Project Authors；github.com/rsms/inter |
 | `RobotoCondensed-var.woff` | Roboto Condensed（可变字重） | © 2011 The Roboto Project Authors；Google Fonts |
 | `Poppins-600/700/800.woff` | Poppins | © 2020 The Poppins Project Authors；Google Fonts |

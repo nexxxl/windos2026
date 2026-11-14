@@ -7,6 +7,8 @@ export const rows = [
   ['正在读取…', '正在讀取…', 'Reading…', 'Leyendo…', 'Lecture…', 'Wird gelesen…', '読み込み中…', '읽는 중…'],
   ['加入曲库', '加入曲庫', 'Add to library', 'Añadir a la biblioteca', 'Ajouter à la bibliothèque', 'Zur Musikbibliothek hinzufügen', 'ライブラリに追加', '음악 라이브러리에 추가'],
   ['打开', '開啟', 'Open', 'Abrir', 'Ouvrir', 'Öffnen', '開く', '열기'],
+  ['应用生成', '應用程式生成', 'App generation', 'Generación de apps', 'Génération d’apps', 'App-Erzeugung', 'アプリ生成', '앱 생성'],
+  ['Agent 浏览器', 'Agent 瀏覽器', 'Agent browser', 'Navegador Agent', 'Navigateur Agent', 'Agent-Browser', 'Agent ブラウザー', 'Agent 브라우저'],
   ['从设备导入', '從裝置匯入', 'Import from device', 'Importar del dispositivo', 'Importer depuis un appareil', 'Vom Gerät importieren', 'デバイスから取り込む', '기기에서 가져오기'],
   ['上一级', '上一層', 'Up one level', 'Subir un nivel', 'Niveau supérieur', 'Eine Ebene nach oben', '上の階層へ', '상위 폴더'],
   ['取消', '取消', 'Cancel', 'Cancelar', 'Annuler', 'Abbrechen', 'キャンセル', '취소'],

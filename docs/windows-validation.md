@@ -93,9 +93,9 @@ Windows 上没有 pnpm 时，命令只报 `'pnpm' 不是内部或外部命令`�
 
 | 问题 | 根因 | 处置 |
 | --- | --- | --- |
-| 应用生成页头、按钮、空态叠在一起 | `appgen.css` 用 `.ag-*` 前缀，与 `artcraft.css` 的 277 条 `.ag-*` 规则撞名（`.ag-stage` 被改成居中 flex） | 全量改名 `forge-*`，并钉死 `.forge-stage { display:block }` |
+| 应用生成页头、按钮、空态叠在一起 | `appgen.css` 用 `.ag-*` 前缀，与 `artcraftport.css` 的 277 条 `.ag-*` 规则撞名（`.ag-stage` 被改成居中 flex） | 全量改名 `forge-*`，并钉死 `.forge-stage { display:block }` |
 | 应用生成页出现 `[Image #1]` 占位 | 页头整块是多余的装饰 | 删除页头（eyebrow / h1 / 副标题），只留两栏卡片 |
-| OreVein 仍出现在桌面与应用库 | 插件版清单未清理 | 从 `appManifest()` 与相关 UI 资源中移除，`grep -ri orevein plugin/` 为 0 |
+| 一个已下线应用仍出现在桌面与应用库 | 插件版清单未清理 | 从 `appManifest()` 与相关 UI 资源中移除，`grep -ri plugin/` 为 0 |
 | 极简应用（单按钮、时钟）生成被判失败 | 验收要求正文 ≥20 字且必须有 `<title>` | 正文改为「有内容即可」，标题降级为警告；落盘前 `ensureHtmlTitle` 补齐标题 |
 | 新装机器点「记忆树 / inbox / vaults / logs」全部 ENOENT | 插件从未创建 Go 内核那套 home 目录；记忆树真实位置在 `home/nexl交换区/记忆树` | `home()` 首次调用时补建标准目录；侧栏路径改为 `/nexl交换区/记忆树` |
 | 宿主从宽变窄后，普通窗口保持原宽度，最多 496px 跑到屏幕外 | `onResize` 在 ≤760px 且非 win98 时直接跳过重排 | 宽度变化时重排窗口；宿主侧栏收起是动画，宽度会连续经过多帧，改为 160ms 稳定后再重排（否则窗口会被钉在最窄一帧，实测 760 → 110） |
@@ -107,11 +107,11 @@ Windows 上没有 pnpm 时，命令只报 `'pnpm' 不是内部或外部命令`�
 | 此电脑导航 | 通过 | `/nexl交换区/记忆树`、`/inbox`、`/outbox`、`/vaults`、`/logs`、`/.trash`、`/文稿` 均可打开，空目录正常显示 |
 | Agent 浏览器 | 通过 | `https://example.com` → 语义视图（Readability 156 字符、NEXLC 字节码哈希、可抽取性 19/100） |
 | 视频播放 | 通过 | `mov_bbb.mp4`，`readyState=4`，时长 10s，播放推进到 6.7s，UI 显示 `0:06/0:10` |
-| ArtCraft（PhotoCraft） | 通过 | 选中「画笔」后在 960×600 画布拖动：图层 `0 → 1`，轨迹像素为默认色 `#d08a4a`，Ctrl+Z 后回到白底，无页面异常 |
+| PhotoCraft（ArtCraft 移植版） | 通过 | 选中「画笔」后在 960×600 画布拖动：图层 `0 → 1`，轨迹像素为默认色 `#d08a4a`，Ctrl+Z 后回到白底，无页面异常 |
 | 窄视口 390×760 | 通过（修复后） | 桌面无横向溢出；`.forge-grid` 单列 281.6px；任务栏与时钟可见；974px 宽窗口缩到 390 后自动收成 334px、`overflow=0` |
 | 宽屏回归 1440 / 900 / 390 / 1440 | 通过 | 全程 `scrollWidth == clientWidth`，无控制台异常 |
 
-补充说明：ArtCraft 默认工具是「移动」，不先点画笔直接拖动不会落笔；这是设计，不是缺陷。
+补充说明：PhotoCraft 默认工具是「移动」，不先点画笔直接拖动不会落笔；这是设计，不是缺陷。
 
 ### 5.3 仍待确认
 

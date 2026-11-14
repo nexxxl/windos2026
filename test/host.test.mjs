@@ -88,6 +88,30 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       }
     })
 
+    await t.test('rewrites system-app mounts for the plugin host', async () => {
+      // The transform drops the eager mount imports; if the mounts table is left
+      // behind every system app throws "mountPC is not defined" at route time.
+      const response = await request('/a/app.js')
+      assert.equal(response.status, 200)
+      assert.ok(response.body.includes('await mountSystemApp(parts[0], wrap)'))
+      assert.ok(!response.body.includes('mounts[parts[0]](wrap)'))
+      assert.ok(!response.body.includes('pc: mountPC'))
+    })
+
+    await t.test('serves optional packs from /extras', async () => {
+      // ArtCraft and the overlay language packs live outside webos/; without this
+      // route the drawing app only renders its "failed to fetch kernel.js" page.
+      const kernel = await request('/extras/artcraftport/kernel.js')
+      assert.equal(kernel.status, 200)
+      assert.ok(kernel.body.length > 1000)
+      const css = await request('/extras/artcraftport.css')
+      assert.equal(css.status, 200)
+      assert.ok(css.body.includes('.ac-') || css.body.length > 500)
+      const lang = await request('/extras/langs/lang-ar.js')
+      assert.equal(lang.status, 200)
+      assert.ok(lang.body.includes('rows'))
+    })
+
     await t.test('persists settings through the command envelope', async () => {
       const saved = await request('/c/settings.set', { fields: { appearance: 'win98', language: 'en' } })
       assert.equal(saved.status, 200)

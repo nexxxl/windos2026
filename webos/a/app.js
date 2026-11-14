@@ -178,25 +178,14 @@ function renderDesktop() {
 }
 
 // 画板是可选包：首次打开才拉取样式与内核；缺包时给可读提示，不让整条路由失败。
-let artcraftStyles = null;
-async function openArtcraft(wrap) {
-  const base = window.NEXLOS_PACKS_BASE || '/extras/';
-  if (!artcraftStyles) {
-    artcraftStyles = new Promise((resolve) => {
-      const link = document.createElement('link');
-      link.rel = 'stylesheet';
-      link.href = base + 'artcraft.css';
-      link.onload = link.onerror = () => resolve();
-      document.head.append(link);
-    });
-  }
-  await artcraftStyles;
+// 样式表由 artcraftport.js 自己装载，系统应用路由与这里共用同一份。
+async function openArtCraftPort(wrap) {
   try {
-    const module = await import('./artcraft.js');
-    return module.mountArtcraft(wrap);
+    const module = await import('./artcraftport.js');
+    return module.mountArtCraftPort(wrap);
   } catch (error) {
-    console.warn('[nexlos] 画板未安装：', error);
-    wrap.append(h('div', { class: 'empty' }, '画板未安装：把 extras/ 放到 /extras/ 后重开。'));
+    console.warn('[nexlos] ArtCraft 移植版未安装：', error);
+    wrap.append(h('div', { class: 'empty' }, 'ArtCraft 移植版未安装：把 extras/ 放到 /extras/ 后重开。'));
     return { destroy() { wrap.replaceChildren(); } };
   }
 }
@@ -204,7 +193,7 @@ async function openArtcraft(wrap) {
 async function route() {
   if (currentOS) { currentOS.destroy(); currentOS = null; }
   if (currentApp) { currentApp.destroy(); currentApp = null; }
-  document.body.classList.remove('os-mode', 'sys-view', 'sys-pc', 'sys-settings', 'sys-term', 'sys-memory', 'sys-video', 'sys-music', 'sys-scan', 'sys-draw', 'sys-office', 'sys-artcraft', 'sys-minesweeper', 'sys-browser', 'sys-graph', 'sys-store', 'st-dark');
+  document.body.classList.remove('os-mode', 'sys-view', 'sys-pc', 'sys-settings', 'sys-term', 'sys-memory', 'sys-video', 'sys-music', 'sys-scan', 'sys-draw', 'sys-office', 'sys-artcraftport', 'sys-minesweeper', 'sys-browser', 'sys-graph', 'sys-store', 'st-dark');
   const raw = location.hash.replace(/^#\/?/, '');
   const parts = raw.split('/').filter(Boolean);
   try {
@@ -214,7 +203,7 @@ async function route() {
       return;
     }
     // 此电脑、终端、媒体与设置是系统级应用：占满窗口，不套写作外壳的侧栏与顶栏。
-    const SYS = ['pc', 'settings', 'term', 'memory', 'video', 'music', 'scan', 'draw', 'office', 'artcraft', 'minesweeper', 'browser', 'graph', 'store'];
+    const SYS = ['pc', 'settings', 'term', 'memory', 'video', 'music', 'scan', 'draw', 'office', 'artcraftport', 'minesweeper', 'browser', 'graph', 'store'];
     if (SYS.indexOf(parts[0]) >= 0) {
       S.view = parts[0];
       const app = document.getElementById('app');
@@ -230,7 +219,7 @@ async function route() {
       const mounts = {
         pc: mountPC, settings: mountSettings, term: mountTerm, memory: mountMemory,
         video: mountVideo, music: mountMusic, scan: mountScan, draw: mountDraw,
-        office: mountOffice, artcraft: openArtcraft, minesweeper: mountMinesweeper, browser: mountBrowser,
+        office: mountOffice, artcraftport: openArtCraftPort, minesweeper: mountMinesweeper, browser: mountBrowser,
         graph: mountGraph, store: mountStore,
       };
       currentApp = await mounts[parts[0]](wrap);
@@ -595,7 +584,7 @@ async function openApp(id) {
     });
     return;
   }
-  // 内置应用本身就是一条 hash 路由（artcraft、便捷办公、终端…），直接跳转。
+  // 内置应用本身就是一条 hash 路由（artcraftport、便捷办公、终端…），直接跳转。
   // 服务端 app.open 只负责生成应用；内置应用走 hash 路由。
   const internal = (S.apps || []).filter((a) => a.id === id && a.kind === 'internal')[0];
   if (internal && internal.route) {

@@ -28,3 +28,8 @@
 其它：
 - `jsQR.js`：扫一扫的二维码解码。
 - `retro-font/`、`space-grotesk/`：界面字体。
+
+许可：
+- `xterm.js`、`xterm-addon-fit.js`、`xterm-addon-webgl.js`、`xterm.css`：MIT，全文见 `xterm-LICENSE.txt`。
+- `jsQR.js`：Apache-2.0，全文见 `jsQR-LICENSE.txt`。
+- `retro-font/`、`space-grotesk/`：各自目录内保留 OFL 与 CC BY-SA 许可记录。

@@ -46,7 +46,7 @@ Erfordert Node.js 22+ und einen DSH-Build, der lokale Bundles laden kann. Es gib
 | Element | Zahl |
 | --- | --- |
 | Tarball | 7,31 MiB |
-| Entpackt | 11,2 MB / 260 Dateien |
+| Entpackt | 10,8 MiB / 274 Dateien |
 | Apps | 17 |
 | Befehle | 25 |
 | Oberflächensprachen | 8 integriert, 7 optionale Pakete |

@@ -32,7 +32,7 @@
   function $(id) { return document.getElementById(id); }
 
   function kindLabel(kind) {
-    return ({ doc: 'Word', sheet: 'Excel', slide: 'PPT', markdown: 'Markdown', html: 'HTML', pdf: 'PDF' })[kind] || kind;
+    return ({ doc: '文档', sheet: '表格', slide: '演示', markdown: 'Markdown', html: 'HTML', pdf: 'PDF' })[kind] || kind;
   }
 
   function kindToNewLabel(kind) { return kindLabel(kind); }
@@ -198,7 +198,7 @@
         return;
       }
       var mod = e.metaKey || e.ctrlKey;
-      // F9：更新目录，和 Word 的域更新是同一个键。
+      // F9：更新目录，与文档编辑器的域更新同一个键。
       if (e.key === 'F9' && App.doc && App.doc.kind === 'doc') {
         e.preventDefault();
         ED.updateToc();
@@ -287,9 +287,9 @@
 
   var menuDefs = [
     { id: 'file', label: '文件', items: [
-      { label: '新建 Word', act: function () { createDoc('doc'); } },
-      { label: '新建 Excel', act: function () { createDoc('sheet'); } },
-      { label: '新建 PPT', act: function () { createDoc('slide'); } },
+      { label: '新建文档', act: function () { createDoc('doc'); } },
+      { label: '新建表格', act: function () { createDoc('sheet'); } },
+      { label: '新建演示', act: function () { createDoc('slide'); } },
       { label: '新建 Markdown', act: function () { createDoc('markdown'); } },
       { label: '新建 HTML', act: function () { createDoc('html'); } },
       { sep: true },
@@ -540,11 +540,11 @@
   }
 
   function exportFormats(kind) {    return {
-      doc: [['docx', 'Word (.docx)'], ['md', 'Markdown (.md)'], ['html', 'HTML (.html)']],
-      sheet: [['xlsx', 'Excel (.xlsx)'], ['csv', 'CSV (.csv)']],
-      slide: [['pptx', 'PowerPoint (.pptx)']],
-      markdown: [['md', 'Markdown (.md)'], ['html', 'HTML (.html)'], ['docx', 'Word (.docx)']],
-      html: [['html', 'HTML (.html)'], ['docx', 'Word (.docx)']],
+      doc: [['docx', '文档 (.docx)'], ['md', 'Markdown (.md)'], ['html', 'HTML (.html)']],
+      sheet: [['xlsx', '表格 (.xlsx)'], ['csv', 'CSV (.csv)']],
+      slide: [['pptx', '演示 (.pptx)']],
+      markdown: [['md', 'Markdown (.md)'], ['html', 'HTML (.html)'], ['docx', '文档 (.docx)']],
+      html: [['html', 'HTML (.html)'], ['docx', '文档 (.docx)']],
       pdf: []
     }[kind] || [];
   }
@@ -677,7 +677,7 @@
     if (!el.outlineList) return;
     el.outlineList.innerHTML = '';
     if (!App.doc || App.doc.kind !== 'doc') {
-      el.outlineList.innerHTML = '<div class="outline-empty">大纲只用于 Word 文档。</div>';
+      el.outlineList.innerHTML = '<div class="outline-empty">大纲只用于长文档。</div>';
       return;
     }
     var blocks = document.querySelectorAll('#docEditor .blk');
@@ -745,7 +745,7 @@
     }
   }
 
-  // 字数按 Word 的中文习惯算：汉字按字，连续的英文/数字按词。
+  // 字数按中文习惯算：汉字按字，连续的英文/数字按词。
   function wordCount() {
     var host = $('docEditor');
     if (!host) return 0;
@@ -904,7 +904,7 @@
   }
 
   // 页边距按 Office 2003 中文版默认值起算：上下 2.54cm，左右 3.17cm。
-  // 四档预设与 Word「页边距」选项卡一致，单位统一用厘米。
+  // 四档预设与常用「页边距」选项一致，单位统一用厘米。
   var MARGIN_PRESETS = {
     normal: { label: '常规', top: 2.54, bottom: 2.54, left: 3.17, right: 3.17 },
     narrow: { label: '窄', top: 1.27, bottom: 1.27, left: 1.27, right: 1.27 },
@@ -1199,11 +1199,11 @@
 
   function buildExportMenu(kind) {
     var formats = {
-      doc: [['docx', 'Word (.docx)'], ['md', 'Markdown (.md)'], ['html', 'HTML (.html)']],
-      sheet: [['xlsx', 'Excel (.xlsx)'], ['csv', 'CSV (.csv)']],
-      slide: [['pptx', 'PowerPoint (.pptx)']],
-      markdown: [['md', 'Markdown (.md)'], ['html', 'HTML (.html)'], ['docx', 'Word (.docx)']],
-      html: [['html', 'HTML (.html)'], ['docx', 'Word (.docx)']],
+      doc: [['docx', '文档 (.docx)'], ['md', 'Markdown (.md)'], ['html', 'HTML (.html)']],
+      sheet: [['xlsx', '表格 (.xlsx)'], ['csv', 'CSV (.csv)']],
+      slide: [['pptx', '演示 (.pptx)']],
+      markdown: [['md', 'Markdown (.md)'], ['html', 'HTML (.html)'], ['docx', '文档 (.docx)']],
+      html: [['html', 'HTML (.html)'], ['docx', '文档 (.docx)']],
       pdf: []
     }[kind] || [];
     el.exportMenu.innerHTML = '';
@@ -1279,7 +1279,7 @@
     });
   }
 
-  // 工具栏回显：段落样式、对齐、字体字号都跟着光标走，和 Word 的行为一致。
+  // 工具栏回显：段落样式、对齐、字体字号都跟着光标走。
   function syncDocTools() {
     if (!App.doc || App.doc.kind !== 'doc') return;
     var blk = ED.currentBlock();
@@ -1351,7 +1351,7 @@
       $('docHlBar').style.background = e.target.value;
     });
 
-    // 增大 / 减小字号按 Word 的常用档位跳，每次改一档而不是逐磅加减。
+    // 增大 / 减小字号按常用档位跳，每次改一档而不是逐磅加减。
     var sizeSteps = [8, 9, 10, 11, 12, 14, 16, 18, 20, 22, 24, 28, 32, 36, 44, 48, 54, 72];
     function bumpSize(dir) {
       var sel = $('docSize');
@@ -1459,7 +1459,7 @@
     $('docPageApply').addEventListener('click', function () {
       if (!applyPageSetup(false)) return;
       closeToolMenus();
-      toast('页面设置已应用，导出 Word 时写入');
+      toast('页面设置已应用，导出文档时写入');
     });
 
     var presetBtns = document.querySelectorAll('#marginPresets button');

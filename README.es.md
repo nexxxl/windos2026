@@ -6,7 +6,7 @@
 
 Si un sistema operativo AI-native de 2026 se hubiera abierto en tu computadora en el milenio, ¿para qué lo habrías usado?
 
-windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.31 MiB y una sola dependencia en tiempo de ejecución. Cada app del escritorio es un `apps/<id>/index.html` más un `app.json`: se puede leer, editar y llevar.
+windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.38 MiB y una sola dependencia en tiempo de ejecución. Cada app del escritorio es un `apps/<id>/index.html` más un `app.json`: se puede leer, editar y llevar.
 
 *Traducción. La versión canónica es el README en inglés.*
 
@@ -45,8 +45,8 @@ Requiere Node.js 22+ y una versión de DSH que pueda cargar bundles locales. No 
 
 | Elemento | Número |
 | --- | --- |
-| Tarball | 7.31 MiB |
-| Descomprimido | 11.2 MB / 260 archivos |
+| Tarball | 7.38 MiB |
+| Descomprimido | 10.8 MiB / 274 archivos |
 | Apps | 17 |
 | Comandos | 25 |
 | Idiomas de interfaz | 8 integrados, 7 paquetes opcionales |

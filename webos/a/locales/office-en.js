@@ -14,9 +14,9 @@ export const rows = `便捷办公|Office
 文件列表|Files
 导入文件|Import file
 最近|Recent
-新建 Word|New document
-新建 Excel|New spreadsheet
-新建 PPT|New presentation
+新建文档|New document
+新建表格|New spreadsheet
+新建演示文稿|New presentation
 新建 Markdown|New Markdown file
 新建 HTML|New HTML file
 打开 PDF|Open PDF
@@ -127,12 +127,12 @@ PDF 文件不需要另存为|PDF files do not need Save as
 排列|Arrange
 上移一层|Bring forward
 下移一层|Send backward
-艺术字|WordArt
+艺术字|Text effects
 朱红标题|Vermilion title
 海蓝粗黑|Marine bold
 金色楷体|Golden Kai
 淡雅引文|Elegant quote
-先选中要应用艺术字的文字|Select the text for WordArt first
+先选中要应用艺术字的文字|Select the text for text effects first
 目录|Contents
 目录（标题 1–3）|Table of contents (Headings 1–3)
 目录（标题 1–4）|Table of contents (Headings 1–4)
@@ -141,10 +141,10 @@ PDF 文件不需要另存为|PDF files do not need Save as
 显示大纲|Show outline
 关闭大纲|Close outline
 还没有标题。把段落样式设为「标题 1–4」后，大纲会自动出现。|No headings yet. Set a paragraph style to Heading 1–4 and the outline appears automatically.
-大纲只用于 Word 文档。|The outline applies to Word documents only.
+大纲只用于 文档。|The outline applies to Documents only.
 页面设置…|Page setup…
 页面设置：页边距、页眉页脚|Page setup: margins, header and footer
-页面设置已应用，导出 Word 时写入|Page setup applied; written when exporting to Word
+页面设置已应用，导出文档时写入|Page setup applied; written when exporting to Word
 快速页边距|Quick margins
 页边距（厘米）|Margins (cm)
 左边距|Left margin

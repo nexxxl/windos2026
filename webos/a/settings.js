@@ -142,8 +142,10 @@ export function mountSettings(host) {
 
   // 自定义壁纸在设置里选：同一源下写到外壳的 localStorage，再让外壳换图，
   // 比从 iframe 里远程点父页面的文件框可靠（浏览器要求文件选择来自真实手势）。
+  // 类名不要用 st-file：便利贴的附件列表也用了这个名字，后者的 display:flex
+  // 会覆盖这里的 display:none，把浏览器原生的「选择文件」按钮露在设置页底部。
   const wallInput = h('input', {
-    type: 'file', accept: 'image/*', class: 'st-file', 'aria-label': '上传主题背景',
+    type: 'file', accept: 'image/*', class: 'st-wall-picker', 'aria-label': '上传主题背景',
     onchange: () => {
       const file = wallInput.files && wallInput.files[0];
       if (file) pickCustomWallpaper(file);
@@ -210,6 +212,7 @@ export function mountSettings(host) {
 
   async function setPref(patch) {
     if (S.savingPrefs) return;
+    const previousLanguage = S.prefs.language;
     S.savingPrefs = true;
     paintMain(true);
     try {
@@ -218,6 +221,13 @@ export function mountSettings(host) {
       Object.assign(S.prefs, r.detail || patch);
       applyLocal();
       post('nexlos.settings', { patch: r.detail || patch });
+      // 语言覆盖层由宿主按 settings.json 装进 catalog.js；换语言后重载一次，
+      // 否则已经送达的旧语言包会让界面留下半截原文。
+      if (patch.language && patch.language !== previousLanguage) {
+        // 重看 hello 时用本地缓存预选语言，这里同步写回，避免预选停留在旧语言。
+        try { localStorage.setItem('nexlos.os.lang', patch.language); } catch (_error) { /* 隐私模式不拦切换 */ }
+        setTimeout(() => { try { window.parent.location.reload(); } catch (_error) { location.reload(); } }, 200);
+      }
       return true;
     } catch (e) {
       toast(`设置没保存：${e.message}`);
@@ -894,11 +904,19 @@ export function mountSettings(host) {
         row(glyph('info'), '时区', '由浏览器从本机系统读取', h('span', { class: 'st-value' }, zone || '本机')),
         row(glyph('apps'), '界面语言', '整台系统的显示语言', languageSelect()),
         suggested
-          ? row(glyph('apps'), '系统语言', `检测到 ${suggested.label}`,
+          ? row(glyph('apps'), '系统语言', `检测到 ${displayLanguageName(suggested.code, suggested.label)}`,
             button('使用', () => setPref({ language: suggested.code }), 'ghost'))
           : null,
       ]),
       note('NexlOS 没有内置 NTP 客户端，时间与区域直接跟随这台设备。'));
+  }
+
+  // 下拉框保留原生名称，方便用户找到自己的语言；建议行按当前界面语言显示，
+  // 否则英文界面会出现「Detected 简体中文」。
+  function displayLanguageName(code, fallback) {
+    try {
+      return new Intl.DisplayNames([getLanguage()], { type: 'language' }).of(code) || fallback;
+    } catch (_error) { return fallback; }
   }
 
   // 原生名称始终以本语言显示，切换后一眼能找到自己的语言。

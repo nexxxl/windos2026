@@ -133,19 +133,19 @@ dsh 未就绪，正在冷启动|dsh 尚未就緒，正在冷啟動|dsh is not re
 点击打开运行汇报|點選以開啟執行報告|Click to open run report|Pulsa para abrir el informe de ejecución|Cliquez pour ouvrir le rapport d’exécution|Klicken, um den Ausführungsbericht zu öffnen|クリックして実行レポートを開く|클릭하여 실행 보고서 열기
 回到桌面|回到桌面|Back to desktop|Volver al escritorio|Retour au bureau|Zurück zum Desktop|デスクトップに戻る|바탕 화면으로 돌아가기
 ← 桌面|← 桌面|← Desktop|← Escritorio|← Bureau|← Desktop|← デスクトップ|← 바탕 화면
-Word 文档|Word 文件|Word document|Documento de Word|Document Word|Word-Dokument|Word 文書|Word 문서
-Excel 工作簿|Excel 活頁簿|Excel workbook|Libro de Excel|Classeur Excel|Excel-Arbeitsmappe|Excel ブック|Excel 통합 문서
-PowerPoint 演示文稿|PowerPoint 簡報|PowerPoint presentation|Presentación de PowerPoint|Présentation PowerPoint|PowerPoint-Präsentation|PowerPoint プレゼンテーション|PowerPoint 프레젠테이션
+文档|文件|Document|Documento|Document|Dokument|文書|문서
+工作簿|活頁簿|Workbook|Libro|Classeur|Arbeitsmappe|ブック|통합 문서
+演示文稿|簡報|Presentation|Presentación|Présentation|Präsentation|プレゼンテーション|프레젠테이션
 Markdown 文档|Markdown 文件|Markdown document|Documento Markdown|Document Markdown|Markdown-Dokument|Markdown 文書|Markdown 문서
 HTML 网页|HTML 網頁|HTML page|Página HTML|Page HTML|HTML-Seite|HTML ページ|HTML 페이지
 PDF 文档|PDF 文件|PDF document|Documento PDF|Document PDF|PDF-Dokument|PDF 文書|PDF 문서
 文稿|文稿|Manuscripts|Manuscritos|Manuscrits|Manuskripte|原稿|원고
  · 含隐藏项目| · 包含隱藏項目| · Including hidden items| · Incluye elementos ocultos| · Éléments cachés inclus| · Einschließlich versteckter Elemente| · 隠し項目を含む| · 숨긴 항목 포함
-新建 Word 文档（Excel / PPT 在文件菜单里）|新增 Word 文件（Excel / PPT 在檔案選單裡）|New Word document (Excel / PPT in the File menu)|Nuevo documento de Word (Excel / PPT en el menú Archivo)|Nouveau document Word (Excel / PPT dans le menu Fichier)|Neues Word-Dokument (Excel / PPT im Menü Datei)|新しい Word 文書（Excel / PPT はファイルメニュー）|새 Word 문서(Excel / PPT는 파일 메뉴)
+新建文档（工作簿 / 演示文稿在文件菜单里）|新增文件（活頁簿 / 簡報在檔案選單裡）|New document (workbook / presentation in the File menu)|Nuevo documento (libro / presentación en el menú Archivo)|Nouveau document (classeur / présentation dans le menu Fichier)|Neues Dokument (Arbeitsmappe / Präsentation im Menü Datei)|新しい文書（ブック / プレゼンテーションはファイルメニュー）|새 문서(통합 문서 / 프레젠테이션은 파일 메뉴)
 把文件导入文稿（也可以直接拖进来）|將檔案匯入文稿（也可以直接拖入）|Import files into Manuscripts (or drag them here)|Importar archivos a Manuscritos (o arrastrarlos aquí)|Importer des fichiers dans Manuscrits (ou les déposer ici)|Dateien in Manuskripte importieren (oder hierher ziehen)|原稿にファイルを取り込む（ここにドラッグもできます）|원고로 파일 가져오기(여기로 끌어와도 됩니다)
-新建 Word 文档|新增 Word 文件|New Word document|Nuevo documento de Word|Nouveau document Word|Neues Word-Dokument|新しい Word 文書|새 Word 문서
-新建 Excel 表格|新增 Excel 試算表|New Excel spreadsheet|Nueva hoja de Excel|Nouvelle feuille Excel|Neue Excel-Tabelle|新しい Excel シート|새 Excel 스프레드시트
-新建 PPT 演示|新增 PPT 簡報|New PPT presentation|Nueva presentación PPT|Nouvelle présentation PPT|Neue PPT-Präsentation|新しい PPT プレゼンテーション|새 PPT 프레젠테이션
+新建文档|新增文件|New document|Nuevo documento|Nouveau document|Neues Dokument|新しい文書|새 문서
+新建表格|新增試算表|New spreadsheet|Nueva hoja de cálculo|Nouvelle feuille de calcul|Neue Tabelle|新しいシート|새 스프레드시트
+新建演示文稿|新增簡報|New presentation|Nueva presentación|Nouvelle présentation|Neue Präsentation|新しいプレゼンテーション|새 프레젠테이션
 上传文件…|上傳檔案…|Upload files…|Subir archivos…|Importer des fichiers…|Dateien hochladen…|ファイルをアップロード…|파일 업로드…
 下载选中的文件|下載選取的檔案|Download selected files|Descargar archivos seleccionados|Télécharger les fichiers sélectionnés|Ausgewählte Dateien herunterladen|選択したファイルをダウンロード|선택한 파일 다운로드
 取消选择|取消選取|Deselect|Deseleccionar|Désélectionner|Auswahl aufheben|選択を解除|선택 해제

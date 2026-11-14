@@ -2,7 +2,7 @@
 'use strict';
 /* ═══════════════════════════════════════════════════
    宋韵画笺 — Song-style Whiteboard
-   受tldraw启发：无限画布+双指缩放平移
+   无限画布 + 双指缩放平移（通用交互范式，无外部实现）
    中国传统色：古画设色32色
    宋式画框：宣和装/绫裱/卷轴/扇面
    ═══════════════════════════════════════════════════ */
@@ -113,7 +113,9 @@ var state = {
 
 /* ═══════════════════════════════════════════════════
    Perfect Freehand — 极致流畅变宽笔触算法
-   移植自 https://github.com/steveruizok/perfect-freehand
+   算法移植自 perfect-freehand 1.2.x（MIT）
+   https://github.com/steveruizok/perfect-freehand
+   许可全文见同目录 perfect-freehand-LICENSE.txt
    核心思路：收集压力点→计算左右轮廓→填充闭合多边形
    彻底消除逐段stroke的宽度跳变锯齿
    ═══════════════════════════════════════════════════ */

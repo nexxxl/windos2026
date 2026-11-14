@@ -105,7 +105,7 @@ const DOCS_PATH = '/文稿';
 const OFFICE_API = '/a/office/api';
 const OFFICE_EXT = { doc: '.docx', sheet: '.xlsx', slide: '.pptx', markdown: '.md', html: '.html', pdf: '.pdf' };
 const OFFICE_LABEL = {
-  doc: 'Word 文档', sheet: 'Excel 工作簿', slide: 'PowerPoint 演示文稿',
+  doc: '文档', sheet: '工作簿', slide: '演示文稿',
   markdown: 'Markdown 文档', html: 'HTML 网页', pdf: 'PDF 文档',
 };
 
@@ -871,7 +871,7 @@ export function mountPC(host) {
     viewBtn.title = S.view === 'details' ? '切换到大图标' : '切换到详细信息';
     // 文稿里没有子文件夹，「新建」直接建文档，按钮文案跟着换。
     const docs = S.path === DOCS_PATH;
-    newBtn.title = docs ? '新建 Word 文档（Excel / PPT 在文件菜单里）' : '在当前文件夹新建文件夹';
+    newBtn.title = docs ? '新建文档（工作簿 / 演示文稿在文件菜单里）' : '在当前文件夹新建文件夹';
     uploadBtn.title = docs ? '把文件导入文稿（也可以直接拖进来）' : '把文件传到当前文件夹（也可以直接拖进来）';
     const files = selPaths().filter((p) => {
       const e = S.entries.find((x) => joinPath(S.path, x.name) === p);
@@ -1085,13 +1085,13 @@ export function mountPC(host) {
     }
   }
 
-  // 文稿里没有子文件夹：新建菜单直接给 Word / Excel / PPT 三种文件。
+  // 文稿里没有子文件夹：新建菜单直接给文档、工作簿、演示文稿三种文件。
   function newMenuItems() {
     if (S.path === DOCS_PATH) {
       return [
-        ['新建 Word 文档', () => createDoc('doc')],
-        ['新建 Excel 表格', () => createDoc('sheet')],
-        ['新建 PPT 演示', () => createDoc('slide')],
+        ['新建文档', () => createDoc('doc')],
+        ['新建表格', () => createDoc('sheet')],
+        ['新建演示文稿', () => createDoc('slide')],
       ];
     }
     return [['新建文件夹', () => createFolder()]];

@@ -1,4 +1,4 @@
-// Artcraft vector/time UI only. Columns: zh-CN, zh-TW, en, es, fr, de, ja, ko.
+// ArtCraft vector/time UI only. Columns: zh-CN, zh-TW, en, es, fr, de, ja, ko.
 // Read-only source snapshots taken 2026-11-04; do not chase concurrent app edits.
 // vector.js SHA256: 5b194a35645980ea8016bfacc89b52badfc53f8a428b65739962432a3684d094
 // time.js SHA256: 8e64c6897476581eb3643cd0ef76cb9f2796790bb4bd2952269cf7d959eef754
@@ -515,16 +515,6 @@ export const rows = [
     "선택 항목이 삭제되었습니다"
   ],
   [
-    "对标 Illustrator",
-    "對標 Illustrator",
-    "Modeled on Illustrator",
-    "Referencia: Illustrator",
-    "Référence : Illustrator",
-    "Orientiert an Illustrator",
-    "参考：Illustrator",
-    "참고: Illustrator"
-  ],
-  [
     "矩形、椭圆、直线、自由笔与文字，多对象层级，导出 SVG / PNG。",
     "矩形、橢圓、直線、自由筆與文字，支援多物件堆疊順序及 SVG / PNG 匯出。",
     "Rectangles, ellipses, lines, freehand drawing, and text, with object stacking and SVG / PNG export.",
@@ -543,16 +533,6 @@ export const rows = [
     "Objekte mit dem Auswahlwerkzeug verschieben; Formen durch Ziehen zeichnen",
     "選択ツールでオブジェクトを移動し、図形ツールでドラッグして描画します",
     "선택 도구로 개체를 이동하고 도형 도구로 드래그하여 그리세요"
-  ],
-  [
-    "对标 AutoCAD",
-    "對標 AutoCAD",
-    "Modeled on AutoCAD",
-    "Referencia: AutoCAD",
-    "Référence : AutoCAD",
-    "Orientiert an AutoCAD",
-    "参考：AutoCAD",
-    "참고: AutoCAD"
   ],
   [
     "网格吸附、直线、矩形、圆与实时尺寸，导出 SVG / DXF。",
@@ -605,16 +585,6 @@ export const rows = [
     "원"
   ],
   [
-    "对标 InDesign",
-    "對標 InDesign",
-    "Modeled on InDesign",
-    "Referencia: InDesign",
-    "Référence : InDesign",
-    "Orientiert an InDesign",
-    "参考：InDesign",
-    "참고: InDesign"
-  ],
-  [
     "A4 多页排版：文字块、色块与图片，逐页导出 PNG / JSON。",
     "A4 多頁排版：文字區塊、色塊與圖片，逐頁匯出 PNG / JSON。",
     "Multi-page A4 layouts with text blocks, color blocks, and images; export pages as PNG / JSON.",
@@ -643,16 +613,6 @@ export const rows = [
     "Farbfläche",
     "色面",
     "색상 블록"
-  ],
-  [
-    "对标 Figma",
-    "對標 Figma",
-    "Modeled on Figma",
-    "Referencia: Figma",
-    "Référence : Figma",
-    "Orientiert an Figma",
-    "参考：Figma",
-    "참고: Figma"
   ],
   [
     "界面稿",
@@ -685,16 +645,6 @@ export const rows = [
     "사각형을 아트보드로 그린 후 텍스트와 구성 요소를 추가하세요"
   ],
   [
-    "对标 PowerPoint",
-    "對標 PowerPoint",
-    "Modeled on PowerPoint",
-    "Referencia: PowerPoint",
-    "Référence : PowerPoint",
-    "Orientiert an PowerPoint",
-    "参考：PowerPoint",
-    "참고: PowerPoint"
-  ],
-  [
     "1280×720 幻灯片：标题、正文、色块，多页缩略与逐页导出。",
     "1280×720 投影片：標題、內文、色塊，多頁縮圖及逐頁匯出。",
     "1280×720 slides with titles, body text, color blocks, multi-page thumbnails, and per-page export.",
@@ -713,16 +663,6 @@ export const rows = [
     "Seiten rechts wechseln; Textobjekte direkt bearbeiten",
     "右パネルでページを切り替え、テキストオブジェクトの内容を直接編集できます",
     "오른쪽에서 페이지를 전환하고 텍스트 개체의 내용을 직접 편집하세요"
-  ],
-  [
-    "对标 Premiere Pro",
-    "對標 Premiere Pro",
-    "Modeled on Premiere Pro",
-    "Referencia: Premiere Pro",
-    "Référence : Premiere Pro",
-    "Orientiert an Premiere Pro",
-    "参考：Premiere Pro",
-    "참고: Premiere Pro"
   ],
   [
     "时间线",
@@ -973,16 +913,6 @@ export const rows = [
     "Titelclip {text} hinzufügen",
     "タイトルクリップ {text} を追加",
     "제목 클립 {text} 추가"
-  ],
-  [
-    "对标 After Effects",
-    "對標 After Effects",
-    "Modeled on After Effects",
-    "Referencia: After Effects",
-    "Référence : After Effects",
-    "Orientiert an After Effects",
-    "参考：After Effects",
-    "참고: After Effects"
   ],
   [
     "关键帧",
@@ -1313,16 +1243,6 @@ export const rows = [
     "Synthesizer",
     "シンセサイザー",
     "신시사이저"
-  ],
-  [
-    "对标 Pro Tools",
-    "對標 Pro Tools",
-    "Modeled on Pro Tools",
-    "Referencia: Pro Tools",
-    "Référence : Pro Tools",
-    "Orientiert an Pro Tools",
-    "参考：Pro Tools",
-    "참고: Pro Tools"
   ],
   [
     "四轨十六步音序器，底鼓 / 军鼓 / 踩镲 / 合成器，导出 WAV。",

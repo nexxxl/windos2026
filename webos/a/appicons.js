@@ -235,8 +235,8 @@ export const APP_ICONS = {
     <circle cx="38.5" cy="37.5" r="6.4" fill="url(#lqBr3)"/>
     <ellipse cx="36.4" cy="35.2" rx="3" ry="1.9" fill="url(#lqBr2)" opacity=".85"/>
   `,
-  // artcraft：紫水晶棱镜 + 琥珀切面。
-  artcraft: `
+  // artcraftport：紫水晶棱镜 + 琥珀切面。
+  artcraftport: `
     <defs>
       <linearGradient id="lqAr1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#D2B6FF"/><stop offset=".5" stop-color="#8A63F0"/><stop offset="1" stop-color="#5B34C8"/></linearGradient>
       <linearGradient id="lqAr2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFEDB0"/><stop offset="1" stop-color="#F2A81C"/></linearGradient>

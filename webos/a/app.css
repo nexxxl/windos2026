@@ -1507,7 +1507,7 @@ body.sys-view #app { height: var(--nexlos-app-h, 100vh); }
   fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round;
 }
 .st-ic.big { width: 44px; height: 44px; }
-.st-file { display: none; }
+.st-wall-picker { display: none; }
 
 .st-head {
   height: 56px; flex: 0 0 56px; display: flex; align-items: center;
@@ -2768,8 +2768,8 @@ body.sys-draw #app { background: #F9F5EB; }
 /* 办公引擎自带完整界面，外壳只给一条返回栏和满高画布。 */
 body.sys-office { background: #FAF8F4; }
 body.sys-office #app { background: #FAF8F4; }
-body.sys-artcraft { background: #17140F; }
-body.sys-artcraft #app { background: #17140F; }
+body.sys-artcraftport { background: #17140F; }
+body.sys-artcraftport #app { background: #17140F; }
 .of-bar {
   flex: 0 0 auto; display: flex; align-items: center; height: 38px; padding: 0 10px;
   background: #FFFDF9; border-bottom: 1px solid #DED6C8;

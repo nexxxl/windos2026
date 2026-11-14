@@ -54,6 +54,8 @@ export function mountNexlBrowser(host) {
       .nxwb-agent { position:absolute; inset:0; padding:22px; overflow:auto; background:#0f1115; color:#ddd; z-index:2; }
       .nxwb-agent h3 { margin:0 0 10px; }
       .nxwb-agent pre { white-space:pre-wrap; font:12px/1.55 ui-monospace,SFMono-Regular,Menlo,monospace; color:#b9c2cf; }
+      .nxwb-agent-empty { margin:0; color:#8b95a3; font:13px/1.6 -apple-system,sans-serif; }
+      .nxwb-agent-empty[hidden] { display:none; }
       .nxwb-agent-url { display:block; margin:4px 0 12px; color:#8fd3ff; font:12px/1.5 ui-monospace,Menlo,monospace; word-break:break-all; text-decoration:underline; cursor:pointer; }
       .nxwb-agent-links { margin:10px 0 16px; padding:10px 12px; border:1px solid #2b3038; border-radius:10px; background:#14171d; }
       .nxwb-agent-links h4 { margin:0 0 8px; font-size:12px; color:#9aa3af; font-weight:600; }
@@ -253,7 +255,9 @@ export function mountNexlBrowser(host) {
     ),
   );
   const humanPane = h('div', { class: 'nxwb-human', hidden: true }, humanWelcome, humanFrame, humanNotice);
-  const agentOutput = h('pre', null, '等待独立 Chrome 页面…');
+  // pre 里的页面正文不参与界面翻译；空状态放到独立段落，才能跟着界面语言走。
+  const agentOutput = h('pre', null, '');
+  const agentEmpty = h('p', { class: 'nxwb-agent-empty' }, '等待独立 Chrome 页面…');
   const agentUrl = h('a', { class: 'nxwb-agent-url', href: '#', title: '在独立 Chrome 打开当前 URL', onclick: (event) => { event.preventDefault(); const target = agentUrl.dataset.url; if (target) void openDedicatedUrl(target); } }, '');
   agentUrl.hidden = true;
   const agentLinks = h('div', { class: 'nxwb-agent-links', hidden: true });
@@ -261,6 +265,7 @@ export function mountNexlBrowser(host) {
     h('h3', null, 'Agent 浏览器 · 语义采集'),
     agentUrl,
     agentLinks,
+    agentEmpty,
     agentOutput,
   );
   const humanTab = h('button', { class: 'nxwb-mode is-on', type: 'button', onclick: () => setMode('human') }, '人类浏览');
@@ -1064,6 +1069,7 @@ export function mountNexlBrowser(host) {
       for (const table of data.tables.slice(0, 6)) out.push(table.map(row => row.join(' | ')).join('\n'));
     }
     agentOutput.textContent = out.join('\n');
+    agentEmpty.hidden = true;
   }
 
   function stopSemanticSync() {
@@ -1091,7 +1097,10 @@ export function mountNexlBrowser(host) {
           setStatus('Agent 同步人类 Chrome · ' + (data.title || shortUrl(data.url)), '');
         }
       } catch (_error) {
-        if (!state.lastSemantic) agentOutput.textContent = '等待独立 Chrome 页面…';
+        if (!state.lastSemantic) {
+          agentOutput.textContent = '';
+          agentEmpty.hidden = false;
+        }
       } finally {
         state.semanticTimer = window.setTimeout(tick, 1500);
       }

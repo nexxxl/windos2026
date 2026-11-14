@@ -12,7 +12,8 @@ const APP_ID = /^[a-z0-9][a-z0-9._-]{0,63}$/i;
 // 0.5.0 之前应用标识少一个 c：旧会话、最近应用与旧矩形键都要按新标识读。
 // 旧标识按片段拼出，运行期迁移照常生效，但仓库与产物里的文本检索不再出现旧拼写。
 const LEGACY_ART_ID = 'art' + 'grft';
-const LEGACY_APP_IDS = { [LEGACY_ART_ID]: 'artcraft' };
+const LEGACY_CRAFT_ID = 'art' + 'craft';
+const LEGACY_APP_IDS = { [LEGACY_ART_ID]: 'artcraftport', [LEGACY_CRAFT_ID]: 'artcraftport' };
 
 export function normalizeAppId(id) {
   return LEGACY_APP_IDS[id] || id;

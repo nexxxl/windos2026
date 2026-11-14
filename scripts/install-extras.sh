@@ -1,7 +1,8 @@
 #!/bin/sh
-# 把可选包安装到 webos/extras/，让运行时按 /extras/ 路径直接取到。
-# 用法：./scripts/install-extras.sh          安装画板（artcraft）与全部语言包
-#       ./scripts/install-extras.sh artcraft
+# 把可选包安装到运行时能取到的位置。
+# 用法：./scripts/install-extras.sh          安装画板（artcraftport）、CJK 字体与全部语言包
+#       ./scripts/install-extras.sh artcraftport
+#       ./scripts/install-extras.sh fonts
 #       ./scripts/install-extras.sh all
 set -eu
 cd "$(dirname "$0")/.."
@@ -10,10 +11,20 @@ what="${1:-all}"
 mkdir -p webos/extras
 
 case "$what" in
-  all|artcraft)
-    cp -R extras/artcraft webos/extras/
-    cp extras/artcraft.css webos/extras/
-    echo "artcraft: $(find webos/extras/artcraft -type f | wc -l | tr -d ' ') 文件"
+  all|artcraftport)
+    cp -R extras/artcraftport webos/extras/
+    cp extras/artcraftport.css webos/extras/
+    echo "artcraftport: $(find webos/extras/artcraftport -type f | wc -l | tr -d ' ') 文件"
+    ;;
+esac
+
+case "$what" in
+  all|fonts)
+    # 办公应用的 @font-face 指向 webos/a/office/fonts/，字体包要落到同一个目录。
+    cp extras/fonts-cjk/*.woff webos/a/office/fonts/
+    cp extras/fonts-cjk/*.woff2 webos/a/office/fonts/
+    cp extras/fonts-cjk/OFL.txt webos/a/office/fonts/OFL-cjk.txt
+    echo "fonts-cjk: $(ls extras/fonts-cjk/*.woff extras/fonts-cjk/*.woff2 | wc -l | tr -d ' ') 字体"
     ;;
 esac
 

@@ -24,6 +24,8 @@ import { rows as coverageBoard } from './coverage-board.js';
 import { rows as coverageCommands } from './coverage-commands.js';
 import { rows as coverageCraftStatus, templates as coverageCraftStatusTemplates } from './coverage-craft-status.js';
 import { rows as coverageStore, templates as coverageStoreTemplates } from './coverage-store.js';
+import { rows as releaseExtra, templates as releaseExtraTemplates } from './release-extra.js';
+import { rows as artCraftExtra, templates as artCraftExtraTemplates } from './artcraft-extra.js';
 // 扩展语言用「中文原文 → 译文」的独立覆盖层，避免为每种新语言重写全部 8 列。
 // 覆盖层只登记译文；源串、槽位与完整性闸门仍由主词表统一管理。
 // 扩展语言是可选包：极致版默认只带 8 种内置语言，额外语言由 installed-packs.js 声明。
@@ -35,7 +37,7 @@ function uniqueSources(rows) {
   const seen = new Set();
   return rows.filter(row => { if (seen.has(row[0])) return false; seen.add(row[0]); return true; });
 }
-export const CATALOG_ROWS = uniqueSources(shell.concat(workspace, media, game, backend, final, qa, artDocs, artImage, artVectorTime, star, coverage, coverageBrowser, coverageMusic, coverageByok, coverageOs, coverageArtImage, coverageArtTime, coverageArtVector, coverageArtDocs, coverageBoard, coverageCommands, coverageCraftStatus, coverageStore));
+export const CATALOG_ROWS = uniqueSources(shell.concat(workspace, media, game, backend, final, qa, artDocs, artImage, artVectorTime, star, coverage, coverageBrowser, coverageMusic, coverageByok, coverageOs, coverageArtImage, coverageArtTime, coverageArtVector, coverageArtDocs, coverageBoard, coverageCommands, coverageCraftStatus, coverageStore, releaseExtra, artCraftExtra));
 export const EXTRA_TRANSLATIONS = {};
 for (const code of CODES.slice(1)) EXTRA_TRANSLATIONS[code] = {};
 for (const row of CATALOG_ROWS) {
@@ -46,7 +48,7 @@ for (const row of CATALOG_ROWS) {
     if (row[0] !== row[0].trim()) EXTRA_TRANSLATIONS[CODES[index]][row[0].trim()] = row[index].trim();
   }
 }
-export const MESSAGE_TEMPLATES = uniqueSources(templates.concat(finalTemplates, qaTemplates, artDocsTemplates, artImageTemplates, artVectorTimeTemplates, starTemplates, coverageTemplates, coverageByokTemplates, coverageOsTemplates, coverageCraftStatusTemplates, coverageStoreTemplates)).sort((a, b) => b[0].length - a[0].length);
+export const MESSAGE_TEMPLATES = uniqueSources(templates.concat(finalTemplates, qaTemplates, artDocsTemplates, artImageTemplates, artVectorTimeTemplates, starTemplates, coverageTemplates, coverageByokTemplates, coverageOsTemplates, coverageCraftStatusTemplates, coverageStoreTemplates, releaseExtraTemplates, artCraftExtraTemplates)).sort((a, b) => b[0].length - a[0].length);
 
 // 扩展语言覆盖层：rows 与 templates 都是 [中文源串, 译文] 的二元组。
 export const OVERLAY_TRANSLATIONS = Object.create(null);

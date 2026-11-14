@@ -1,5 +1,5 @@
 /* Plugin-edition office boot defaults.
- * The DSH panel is narrower than the native NexlOS window; start Word at
+ * The DSH panel is narrower than the native NexlOS window; start the document editor at
  * "page width" so a real A4 page fits instead of being clipped at 100%.
  * This file is part of the plugin bundle only; the NexlOS source is untouched.
  */

@@ -10,7 +10,7 @@
 
   function changed() {
     ED.onChange();
-    // 只对 Word 文档做版面重排；其他编辑器不参与分页。
+    // 只对长文档做版面重排；其他编辑器不参与分页。
     var d = global.__edDoc;
     if (d && d.kind === 'doc' && ED.schedulePaginate) ED.schedulePaginate();
   }
@@ -222,7 +222,7 @@
   /* ==================== 文档分页 ==================== */
 
   // 分页只改视图，不改模型：块仍然按顺序保存在 doc.doc.blocks 里，
-  // 页面只是把块按 A4 可用高度装进多张纸。Word / WPS / OnlyOffice 的
+  // 页面只是把块按 A4 可用高度装进多张纸。主流文档编辑器的
   // 页面视图也是这个结构：内容流 + 排版器 + 纸张投影。
   var paginateTimer = null;
   var composing = false;
@@ -444,7 +444,7 @@
   }
 
   // 按“行”拆分段落：二分找到最后一行能完整放下文字的位置，再把后半段
-  // 搬进一个新块。Word 的分页器也是先做行盒，再决定在哪个行盒换页。
+  // 搬进一个新块。分页也是先做行盒，再决定在哪个行盒换页。
   function splitTextBlock(blk, spaceLeft) {
     // 不足一行的高度不拆：拆出来也只有一两行，反而在下一页顶部留下碎片。
     if (!canSplit(blk) || spaceLeft < 30) return false;
@@ -553,7 +553,7 @@
     host.appendChild(first);
     var body = bodyOf(first);
     if (!blocks.length) {
-      // 空文档也要有一个可编辑段落：打开就落在纸上，和 Word 的空白页一致。
+      // 空文档也要有一个可编辑段落：打开就落在纸上，和空白页的手感一致。
       body.appendChild(makeBlockEl({ id: '', type: 'p', runs: [] }));
     } else {
       for (var i = 0; i < blocks.length; i++) body.appendChild(makeBlockEl(blocks[i]));

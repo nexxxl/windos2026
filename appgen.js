@@ -30,10 +30,6 @@ export function mountAppGen(host) {
     class: 'forge-preview', title: '生成应用预览', hidden: true,
     sandbox: 'allow-scripts allow-forms allow-popups allow-modals',
   });
-  const previewEmpty = h('div', { class: 'forge-preview-empty' }, [
-    h('b', {}, '预览区'),
-    h('p', {}, '生成或导入后，应用会在这里直接运行。刷新桌面后也会出现在开始菜单。'),
-  ]);
   const list = h('div', { class: 'forge-list' });
   let apps = [];
   let busy = false;
@@ -61,7 +57,7 @@ export function mountAppGen(host) {
       ]),
       list,
     ]),
-    h('section', { class: 'forge-preview-wrap' }, [preview, previewEmpty]),
+    h('section', { class: 'forge-preview-wrap', hidden: true }, [preview]),
   );
   host.append(root);
 
@@ -76,7 +72,7 @@ export function mountAppGen(host) {
   function showPreview(app) {
     if (!app) return;
     preview.hidden = false;
-    previewEmpty.hidden = true;
+    preview.parentElement.hidden = false;
     preview.src = app.entry || ('/a/generated/' + app.id + '/');
     preview.dataset.app = app.id;
   }
@@ -96,8 +92,8 @@ export function mountAppGen(host) {
       apps = Array.isArray(data.apps) ? data.apps : apps.filter(item => item.id !== app.id);
       if (preview.dataset.app === app.id) {
         preview.hidden = true;
+        preview.parentElement.hidden = true;
         preview.src = 'about:blank';
-        previewEmpty.hidden = false;
       }
       renderApps();
       genStatus.textContent = '已卸载：' + (app.name || app.id) + '（刷新桌面后从开始菜单移除）';
@@ -112,6 +108,7 @@ export function mountAppGen(host) {
     clear(list);
     if (apps.length === 0) {
       list.append(h('p', { class: 'forge-empty' }, '还没有生成应用。'));
+      preview.parentElement.hidden = true;
       return;
     }
     apps.forEach((app) => {
@@ -142,7 +139,6 @@ export function mountAppGen(host) {
       if (response.ok && data && data.ok) {
         apps = Array.isArray(data.apps) ? data.apps : [];
         renderApps();
-        if (apps.length && preview.hidden) showPreview(apps[apps.length - 1]);
       }
     } catch (_error) { /* list stays empty */ }
   }

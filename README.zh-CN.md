@@ -6,7 +6,7 @@
 
 如果回到千禧年，你的电脑意外打开一个2026年的AI原生操作系统，你会用来干嘛？
 
-windos2026 是 NexlOS 的 DSH 插件版。它把一台完整的桌面装进 DSH：17 个应用、25 条命令、8 种内置界面语言，压缩包 7.31 MiB，只有一个运行时依赖。桌面上的每个应用都是 `apps/<id>/index.html` 加一份 `app.json`，可以直接读、直接改、直接带走。
+windos2026 是 NexlOS 的 DSH 插件版。它把一台完整的桌面装进 DSH：17 个应用、25 条命令、8 种内置界面语言，压缩包 7.38 MiB，只有一个运行时依赖。桌面上的每个应用都是 `apps/<id>/index.html` 加一份 `app.json`，可以直接读、直接改、直接带走。
 
 ## 安装
 
@@ -43,8 +43,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 | 项目 | 数字 |
 | --- | --- |
-| 压缩包 | 7.31 MiB |
-| 解包 | 11.2 MB / 260 文件 |
+| 压缩包 | 7.38 MiB |
+| 解包 | 10.8 MiB / 274 文件 |
 | 应用 | 17 |
 | 命令 | 25 |
 | 界面语言 | 8 种内置，7 种可选语言包 |
@@ -77,4 +77,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 许可
 
-插件源代码与文档按 [Apache-2.0](LICENSE) 提供。商标不随 Apache-2.0 授予，第三方素材按各自许可，见 [NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+插件源代码与文档按 [Apache-2.0](LICENSE) 提供。商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文位置与移植说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，商标规则见 [TRADEMARK.md](TRADEMARK.md)，担保与责任条款见 [DISCLAIMER.md](DISCLAIMER.md)。
+
+ArtCraft 移植版（ArtCraft for NexlOS）是内置「应用生成」的示例案例，也是唯一从上游项目移植算法的模块：它把上游 ArtCraft 的编辑器结构与可独立移植的算法装进 NexlOS，再按本项目「命令 + 单一文档状态 + 面板挂载」的契约重新装配。移植思路与逐文件对应关系见 [docs/artcraftport/ATTRIBUTION.md](docs/artcraftport/ATTRIBUTION.md)：上游是 storytold 的 ArtCraft（`github.com/storytold/artcraft`，MIT / Apache-2.0），本项目按 MIT 重写为零依赖 ES Module，未带入上游的 Rust 渲染器、Tauri 宿主与 AI 调用。本移植版是**非官方**移植，与上游没有隶属或背书关系；应用名里的 ArtCraft 只用于指出来源，并始终带「移植版 / for NexlOS」限定。应用 id、路由与目录为 `artcraftport`。

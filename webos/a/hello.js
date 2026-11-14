@@ -204,6 +204,12 @@ export async function showHello() {
           history.replaceState(null, '', next.pathname + next.search + next.hash);
         }
       } catch (e) { /* 地址不可写时保留原 URL */ }
+      // 语言覆盖层由服务端按 settings.json 拼进 catalog.js；首屏是按旧语言送达的，
+      // 换到任何非中文语言后重载一次，桌面才会用新语言包重新挂载。
+      if (chosen !== 'zh-CN') {
+        location.reload();
+        return;
+      }
       overlay.classList.add('done');
       setTimeout(() => overlay.remove(), 700);
       resolve();

@@ -16,7 +16,7 @@
 
 import { promises as fsp } from 'node:fs'
 import http from 'node:http'
-import { existsSync, mkdirSync } from 'node:fs'
+import { existsSync, mkdirSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { randomUUID } from 'node:crypto'
@@ -38,6 +38,10 @@ const HERE = path.dirname(fileURLToPath(import.meta.url))
 const WEBOS_ROOT = path.join(HERE, 'webos')
 const ASSET_ROOT = path.join(WEBOS_ROOT, 'a')
 const INDEX_FILE = path.join(WEBOS_ROOT, 'index.html')
+// 健康检查报告安装包自己的版本；写死会和 package.json 漂移。
+const PLUGIN_VERSION = (() => {
+  try { return JSON.parse(readFileSync(path.join(HERE, 'package.json'), 'utf8')).version || '0.0.0' } catch (_error) { return '0.0.0' }
+})()
 const TEAM_STARTED_AT = Date.now()
 const execFile = promisify(execFileCallback)
 
@@ -955,7 +959,7 @@ function appManifest() {
       app.singleton = false
       return app
     })(),
-    internalApp('artcraft', 'artcraft', 'artcraft', '#/artcraft', 'ArtCraft 矩阵的轻量转译：图像、矢量、时间线、文档与净室工作台。', '创作', appWindow(1280, 820, 900, 600)),
+    internalApp('artcraftport', 'ArtCraft 移植版', 'artcraftport', '#/artcraftport', 'ArtCraft 移植版：图像、矢量、时间线、文档与净室工作台。', '创作', appWindow(1280, 820, 900, 600)),
     internalApp('graph', '关系图谱', 'graph', '#/graph', '把 nexl交换区 里的 Markdown 连成关系网：双链、标签与反向链接。', '创作', appWindow(1180, 820, 900, 600)),
     internalApp('video', '视频', 'video', '#/video', '本地或网络视频：拖入即播，支持画中画与全屏。', '媒体', appWindow(960, 640, 620, 420)),
     internalApp('browser', 'Agent 浏览器', 'browser', '#/browser', 'Agent 浏览器：结构优先（盲人浏览器方式）读取网页语义、正文、链接、代码与表格；说“人类阅读”时同时在独立 Chrome 打开人类视图。', '工具', appWindow(1280, 860, 900, 600)),
@@ -1199,13 +1203,13 @@ function multipartFile(buffer, contentType) {
 const TRANSFORM_VERSION = 'nx-plugin-2026-11-11-4'
 
 const OVERLAY_LANGUAGES = {
-  ar: './lang-ar.js',
-  cs: './lang-cs.js',
-  it: './lang-it.js',
-  'pt-BR': './lang-pt-BR.js',
-  ru: './lang-ru.js',
-  tr: './lang-tr.js',
-  vi: './lang-vi.js',
+  ar: '/extras/langs/lang-ar.js',
+  cs: '/extras/langs/lang-cs.js',
+  it: '/extras/langs/lang-it.js',
+  'pt-BR': '/extras/langs/lang-pt-BR.js',
+  ru: '/extras/langs/lang-ru.js',
+  tr: '/extras/langs/lang-tr.js',
+  vi: '/extras/langs/lang-vi.js',
 }
 
 /**
@@ -1260,7 +1264,7 @@ var SYSTEM_APP_MODULES = {
   scan: ['./scan.js', 'mountScan'],
   draw: ['./draw.js', 'mountDraw'],
   office: ['./office.js', 'mountOffice'],
-  artcraft: ['./artcraft.js', 'mountArtcraft'],
+  artcraftport: ['./artcraftport.js', 'mountArtCraftPort'],
   minesweeper: ['./minesweeper.js', 'mountMinesweeper'],
   browser: ['/nexlos/browser.js', 'mountNexlBrowser'],
   graph: ['./graph.js', 'mountGraph'],
@@ -1298,10 +1302,14 @@ async function mountSystemApp(id, wrap) {
   next = next.replace('function renderDesktop() {', 'async function renderDesktop() {')
   next = next.replace('  currentOS = mountOS(app);', "  currentOS = (await import('./os.js')).mountOS(app);")
   next = next.replace('      renderDesktop();\n      return;', '      await renderDesktop();\n      return;')
+  // 等值是后续可能加上的 await；只按固定文本找会漏掉，留下已删 import 的 mounts 表。
   const mountsStart = next.indexOf('      const mounts = {')
-  const mountsEnd = next.indexOf('      currentApp = mounts[parts[0]](wrap);', mountsStart)
-  if (mountsStart >= 0 && mountsEnd >= 0) {
-    const after = mountsEnd + '      currentApp = mounts[parts[0]](wrap);'.length
+  if (mountsStart >= 0) {
+    const assignment = /^ {6}currentApp = (?:await )?mounts\[parts\[0\]\]\(wrap\);$/mu.exec(next.slice(mountsStart))
+    if (assignment === null) {
+      throw new Error('plugin transform: system-app mounts block does not match')
+    }
+    const after = mountsStart + assignment.index + assignment[0].length
     next = next.slice(0, mountsStart) + '      currentApp = await mountSystemApp(parts[0], wrap);' + next.slice(after)
   }
   return next
@@ -4708,6 +4716,13 @@ window.SongBoard.importSvg = function (svgText) {
       }
       void serveFile(req, res, uiRoots().assets, url.pathname.slice(2))
     })
+    // 可选包（ArtCraft、CJK 字体、扩展语言）只在 extras/ 里；没有这条路由时
+    // /extras/artcraftport/kernel.js 会 404，画板只剩错误页。
+    register('prefix', '/extras', (req, res) => {
+      if (!authorized(req, res)) return
+      const url = new URL(req.url || '/', 'http://x')
+      return void serveFile(req, res, path.join(HERE, 'extras'), url.pathname.slice('/extras'.length), { pluginTransforms: false })
+    })
     register('exact', '/nexlos', (req, res) => {
       if (!authorized(req, res)) return
       res.writeHead(302, { location: '/nexlos/' })
@@ -4717,7 +4732,7 @@ window.SongBoard.importSvg = function (svgText) {
       if (!authorized(req, res)) return
       const url = new URL(req.url || '/', 'http://x')
       if (url.pathname === '/nexlos/health') {
-        return sendJson(res, 200, { ok: true, name: 'nexlos-os', version: '1.0.0', home: home(), engine: 'dsh' })
+        return sendJson(res, 200, { ok: true, name: 'nexlos-os', version: PLUGIN_VERSION, home: home(), engine: 'dsh' })
       }
       if (url.pathname.startsWith('/nexlos/browser/')) {
         return void handleBrowserRequest(req, res, url)

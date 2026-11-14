@@ -1489,7 +1489,11 @@ function translatorFor(doc) {
 }
 
 
+const BRAND_SOURCES = new Set(['NexlOS', 'Windos2026', 'ArtCraft', 'ArtCraft 移植版']);
 function canonicalSource(text) {
+  // 品牌名不参与反查：品牌词恰好等于某个译文时（例如法语里的常用词），
+  // 反查会把它换成别人的中文源串，界面上的应用名就被翻译掉了。
+  if (BRAND_SOURCES.has(text)) return text;
   if (registeredSources.has(text) || text === 'Windos2026') return text;
   if (sourceByTranslation.has(text)) return sourceByTranslation.get(text);
   for (const template of translatedTemplates) {
@@ -1539,7 +1543,11 @@ function translatePattern(text, code, multipartOnly) {
 }
 
 const ATTRS = ['title', 'aria-label', 'aria-description', 'placeholder', 'alt', 'data-i18n-content'];
-const USER_CONTENT = '[data-i18n-skip], [translate="no"], [contenteditable]:not([contenteditable="false"]), .mm-editor, .xp-note-body, .xp-name-text, .xp-tile-name, .book-body b, .chapter-title, .ag-craft-name, .ag-layer-name, .ag-list-name, .export-preview, .os-line-arg, .os-line-x, .os-line-args, .os-line-out, .os-agent-label, .os-agent-result , .os-space-answer-body, .os-report-md';
+// .mm-editor 是 textarea：正文在 value 里，不会经过文本节点；保留在保护名单里
+// 会连 placeholder 一起跳过，英文界面就留下中文提示。属性翻译需要放行。
+// .ag-craft-name 是 ArtCraft 的默认文档名（没有改名入口），属产品文案，放行翻译；
+// .ag-layer-name/.ag-list-name 是用户可编辑的图层与文件名，继续保护。
+const USER_CONTENT = '[data-i18n-skip], [translate="no"], [contenteditable]:not([contenteditable="false"]), .xp-note-body, .xp-name-text, .xp-tile-name, .book-body b, .chapter-title, .ag-layer-name, .ag-list-name, .export-preview, .os-line-arg, .os-line-x, .os-line-args, .os-line-out, .os-agent-label, .os-agent-result , .os-space-answer-body, .os-report-md';
 
 function protectedElement(el, text) {
   if (!el || !el.closest) return false;

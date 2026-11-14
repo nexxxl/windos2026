@@ -28,8 +28,8 @@ printf '包体积 %.2f MB（上限 10 MB）\n' "$(echo "$size" | awk '{print $1/
 check "tarball ≤ 10 MB" test "$size" -le "$limit"
 check "包内不含语言覆盖层" test -z "$(find webos/a/locales -name 'lang-*.js' -print -quit)"
 check "包内不含 CJK 办公字体" test -z "$(find webos/a/office/fonts \( -name 'NotoSansSC*' -o -name 'NotoSerifSC*' -o -name 'LXGW*' -o -name 'SmileySans*' \) -print -quit)"
-check "画板资源在 extras" test -f extras/artcraft/kernel.js
-check "画板样式在 extras" test -f extras/artcraft.css
+check "画板资源在 extras" test -f extras/artcraftport/kernel.js
+check "画板样式在 extras" test -f extras/artcraftport.css
 check "媒体为 AAC" test -f webos/a/media/master-mix.m4a
 check "壁纸存在" test -f webos/a/wallpapers/meadow.webp
 check "语言清单存在" test -f webos/a/locales/installed-packs.js

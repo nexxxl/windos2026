@@ -22,7 +22,7 @@
   .menubar { overflow-x: auto; }
 }
 
-/* Keep Word pagination in the narrower DSH panel. The native office script
+/* Keep document pagination in the narrower DSH panel. The native office script
  * switches to a continuous paper at <=900px; here the iframe is ~758px but the
  * product is still a desktop window, so restore the fixed A4 page layout. */
 @media (min-width: 680px) and (max-width: 900px) {

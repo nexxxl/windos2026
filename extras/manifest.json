@@ -1,0 +1,101 @@
+{
+  "version": "1.1.0-lite.0",
+  "packsBase": "/extras/",
+  "note": "可选包不进 npm 包；安装后由 webos/a/locales/installed-packs.js 与 /extras/ 路径生效。运行 scripts/install-extras.sh 安装。",
+  "langs": [
+    {
+      "code": "ar",
+      "file": "extras/langs/lang-ar.js",
+      "bytes": 211581,
+      "sha256": "d17a0ccb74f21bfad207bc2e9ab2132bd21104e728898833d6fde8873af7c81f"
+    },
+    {
+      "code": "cs",
+      "file": "extras/langs/lang-cs.js",
+      "bytes": 180974,
+      "sha256": "1792cd46863038d2053211246396595f74fa8e0b0e7b5eb2649a8e68f0f740ca"
+    },
+    {
+      "code": "it",
+      "file": "extras/langs/lang-it.js",
+      "bytes": 183620,
+      "sha256": "87afae03a452f4e6279472100436bc830e00f0a0562f7685221382878ae19a7a"
+    },
+    {
+      "code": "pt-BR",
+      "file": "extras/langs/lang-pt-BR.js",
+      "bytes": 182539,
+      "sha256": "292b6c8e749f07e388232c3d60646f3f618b14fdd15a2102e95f988b0e69abe5"
+    },
+    {
+      "code": "ru",
+      "file": "extras/langs/lang-ru.js",
+      "bytes": 239410,
+      "sha256": "94f4eb5935d0494eed45ab103d5c6819dd3b66b1d407c2ebb7f1c9f7c7ab7925"
+    },
+    {
+      "code": "tr",
+      "file": "extras/langs/lang-tr.js",
+      "bytes": 181047,
+      "sha256": "fef62bf4affc33760093489a4cfd8d897370c842cdc02e3004a531f530b26994"
+    },
+    {
+      "code": "vi",
+      "file": "extras/langs/lang-vi.js",
+      "bytes": 190662,
+      "sha256": "aa2954c8186a3063d5c0ae101c49189b6c76dac571abde1e91a558e226b693e0"
+    }
+  ],
+  "fontsCJK": [
+    {
+      "file": "extras/fonts-cjk/LXGWNeoZhiSong-gb.woff2",
+      "bytes": 1221604,
+      "sha256": "e194cf0a931ede5cde219cd81212a0550fc015aedcd300c96c81f508af8e042d"
+    },
+    {
+      "file": "extras/fonts-cjk/LXGWWenKai-500.woff",
+      "bytes": 2098296,
+      "sha256": "734bd187392579417ac83effe31d37b9de43c7b290bcb400800456511ed79e8f"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSansSC-500.woff",
+      "bytes": 1416188,
+      "sha256": "928d841b1ec663ebce82593568cbc19749fe652f88b8ec960723b7d87b551512"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSansSC-700.woff",
+      "bytes": 1425340,
+      "sha256": "dd0d39a9780eb995c499af0c20cca93b1dfdda865da70871a20890b3e406b968"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSansSC-800.woff",
+      "bytes": 1426988,
+      "sha256": "b57f9c645b1a4967a3c8914ed41f24d109394a8175e36af08f93e40803e84664"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSansSC-900.woff",
+      "bytes": 1394104,
+      "sha256": "d2d8a42438b18b65b6577434df4e41bb08c6b5051281757849af00ab743bb58f"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSerifSC-400.woff2",
+      "bytes": 1329860,
+      "sha256": "b6f3916f22a9390dcbbc9242d65877d2fce5367ec392fbd68a4fdc7ece5bc0c2"
+    },
+    {
+      "file": "extras/fonts-cjk/NotoSerifSC-700.woff2",
+      "bytes": 1373356,
+      "sha256": "49c50f2244233772c481e3770add51e646850b62881dd6d5461b57a7982b37b9"
+    },
+    {
+      "file": "extras/fonts-cjk/SmileySans-Oblique.woff2",
+      "bytes": 1150924,
+      "sha256": "731f22973349404b15a88a99ef3b5dd4104c0965c23b7e485c1f11e84fea99e2"
+    }
+  ],
+  "artcraftport": {
+    "files": 14,
+    "bytes": 362848,
+    "css": "extras/artcraftport.css"
+  }
+}

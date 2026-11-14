@@ -46,7 +46,7 @@ Nécessite Node.js 22+ et une version de DSH capable de charger des bundles loca
 | Élément | Nombre |
 | --- | --- |
 | Archive | 7,31 MiB |
-| Décompressé | 11,2 MB / 260 fichiers |
+| Décompressé | 10,8 MiB / 274 fichiers |
 | Applications | 17 |
 | Commandes | 25 |
 | Langues d'interface | 8 intégrées, 7 paquets optionnels |

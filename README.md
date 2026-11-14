@@ -6,7 +6,7 @@
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.31 MiB tarball, and one runtime dependency. Every app on the desktop is an `apps/<id>/index.html` plus an `app.json` — readable, editable, and portable.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.38 MiB tarball, and one runtime dependency. Every app on the desktop is an `apps/<id>/index.html` plus an `app.json` — readable, editable, and portable.
 
 ## Install
 
@@ -43,8 +43,8 @@ Requires Node.js 22+ and a DSH build that can load local bundles. There is no np
 
 | Item | Number |
 | --- | --- |
-| Tarball | 7.31 MiB |
-| Unpacked | 11.2 MB / 260 files |
+| Tarball | 7.38 MiB |
+| Unpacked | 10.8 MiB / 274 files |
 | Apps | 17 |
 | Commands | 25 |
 | Interface languages | 8 built in, 7 optional packs |
@@ -77,4 +77,6 @@ Size gate:
 
 ## License
 
-Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. See [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](DISCLAIMER.md).
+
+ArtCraft for NexlOS (ArtCraft 移植版) is the worked example shipped with the built-in app generator, and the one place where algorithms come from an upstream project. It installs upstream ArtCraft's editor structure and portable algorithms into NexlOS, then rebuilds them against this project's own contract: commands, a single serializable document state, and a mount/destroy panel. The porting approach and the file-by-file mapping are in [docs/artcraftport/ATTRIBUTION.md](docs/artcraftport/ATTRIBUTION.md): the upstream is storytold's ArtCraft (`github.com/storytold/artcraft`, MIT / Apache-2.0), rewritten here as zero-dependency ES modules under the MIT terms. The Rust renderer, Tauri host and AI calls are not included. This port is **unofficial** and has no affiliation with or endorsement from the upstream team; the name ArtCraft in the app title names the upstream project and is always qualified with "for NexlOS". The app id, route and directory are `artcraftport`.

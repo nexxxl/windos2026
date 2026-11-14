@@ -18,7 +18,7 @@
     "icon.svg",
     "README.md",
     "THIRD_PARTY_NOTICES.md",
-    "docs/artcraft/ATTRIBUTION.md",
+    "docs/artcraftport/ATTRIBUTION.md",
     "docs/validation.md",
     "webos",
     "vendor",
@@ -67,7 +67,7 @@
     "packs": [
       "langs",
       "fonts-cjk",
-      "artcraft"
+      "artcraftport"
     ]
   }
 }
