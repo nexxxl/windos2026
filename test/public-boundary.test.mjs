@@ -21,7 +21,7 @@ const REQUIRED = [
   'NOTICE',
   'TRADEMARK.md',
   'LICENSING.md',
-  'LICENSE-BINARY.md',
+  'docs/LICENSE-BINARY.md',
   'DISCLAIMER.md',
   'SECURITY.md',
   'CONTRIBUTING.md',

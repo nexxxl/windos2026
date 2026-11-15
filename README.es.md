@@ -15,7 +15,7 @@ windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio compl
 | Edición | Qué obtienes | Licencia |
 | --- | --- | --- |
 | **Plugin** (código de este repositorio) | el paquete de 7.95 MiB descrito abajo | [Apache-2.0](LICENSE) |
-| **Universal** (Releases) | un binario autocontenido con su propia carcasa de ventana nativa | el núcleo y la carcasa cerrados bajo [NexlOS Binary License 1.0](LICENSE-BINARY.md); la capa de escritorio incluida mantiene Apache-2.0 |
+| **Universal** (Releases) | un binario autocontenido con su propia carcasa de ventana nativa | el núcleo y la carcasa cerrados bajo [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); la capa de escritorio incluida mantiene Apache-2.0 |
 
 El mapa autoritativo archivo por archivo está en [LICENSING.md](LICENSING.md).
 
@@ -90,6 +90,6 @@ Control de tamaño:
 
 ## Licencia
 
-El código del plugin en este repositorio es Apache-2.0. Los binarios de la edición universal siguen una licencia aparte; consulta [LICENSING.md](LICENSING.md) para el mapa y [LICENSE-BINARY.md](LICENSE-BINARY.md) para sus términos.
+El código del plugin en este repositorio es Apache-2.0. Los binarios de la edición universal siguen una licencia aparte; consulta [LICENSING.md](LICENSING.md) para el mapa y [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) para sus términos.
 
 El código y la documentación del plugin son [Apache-2.0](LICENSE). Las marcas no se conceden con Apache-2.0; los recursos de terceros mantienen sus propias licencias. Consulta [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md) y [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

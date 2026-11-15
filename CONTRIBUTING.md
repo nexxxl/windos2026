@@ -1,6 +1,6 @@
 # 贡献指南
 
-本目录维护独立的 NexlOS 插件版。本仓源码按 [Apache-2.0](LICENSE) 授权；从 Releases 下载的通用版二进制另受 [NexlOS Binary License 1.0](LICENSE-BINARY.md) 约束，二进制内嵌的桌面层仍按 Apache-2.0 授权。逐文件地图见 [LICENSING.md](LICENSING.md)，两条发行轨道的步骤见 [docs/releasing.md](docs/releasing.md)。工作区里的 `applications/`、`tools/` 不进公开仓，其许可以各自声明为准。
+本目录维护独立的 NexlOS 插件版。本仓源码按 [Apache-2.0](LICENSE) 授权；从 Releases 下载的通用版二进制另受 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md) 约束，二进制内嵌的桌面层仍按 Apache-2.0 授权。逐文件地图见 [LICENSING.md](LICENSING.md)，两条发行轨道的步骤见 [docs/releasing.md](docs/releasing.md)。工作区里的 `applications/`、`tools/` 不进公开仓，其许可以各自声明为准。
 
 ## 开发与验证
 

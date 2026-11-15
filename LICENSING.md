@@ -7,7 +7,7 @@ directory and release artifact in this repository.
 | Artifact | License | Text |
 | --- | --- | --- |
 | Source code in this repository (the plugin edition) | Apache License 2.0 | [LICENSE](LICENSE) |
-| Compiled release binaries of the universal edition | NexlOS Binary License 1.0 | [LICENSE-BINARY.md](LICENSE-BINARY.md) |
+| Compiled release binaries of the universal edition | NexlOS Binary License 1.0 | [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) |
 | Third-party libraries, fonts, images, audio | Their upstream licenses | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the license files shipped beside each asset |
 | Names, logos, icons, theme names | Trademark policy, not a copyright license | [TRADEMARK.md](TRADEMARK.md) |
 | Warranty and liability | Both editions | [DISCLAIMER.md](DISCLAIMER.md) |
@@ -21,6 +21,11 @@ says otherwise. That includes `webos/`, `vendor/`, `extension/`, `locale/`,
 Apache-2.0 lets you use, modify, redistribute and sell this source, including in
 proprietary products, as long as you keep the copyright and notice requirements.
 It is not a non-commercial license.
+
+The root `LICENSE` holds the unmodified Apache-2.0 text and nothing else, so
+GitHub, npm and license scanners identify the repository correctly. This page is
+the map that explains what sits outside that grant. The binary license lives in
+`docs/LICENSE-BINARY.md` so the repository root keeps exactly one license file.
 
 Path-level exceptions, each with its own terms:
 
@@ -51,7 +56,7 @@ The split matters:
   build, modify, redistribute and even sell what you build from this source. You
   may not present it as the official universal binary or as a NexlOS release.
 
-Read [LICENSE-BINARY.md](LICENSE-BINARY.md) before installing a release binary.
+Read [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) before installing a release binary.
 
 ## 3. Third-party components
 
@@ -96,8 +101,8 @@ means you have the right to license it under those terms.
 ## 7. How to verify
 
 ```sh
-git ls-files | grep -E '^(LICENSE|NOTICE|LICENSING|LICENSE-BINARY|TRADEMARK|DISCLAIMER)'
-npm pack --dry-run --json          # the plugin package must not carry LICENSE-BINARY.md
+git ls-files | grep -E '^(LICENSE|NOTICE|LICENSING|TRADEMARK|DISCLAIMER)$|^docs/LICENSE-BINARY'
+npm pack --dry-run --json          # the plugin package must not carry docs/LICENSE-BINARY.md
 node --test test/license-scope.test.mjs
 ```
 

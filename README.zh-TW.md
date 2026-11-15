@@ -13,7 +13,7 @@ windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH�
 | 形態 | 你拿到的東西 | 授權 |
 | --- | --- | --- |
 | **外掛版**（本倉原始碼） | 下文所述的 7.95 MiB 外掛包 | [Apache-2.0](LICENSE) |
-| **通用版**（Releases） | 自帶原生視窗殼的獨立二進位 | 閉源內核與視窗殼按 [NexlOS Binary License 1.0](LICENSE-BINARY.md)；內建桌面層保持 Apache-2.0 |
+| **通用版**（Releases） | 自帶原生視窗殼的獨立二進位 | 閉源內核與視窗殼按 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md)；內建桌面層保持 Apache-2.0 |
 
 逐檔案、逐產物的權威對映見 [LICENSING.md](LICENSING.md)。
 
@@ -88,6 +88,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 授權
 
-本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](LICENSING.md)，條款見 [LICENSE-BINARY.md](LICENSE-BINARY.md)。
+本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](LICENSING.md)，條款見 [LICENSE-BINARY.md](docs/LICENSE-BINARY.md)。
 
 外掛原始碼與文件依 [Apache-2.0](LICENSE) 提供。商標不隨 Apache-2.0 授予，第三方素材依各自授權，見 [NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

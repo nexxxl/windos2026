@@ -15,7 +15,7 @@ windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台の�
 | エディション | 入手するもの | ライセンス |
 | --- | --- | --- |
 | **プラグイン版**（本リポジトリのソース） | 後述の 7.95 MiB パッケージ | [Apache-2.0](LICENSE) |
-| **ユニバーサル版**（Releases） | ネイティブウィンドウシェルを同梱した単体バイナリ | 非公開のカーネルとシェルは [NexlOS Binary License 1.0](LICENSE-BINARY.md)、同梱のデスクトップ層は Apache-2.0 のまま |
+| **ユニバーサル版**（Releases） | ネイティブウィンドウシェルを同梱した単体バイナリ | 非公開のカーネルとシェルは [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md)、同梱のデスクトップ層は Apache-2.0 のまま |
 
 ファイル単位の正式な対応表は [LICENSING.md](LICENSING.md)。
 
@@ -90,6 +90,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## ライセンス
 
-本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](LICENSING.md)、条件は [LICENSE-BINARY.md](LICENSE-BINARY.md) にあります。
+本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](LICENSING.md)、条件は [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) にあります。
 
 プラグインのソースとドキュメントは [Apache-2.0](LICENSE) です。商標は Apache-2.0 では付与されず、第三者素材はそれぞれのライセンスに従います。[NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。

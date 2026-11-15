@@ -13,7 +13,7 @@ windos2026 是 NexlOS 的 DSH 插件版。它把一台完整的桌面装进 DSH�
 | 形态 | 你拿到的东西 | 许可 |
 | --- | --- | --- |
 | **插件版**（本仓源码） | 下文所述的 7.95 MiB 插件包 | [Apache-2.0](LICENSE) |
-| **通用版**（Releases） | 自带原生窗口壳的独立二进制 | 闭源内核与窗口壳按 [NexlOS Binary License 1.0](LICENSE-BINARY.md)；内置桌面层保持 Apache-2.0 |
+| **通用版**（Releases） | 自带原生窗口壳的独立二进制 | 闭源内核与窗口壳按 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md)；内置桌面层保持 Apache-2.0 |
 
 逐文件、逐产物的权威映射见 [LICENSING.md](LICENSING.md)。
 
@@ -88,7 +88,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 许可
 
-本仓库的插件源码按 Apache-2.0 提供；通用版的 Release 二进制另按一套许可，映射见 [LICENSING.md](LICENSING.md)，条款见 [LICENSE-BINARY.md](LICENSE-BINARY.md)。
+本仓库的插件源码按 Apache-2.0 提供；通用版的 Release 二进制另按一套许可，映射见 [LICENSING.md](LICENSING.md)，条款见 [LICENSE-BINARY.md](docs/LICENSE-BINARY.md)。
 
 插件源代码与文档按 [Apache-2.0](LICENSE) 提供。商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文位置与移植说明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，商标规则见 [TRADEMARK.md](TRADEMARK.md)，担保与责任条款见 [DISCLAIMER.md](DISCLAIMER.md)。
 

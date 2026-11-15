@@ -39,7 +39,7 @@ attached to a release:
    - the binaries;
    - `LICENSE` (Apache-2.0, for the embedded open components);
    - `NOTICE`;
-   - `LICENSE-BINARY.md` (the closed kernel and window shell);
+   - `LICENSE-BINARY.md` (the closed kernel and window shell, copied from `docs/LICENSE-BINARY.md`);
    - `THIRD_PARTY_NOTICES.md`;
    - `SHA256SUMS`;
    - `BUILD-MANIFEST.txt`.

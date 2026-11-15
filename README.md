@@ -13,7 +13,7 @@ windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DS
 | Edition | What you get | License |
 | --- | --- | --- |
 | **Plugin** (source in this repository) | the 7.95 MiB package described below | [Apache-2.0](LICENSE) |
-| **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel and shell under [NexlOS Binary License 1.0](LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
+| **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel and shell under [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
 
 The authoritative file-by-file map is [LICENSING.md](LICENSING.md).
 
@@ -88,7 +88,7 @@ Size gate:
 
 ## License
 
-The plugin source in this repository is Apache-2.0. Release binaries of the universal edition follow a separate license; see [LICENSING.md](LICENSING.md) for the map and [LICENSE-BINARY.md](LICENSE-BINARY.md) for its terms.
+The plugin source in this repository is Apache-2.0. Release binaries of the universal edition follow a separate license; see [LICENSING.md](LICENSING.md) for the map and [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) for its terms.
 
 Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](DISCLAIMER.md).
 

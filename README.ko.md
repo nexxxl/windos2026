@@ -15,7 +15,7 @@ windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전�
 | 에디션 | 받는 것 | 라이선스 |
 | --- | --- | --- |
 | **플러그인판**(이 저장소의 소스) | 아래에 설명된 7.95 MiB 패키지 | [Apache-2.0](LICENSE) |
-| **유니버설판**(Releases) | 자체 네이티브 창 셸을 포함한 단일 바이너리 | 비공개 커널과 셸은 [NexlOS Binary License 1.0](LICENSE-BINARY.md), 내장 데스크톱 계층은 Apache-2.0 유지 |
+| **유니버설판**(Releases) | 자체 네이티브 창 셸을 포함한 단일 바이너리 | 비공개 커널과 셸은 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md), 내장 데스크톱 계층은 Apache-2.0 유지 |
 
 파일 단위의 권위 있는 대응표는 [LICENSING.md](LICENSING.md)에 있습니다.
 
@@ -90,6 +90,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 라이선스
 
-이 저장소의 플러그인 소스는 Apache-2.0입니다. 유니버설판 Release 바이너리는 별도 라이선스를 따르며, 대응표는 [LICENSING.md](LICENSING.md), 조건은 [LICENSE-BINARY.md](LICENSE-BINARY.md)에 있습니다.
+이 저장소의 플러그인 소스는 Apache-2.0입니다. 유니버설판 Release 바이너리는 별도 라이선스를 따르며, 대응표는 [LICENSING.md](LICENSING.md), 조건은 [LICENSE-BINARY.md](docs/LICENSE-BINARY.md)에 있습니다.
 
 플러그인 소스와 문서는 [Apache-2.0](LICENSE)입니다. 상표는 Apache-2.0으로 부여되지 않으며, 제3자 자산은 각자의 라이선스를 따릅니다. [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 참고하세요.
