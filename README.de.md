@@ -10,6 +10,16 @@ windos2026 ist die DSH-Plugin-Edition von NexlOS. Es bringt einen vollständigen
 
 *Übersetzung. Maßgeblich ist das englische README.*
 
+Erinnerst du dich, wie der Desktop deines ersten Computers aussah? Dieser hier kann deiner sein: du baust ihn selbst zusammen, Satz für Satz, und jede App geht als Datei mit dir. Linux gab jedem Programm eine Maschine; NexlOS gibt jedem Agenten einen Computer.
+
+## Drei Dinge bleiben deine
+
+**Dein Modell.** Das Plugin bringt keinen Key mit und setzt keinen Standard-Provider. Es liest, was dein aktuelles DSH-Profil bereits hat, und wenn es kein Modell sieht, sagt es das: die Capability-Schicht antwortet mit `501` samt Grund, und die Modellanzeige meldet `unavailable`, statt Bereitschaft vorzutäuschen.
+
+**Deine Apps.** Sag einen Satz in DSH: der Generator schreibt `apps/<id>/index.html` plus `app.json`, öffnet die Seite im Browser zur Prüfung, repariert sie einmal, wenn diese Prüfung fehlschlägt, und legt das Icon auf deinen Desktop. Kopiere dieses Verzeichnis auf einen beliebigen statischen Server, es läuft weiter; gib ihm eine GitHub-URL, und `importGithubApp` klont das Repository, findet den gebauten Einstiegspunkt und mountet ihn als App.
+
+**Deine Maschine.** 7,95 MiB bringen 17 Apps, 25 Befehle und 8 Oberflächensprachen in den Harness, den du bereits betreibst: keine zweite Control Plane zum Ausrollen, kein Konto, keine Telemetrie. Installiere dasselbe Bundle in einem anderen DSH-Profil, und es nutzt das Modell dieses Profils, nicht unseres.
+
 ## Zwei Editionen, zwei Lizenzen
 
 | Edition | Was du bekommst | Lizenz |

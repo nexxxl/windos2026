@@ -8,6 +8,16 @@ If a 2026 AI-native operating system had opened on your computer back in the mil
 
 windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.95 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
 
+Everyone remembers their first desktop. This is the one you get to own: you assemble it yourself, one sentence at a time, and every app leaves with you as a file. Linux gave every program a machine; NexlOS gives every agent a computer.
+
+## Three things stay yours
+
+**Your model.** The plugin ships no key and sets no default provider. It reads whatever your current DSH profile already has, and when it cannot see a model it says so: the capability layer answers `501` with a reason, and the model indicator reports `unavailable` instead of pretending to be ready.
+
+**Your apps.** Say one sentence in DSH: the generator writes `apps/<id>/index.html` plus `app.json`, opens the page in a browser to verify it, repairs it once if that check fails, then puts the icon on your desktop. Copy that directory to any static server and it still runs; hand it a GitHub URL and `importGithubApp` clones the repository, finds the built entry point, and mounts it as an app.
+
+**Your machine.** 7.95 MiB buys 17 apps, 25 commands and 8 interface languages inside the harness you already run: no second control plane to deploy, no account, no telemetry. Install the same bundle into another DSH profile and it uses that profile's model, not ours.
+
 ## Editions and licenses
 
 | Edition | What you get | License |
