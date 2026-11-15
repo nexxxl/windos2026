@@ -2826,7 +2826,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
     if (terminalShellCache !== undefined) return terminalShellCache
     const subprocess = ctx.get('subprocess')
     if (subprocess === undefined || typeof subprocess.spawnTerminal !== 'function') {
-      terminalShellCache = { enabled: false, pty: false, shell: '', platform: process.platform, reason: 'DSH subprocess provider 不可用' }
+      terminalShellCache = { enabled: false, pty: false, shell: '', platform: process.platform, reason: '当前宿主没有提供终端：缺少 PTY/subprocess 服务' }
       return terminalShellCache
     }
     let environment
@@ -3049,6 +3049,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         pty: info.pty,
         shell: info.shell,
         platform: info.platform,
+        reason: info.reason || '',
         cwd: home(),
         home: home(),
       } }

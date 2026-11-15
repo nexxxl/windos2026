@@ -114,7 +114,7 @@ def stage():
   # fonts-cjk 不进公开候选：其中 LXGW 是 IPA 衍生字体（name 表要求接受 IPA 许可），
   # 目录里的许可文本也曾把它写成 OFL。字体本身仍在工作树里，只是不进包。
   ignore=shutil.ignore_patterns('node_modules','dist','.cache','coverage','test-results','__pycache__','.DS_Store','*.pyc','*.log','*.pid','*.tgz','fonts-cjk')
-  for name in ('webos','vendor','extension','locale','test','scripts','extras','lib','.github'):
+  for name in ('webos','vendor','extension','locale','test','scripts','extras','lib','host','bin','.github'):
     shutil.copytree(src/name,out/name,ignore=ignore)
   (out/'docs').mkdir()
   for p in (src/'docs').iterdir():

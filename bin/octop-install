@@ -1,0 +1,321 @@
+#!/usr/bin/env bash
+# NexlOS Octop 宿主 CLI —— 一条命令把 Octop 变成 NexlOS 桌面宿主。
+#
+#   octop-install           注入 Dashboard 入口并注册桌面服务（首次执行这一条）
+#   octop-install up        确保服务在跑并打开 Octop
+#   octop-install down      停掉桌面服务
+#   octop-install status    打印注入状态、服务健康、Octop 健康
+#   octop-install uninstall 还原 Dashboard、卸载服务
+#   octop-install doctor    环境自检
+#
+# 桌面就是本仓库的 index.js + webos/：不复制快照，发版即对齐 DSH 版。
+set -euo pipefail
+
+SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
+APP_DIR="$SELF_DIR"
+HOST_DIR="$SELF_DIR/host/octop"
+STATE_DIR="${NEXLOS_STATE_DIR:-$HOME/.nexlos-octop}"
+CONFIG="$STATE_DIR/config.json"
+PORT="${NEXLOS_PORT:-8090}"
+BIND="${NEXLOS_BIND:-127.0.0.1}"
+LABEL="com.nexlos.octop-desktop"
+PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
+SYSTEMD_UNIT="$HOME/.config/systemd/user/nexlos-octop.service"
+LOG="$STATE_DIR/desktop.log"
+MARKER="nexlos-entry.js"
+
+OCTOP_BIN="${OCTOP_BIN:-}"
+OCTOP_URL="${OCTOP_URL:-http://127.0.0.1:8088}"
+
+open_url() {
+  case "$(uname -s)" in
+    Darwin) open "$1" 2>/dev/null || true ;;
+    Linux) xdg-open "$1" >/dev/null 2>&1 || true ;;
+    *) : ;;
+  esac
+}
+
+info() { printf '\033[0;32m[nexlos]\033[0m %s\n' "$*"; }
+warn() { printf '\033[0;33m[nexlos]\033[0m %s\n' "$*"; }
+die() { printf '\033[0;31m[nexlos]\033[0m %s\n' "$*" >&2; exit 1; }
+
+find_octop() {
+  if [ -n "$OCTOP_BIN" ]; then echo "$OCTOP_BIN"; return; fi
+  if command -v octop >/dev/null 2>&1; then command -v octop; return; fi
+  if [ -x "$HOME/.octop/bin/octop" ]; then echo "$HOME/.octop/bin/octop"; return; fi
+  echo ""
+}
+
+# Octop 的 venv 在 macOS/Linux 是 bin/python，Windows 是 Scripts/python.exe
+octop_python() {
+  local p
+  for p in "$HOME/.octop/venv/bin/python" "$HOME/.octop/venv/Scripts/python.exe" "$HOME/.octop/venv/Scripts/python"; do
+    [ -x "$p" ] && { echo "$p"; return 0; }
+  done
+  echo ""
+}
+
+dashboard_dir() {
+  local py; py="$(octop_python)"
+  [ -n "$py" ] || die "找不到 Octop 的 venv。先安装 Octop（curl -fsSL https://download.octop.cloud/octop/scripts/install.sh | bash）"
+  "$py" - <<'PY'
+import os, octop
+print(os.path.join(os.path.dirname(octop.__file__), "dashboard"))
+PY
+}
+
+node_ok() {
+  command -v node >/dev/null 2>&1 || die "需要 Node.js 22+（宿主不是必备，桌面服务是）"
+  local v; v="$(node -p 'process.versions.node.split(".")[0]')"
+  [ "$v" -ge 22 ] || die "Node.js 版本过低：$(node -v)，需要 22+"
+}
+
+service_up() { curl -sf -m 2 "http://$BIND:$PORT/" >/dev/null 2>&1; }
+octop_up() { curl -sf -m 3 "$OCTOP_URL/api/health" >/dev/null 2>&1; }
+
+write_plist() {
+  mkdir -p "$(dirname "$PLIST")" "$STATE_DIR"
+  cat > "$PLIST" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key><string>$LABEL</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>$(command -v node)</string>
+    <string>$HOST_DIR/server.mjs</string>
+  </array>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>NEXLOS_PORT</key><string>$PORT</string>
+    <key>NEXLOS_BIND</key><string>$BIND</string>
+    <key>NEXLOS_HOME</key><string>$HOME/Library/Application Support/NexlOS</string>
+  </dict>
+  <key>WorkingDirectory</key><string>$SELF_DIR</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>$LOG</string>
+  <key>StandardErrorPath</key><string>$LOG</string>
+</dict>
+</plist>
+EOF
+}
+
+write_systemd_unit() {
+  mkdir -p "$(dirname "$SYSTEMD_UNIT")" "$STATE_DIR"
+  cat > "$SYSTEMD_UNIT" <<EOF
+[Unit]
+Description=NexlOS desktop host for Octop
+After=network.target
+
+[Service]
+Type=simple
+WorkingDirectory=$SELF_DIR
+Environment=NEXLOS_PORT=$PORT
+Environment=NEXLOS_BIND=$BIND
+Environment=NEXLOS_HOME=$HOME/.nexlos-octop/home
+ExecStart=$(command -v node) $HOST_DIR/server.mjs
+Restart=always
+RestartSec=2
+StandardOutput=append:$LOG
+StandardError=append:$LOG
+
+[Install]
+WantedBy=default.target
+EOF
+}
+
+# macOS 用 launchd，Linux 用 systemd --user；其它平台只做前台拉起并给出提示
+start_service() {
+  case "$(uname -s)" in
+    Darwin)
+      write_plist
+      launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+      # bootout 是异步的：旧 job 还没消失时 bootstrap 会报 already loaded，
+      # 静默重试几十次比让安装看起来“成功但没起”更可靠。
+      local i booted=0
+      for i in $(seq 1 20); do
+        if launchctl bootstrap "gui/$(id -u)" "$PLIST" >/dev/null 2>&1; then booted=1; break; fi
+        launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 && { booted=1; break; }
+        sleep 0.3
+      done
+      [ "$booted" = 1 ] || warn "launchctl bootstrap 未成功，可手动重试：launchctl bootstrap gui/$(id -u) $PLIST"
+      launchctl kickstart -k "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true
+      ;;
+    Linux)
+      write_systemd_unit
+      if command -v systemctl >/dev/null 2>&1; then
+        systemctl --user daemon-reload >/dev/null 2>&1 || true
+        systemctl --user enable --now nexlox-octop.service >/dev/null 2>&1 || true
+        systemctl --user restart nexlox-octop.service >/dev/null 2>&1 || true
+      else
+        warn "没有 systemd，前台启动：node $HOST_DIR/server.mjs"
+        (cd "$SELF_DIR" && nohup node host/octop/server.mjs >> "$LOG" 2>&1 &)
+      fi
+      ;;
+    *)
+      warn "未识别的平台 $(uname -s)：前台启动（关闭终端即退出）"
+      (cd "$SELF_DIR" && nohup node host/octop/server.mjs >> "$LOG" 2>&1 &)
+      ;;
+  esac
+  local i
+  for i in $(seq 1 30); do
+    service_up && { info "桌面服务已就绪：http://$BIND:$PORT"; return 0; }
+    sleep 1
+  done
+  warn "桌面服务 30 秒内未就绪，日志：$LOG"
+  tail -n 20 "$LOG" 2>/dev/null || true
+  return 1
+}
+
+stop_service() {
+  case "$(uname -s)" in
+    Darwin) launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true ;;
+    Linux) command -v systemctl >/dev/null 2>&1 && systemctl --user disable --now nexlox-octop.service >/dev/null 2>&1 || true ;;
+    *) pkill -f "host/octop/server.mjs" >/dev/null 2>&1 || true ;;
+  esac
+  info "桌面服务已停止"
+}
+
+inject_dashboard() {
+  local dir; dir="$(dashboard_dir)"
+  [ -f "$dir/index.html" ] || die "Dashboard 目录不对：$dir"
+  cp "$HOST_DIR/entry.js" "$dir/nexlos-entry.js"
+  # 入口脚本用内容指纹做 cache-buster：升级后浏览器不会再拿旧入口
+  local ver; ver=$(cksum "$dir/nexlos-entry.js" | awk '{print $1}')
+  # 宿主与桌面若同为 127.0.0.1，Chrome 会把 iframe 并进宿主的渲染进程，
+  # Octop 的长任务会卡住桌面主线程。用 localhost 让两者成为不同站点。
+  local frame_host="$BIND"
+  [ "$BIND" = "127.0.0.1" ] && frame_host="localhost"
+  if grep -q "$MARKER" "$dir/index.html"; then
+    "$(octop_python)" - "$dir/index.html" "$ver" "http://$frame_host:$PORT/" <<'PY'
+import io, re, sys
+path, ver, frame_url = sys.argv[1], sys.argv[2], sys.argv[3]
+s = io.open(path, encoding="utf-8").read()
+s2 = re.sub(r"nexlos-entry\.js(\?v=[^\"]*)?", "nexlos-entry.js?v=" + ver, s)
+# 旧注入写死过 127.0.0.1；这里一并改成当前应使用的桌面地址
+s2 = re.sub(r"(window\.__NEXLOS_DESKTOP_URL__=')[^']*(')", lambda m: m.group(1) + frame_url + m.group(2), s2)
+if s2 != s:
+    io.open(path, "w", encoding="utf-8").write(s2)
+PY
+    info "Dashboard 入口已存在，版本标记已刷新（v=${ver}）"
+    return 0
+  fi
+  cp "$dir/index.html" "$dir/index.html.nexlos-backup"
+  local inject
+  inject="<script>window.__NEXLOS_DESKTOP_URL__='http://$frame_host:$PORT/';</script><script src=\"/$MARKER?v=$ver\" defer></script>"
+  # BSD sed 不认 \n，用 python 做精确插入，避免破坏构建产物
+  "$(octop_python)" - "$dir/index.html" "$inject" <<'PY'
+import sys, io
+path, inject = sys.argv[1], sys.argv[2]
+with io.open(path, encoding="utf-8") as fh:
+    html = fh.read()
+if "</body>" in html:
+    html = html.replace("</body>", inject + "\n  </body>", 1)
+else:
+    html = html + "\n" + inject
+with io.open(path, "w", encoding="utf-8") as fh:
+    fh.write(html)
+PY
+  info "已注入 Dashboard 入口：$dir/index.html"
+}
+
+uninject_dashboard() {
+  local dir; dir="$(dashboard_dir)"
+  if [ -f "$dir/index.html.nexlos-backup" ]; then
+    cp "$dir/index.html.nexlos-backup" "$dir/index.html"
+    rm -f "$dir/index.html.nexlos-backup"
+    info "Dashboard index.html 已还原"
+  fi
+  rm -f "$dir/$MARKER"
+  info "已移除 Dashboard 注入脚本"
+}
+
+open_octop() {
+  local url="$OCTOP_URL/?nexlos=1"
+  if octop_up; then
+    open_url "$url"
+    info "已打开：$url"
+  else
+    warn "Octop 没在跑（$OCTOP_URL）。先执行：octop service start"
+    return 1
+  fi
+}
+
+cmd_install() {
+  node_ok
+  [ -f "$APP_DIR/webos/index.html" ] || die "缺少 webos/index.html，仓库目录不完整"
+  if [ ! -d "$SELF_DIR/node_modules/jpeg-js" ]; then
+    info "安装 Node 依赖…"
+    (cd "$SELF_DIR" && npm install --no-audit --no-fund >/dev/null)
+  fi
+  mkdir -p "$STATE_DIR"
+  cat > "$CONFIG" <<EOF
+{"port": $PORT, "bind": "$BIND", "app": "$APP_DIR", "host": "$HOST_DIR", "octop": "$OCTOP_URL"}
+EOF
+  inject_dashboard
+  start_service
+  info "安装完成。入口：Octop 左侧「NexlOS 桌面」，或执行 octop-install up"
+  open_octop || true
+}
+
+cmd_up() {
+  node_ok
+  service_up || start_service
+  open_octop
+}
+
+cmd_down() { stop_service; }
+
+cmd_status() {
+  echo "目录        : $SELF_DIR"
+  echo "桌面服务    : $(service_up && echo "up http://$BIND:$PORT" || echo "down")"
+  echo "launchd     : $(launchctl print "gui/$(id -u)/$LABEL" >/dev/null 2>&1 && echo loaded || echo "not loaded")"
+  echo "Octop       : $(octop_up && echo "up $OCTOP_URL" || echo down)"
+  local dir; dir="$(dashboard_dir 2>/dev/null || echo "")"
+  if [ -n "$dir" ] && [ -f "$dir/index.html" ]; then
+    echo "Dashboard   : $dir"
+    echo "入口注入    : $(grep -q "$MARKER" "$dir/index.html" && echo yes || echo no)"
+    echo "原始备份    : $([ -f "$dir/index.html.nexlos-backup" ] && echo yes || echo no)"
+  fi
+}
+
+cmd_uninstall() {
+  stop_service
+  uninject_dashboard
+  rm -f "$PLIST"
+  rm -f "$CONFIG"
+  info "已卸载入口与服务。桌面数据保留在 ~/Library/Application Support/NexlOS"
+}
+
+cmd_doctor() {
+  echo "self      : $SELF_DIR"
+  echo "node      : $(node -v 2>/dev/null || echo missing)"
+  echo "deps      : $([ -d "$SELF_DIR/node_modules/jpeg-js" ] && echo ok || echo "missing (octop-install)")"
+  echo "webos     : $([ -f "$APP_DIR/webos/index.html" ] && echo ok || echo missing)"
+  echo "octop venv: $([ -x "$HOME/.octop/venv/bin/python" ] && echo ok || echo missing)"
+  echo "port $PORT : $(lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1 && echo busy || echo free)"
+  echo "service   : $(service_up && echo up || echo down)"
+}
+
+case "${1:-}" in
+  install) cmd_install ;;
+  up) cmd_up ;;
+  down) cmd_down ;;
+  status) cmd_status ;;
+  uninstall) cmd_uninstall ;;
+  doctor) cmd_doctor ;;
+  *)
+    cat <<EOF
+NexlOS Octop 宿主 —— 把 Octop 变成 NexlOS 桌面宿主
+
+  octop-install          注入「NexlOS 桌面」入口并注册桌面服务（首次执行这一条）
+  octop-install up       确保服务在跑并打开 Octop
+  octop-install down     停止桌面服务
+  octop-install status   查看注入与运行状态
+  octop-install uninstall 还原 Dashboard、卸载服务
+  octop-install doctor   环境自检
+EOF
+    ;;
+esac

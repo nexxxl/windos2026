@@ -55,6 +55,18 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。npm での公開はありません。上のリポジトリまたはローカルスクリプトからインストールしてください。
 
+### Octop（ワークベンチ）
+
+デスクトップは DSH を必要としません。同じ `webos/` と `index.js` が単体のホストとして動き、1 つのコマンドで Octop に常駐エントリを追加できます。
+
+```bash
+git clone https://github.com/nexxxl/windos2026.git
+cd windos2026
+./bin/octop-install install
+```
+
+Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メインワークスペースに開きます。コマンドバーはあなた自身の Octop agent が答えます。`./bin/octop-install status|up|down|uninstall` で管理します。Node.js 22+ と `~/.octop` にインストールされた Octop が必要です。ホストごとの違い、制限、ロールバックは [docs/octop.md](docs/octop.md) を参照してください。
+
 ## 使い方
 
 - **デスクトップを開く**：インストール後、Web デスクトップに入ります。初回は hello 画面で UI 言語を選びます。

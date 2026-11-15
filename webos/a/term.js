@@ -280,7 +280,7 @@ export function mountTerm(host) {
     if (info) return info;
     const r = await api('term.info');
     info = r.detail || {};
-    if (!info.enabled) throw new Error('服务端设置了 NEXLOS_TERM=0。去掉后重启 nexlos。');
+    if (!info.enabled) throw new Error(info.reason ? `终端不可用：${info.reason}` : '服务端设置了 NEXLOS_TERM=0。去掉后重启 nexlos。');
     if (!info.pty) throw new Error(`宿主平台：${info.platform || '未知'}。终端目前支持 macOS 与 Linux。`);
     if (!window.Terminal || !window.FitAddon) throw new Error('xterm.js 没有随页面加载，检查 /a/vendor/xterm.js。');
     return info;
