@@ -67,6 +67,80 @@ html[data-appearance="win98"] .nxch-sub { color: #dbe8ff; }
 }
 .nxch-state.is-live { color: #0c7a4d; border-color: rgba(24, 160, 96, 0.4); background: rgba(24, 160, 96, 0.1); }
 .os.dark .nxch-state.is-live { color: #6ee7a8; }
+.nxch-state {
+  font: inherit;
+  font-size: 9px;
+  cursor: pointer;
+  background: transparent;
+}
+.nxch-state.is-agents { color: var(--nxch-fg); border-color: rgba(0, 120, 212, 0.35); }
+.nxch-state.is-agents.is-live { color: #0c7a4d; }
+.nxch-state:hover { background: var(--nxch-card); }
+.nxch-agents {
+  flex: none;
+  max-height: 38%;
+  overflow: auto;
+  border-bottom: 1px solid var(--nxch-line);
+  background: rgba(0, 0, 0, 0.018);
+}
+.os.dark .nxch-agents { background: rgba(255, 255, 255, 0.025); }
+.nxch-agents-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 11px 5px;
+  font-size: 9px;
+  color: var(--nxch-dim);
+}
+.nxch-agents-head b { color: var(--nxch-fg); font-size: 10px; }
+.nxch-agents-count { flex: 1; }
+/* 返回键在标题栏：只读子代理会话也能一步回到队长。 */
+.nxch-back {
+  flex: 0 0 auto;
+  border: 1px solid var(--nxch-line);
+  border-radius: 999px;
+  background: var(--nxch-card);
+  color: var(--nxch-fg);
+  font: 10px/1 Tahoma, "PingFang SC", sans-serif;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+.nxch-back:hover { border-color: rgba(0, 120, 212, 0.45); }
+.nxch-agent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 11px;
+  border: 0;
+  border-top: 1px solid var(--nxch-line);
+  background: transparent;
+  color: var(--nxch-fg);
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+.nxch-agent:hover { background: var(--nxch-card); }
+.nxch-agent-dot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  margin-top: 5px;
+  border-radius: 50%;
+  background: #9aa6b6;
+}
+.nxch-agent.is-running .nxch-agent-dot { background: #17a15f; box-shadow: 0 0 0 3px rgba(23, 161, 95, 0.16); }
+.nxch-agent.is-done .nxch-agent-dot { background: #2f8bd6; }
+.nxch-agent-main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 1px; }
+.nxch-agent-label { font-size: 10px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nxch-agent-action { font-size: 9.5px; color: var(--nxch-dim); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.nxch-agent.is-running .nxch-agent-action { color: #0c7a4d; }
+.os.dark .nxch-agent.is-running .nxch-agent-action { color: #6ee7a8; }
+.nxch-agent-meta { flex: none; font-size: 8.5px; color: var(--nxch-dim); font-variant-numeric: tabular-nums; }
+html[data-appearance="win98"] .nxch-back,
+html[data-appearance="win98"] .nxch-agent { border-radius: 0; border-color: #808080; background: #c0c0c0; color: #111; }
+html[data-appearance="win98"] .nxch-agent { border: 0; border-top: 1px solid #a0a0a0; }
+html[data-appearance="win98"] .nxch-agent.is-running .nxch-agent-action { color: #006000; }
 .nxch-btn {
   flex: none;
   width: 22px;

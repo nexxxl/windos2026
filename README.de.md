@@ -2,11 +2,11 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · **Deutsch**
 
-7 MB. Ein AI-natives, ultraleichtes Betriebssystem aus 2026: im Millennium außerirdische Technologie, heute deine private Softwarefabrik. Bring anything. Leave with an HTML app.
+7,94 MiB. Ein AI-natives, ultraleichtes Betriebssystem aus 2026: im Millennium außerirdische Technologie, heute deine private Softwarefabrik. Bring anything. Leave with an HTML app.
 
 Wenn sich im Millennium plötzlich ein AI-natives Betriebssystem aus 2026 auf deinem Computer geöffnet hätte – wofür hättest du es benutzt?
 
-windos2026 ist die DSH-Plugin-Edition von NexlOS. Es bringt einen vollständigen Desktop in DSH: 17 Apps, 25 Befehle, 8 integrierte Oberflächensprachen, ein 7,31-MiB-Tarball und genau eine Laufzeitabhängigkeit. Jede App auf dem Desktop besteht aus `apps/<id>/index.html` und einer `app.json` – lesbar, änderbar, mitnehmbar.
+windos2026 ist die DSH-Plugin-Edition von NexlOS. Es bringt einen vollständigen Desktop in DSH: 17 Apps, 25 Befehle, 8 integrierte Oberflächensprachen, ein 7,94-MiB-Tarball und genau eine Laufzeitabhängigkeit. Generierte Apps sind reine Dateien unter `apps/<id>/`; die 17 eingebauten Apps liegen als Code unter `webos/`.
 
 *Übersetzung. Maßgeblich ist das englische README.*
 
@@ -39,14 +39,14 @@ Erfordert Node.js 22+ und einen DSH-Build, der lokale Bundles laden kann. Es gib
 - **Desktop öffnen**: nach der Installation den Web-Desktop betreten. Beim ersten Start erscheint der hello-Bildschirm und fragt nach der Oberflächensprache.
 - **Ein Satz, eine App**: beschreibe in DSH, was du willst; es erzeugt eine eingebettete App und legt sie auf den Desktop.
 - **Ein Repository mitbringen**: gib eine GitHub-URL an; es klont das Repo, findet den Einstiegspunkt und installiert es als Desktop-App.
-- **Mitnehmen**: eine App besteht nur aus Dateien. Kopiere `apps/<id>/` und sie läuft auf einer anderen Maschine weiter.
+- **Mitnehmen**: eine generierte App besteht nur aus Dateien. Kopiere `apps/<id>/` und sie läuft auf einer anderen Maschine weiter.
 
 ## Was enthalten ist
 
 | Element | Zahl |
 | --- | --- |
-| Tarball | 7,31 MiB |
-| Entpackt | 10,8 MiB / 274 Dateien |
+| Tarball | 7,94 MiB |
+| Entpackt | 12,6 MiB / 293 Dateien |
 | Apps | 17 |
 | Befehle | 25 |
 | Oberflächensprachen | 8 integriert, 7 optionale Pakete |
@@ -59,8 +59,8 @@ Erfordert Node.js 22+ und einen DSH-Build, der lokale Bundles laden kann. Es gib
 - Kein Drittanbieter-Konto und kein gehosteter App-Store; Apps, Code und Daten bleiben auf deiner Maschine.
 - Keine Telemetrie.
 - Keine Systemänderungen; der Installer schreibt nur Abhängigkeiten und Links des DSH-Profils, und Deinstallieren entfernt genau diese.
-- Keine gebündelten CJK-Schriften, Universal-Edition-Binaries oder interne Historie; nichts davon ist in diesem Repository.
-- Keine Behauptung, Windows sei vollständig validiert; die bekannten Grenzen stehen in der [Windows-Validierung](docs/windows-validation.md).
+- Im veröffentlichten Tarball und im öffentlichen Quellkandidaten stecken kein CJK-Office-Schriftpaket, keine Universal-Edition-Binaries und keine interne Projekt-Historie. Die einzige CJK-Schrift im Tarball ist die OFL-Pixelfont aus THIRD_PARTY_NOTICES.
+- Keine Behauptung, Windows sei vollständig validiert; der Windows-Pfad gilt als Alpha.
 
 ## Entwicklung
 

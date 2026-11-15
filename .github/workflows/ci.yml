@@ -38,6 +38,13 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: npm pack --dry-run
+      # 打包产物才是用户真正拿到的东西：解开再跑一遍契约测试。
+      - name: Contract test on the packed artifact
+        run: |
+          mkdir -p /tmp/pkgext
+          npm pack --pack-destination /tmp
+          tar -xzf /tmp/nexlos-os-*.tgz -C /tmp/pkgext
+          NEXLOS_TEST_PACKAGE=/tmp/pkgext/package npm test
 
   python-tools:
     name: Optional companion Python source
@@ -57,27 +64,36 @@ jobs:
           fi
 
   format:
-    name: Formatting (advisory)
+    # 只检查维护中的模块（lib/、test/、scripts/ 的 .mjs）。webos/ 与既有文档
+    # 保持项目原有排版，不在这里批量重排；范围写明，避免长期一条永远红的假信号。
+    name: Formatting (lib, test, scripts)
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npx --yes prettier@3 --check "*.{js,css,json,md}" "webos/**/*.{js,css,json,md}" "docs/**/*.md"
+      - run: npx --yes prettier@3 --check "lib/**/*.js" "test/**/*.mjs" "scripts/*.mjs"
 
   public-scope:
+    # fail-closed：不再按目录嗅探决定跑不跑。漏进一个 applications/ 或 tools/
+    # 恰好是最该拦的时候，跳过等于放行，所以这个 job 每次都跑。
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Check public candidate when companion sources are absent
+      - name: Check the repository tree itself
+        # 影子树永远干净，查它拦不住「tools/ 被直接提交进仓库」。
+        # 这一条对着 git 索引查：排除目录、私钥、.env 一个都不能在里面。
+        run: bash scripts/stage-public-repo.sh --check-repo .
+      - name: Check the public source boundary
+        # 生成候选树再校验：直接 check 仓库根会被 .git 干扰，且查的不是发布形态。
         run: |
-          if [ -d tools ] || [ -d applications ]; then
-            echo "Full local source includes companion tools; use the public staging script before publishing."
-            exit 0
-          fi
-          bash scripts/stage-public-repo.sh --check .
+          bash scripts/stage-public-repo.sh /tmp/public-candidate
+          bash scripts/stage-public-repo.sh --check /tmp/public-candidate
+      - name: Boundary negative cases
+        # 反向证明：applications/、tools/、extras/fonts-cjk、私钥、开发者路径、
+        # 被提交的 .env 都必须被拒，干净树必须通过。
+        run: node --test test/public-boundary.test.mjs

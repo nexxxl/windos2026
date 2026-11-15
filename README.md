@@ -2,11 +2,11 @@
 
 **English** · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7 MB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
+7.94 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.38 MiB tarball, and one runtime dependency. Every app on the desktop is an `apps/<id>/index.html` plus an `app.json` — readable, editable, and portable.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
 
 ## Install
 
@@ -37,14 +37,14 @@ Requires Node.js 22+ and a DSH build that can load local bundles. There is no np
 - **Open the desktop**: after install, enter the Web desktop. The first launch walks through the hello screen and asks for an interface language.
 - **One sentence, one app**: describe what you want in DSH; it generates an embedded app and puts it on the desktop.
 - **Bring a repository**: give it a GitHub URL; it clones the repo, finds the entry point, and installs it as a desktop app.
-- **Leave with it**: an app is just files. Copy `apps/<id>/` and it still runs on another machine.
+- **Leave with it**: a generated app is just files. Copy `apps/<id>/` and it still runs on another machine.
 
 ## What is inside
 
 | Item | Number |
 | --- | --- |
-| Tarball | 7.38 MiB |
-| Unpacked | 10.8 MiB / 274 files |
+| Tarball | 7.94 MiB (measured with `npm pack --dry-run --json`) |
+| Unpacked | 12.6 MiB / 293 files |
 | Apps | 17 |
 | Commands | 25 |
 | Interface languages | 8 built in, 7 optional packs |
@@ -57,8 +57,8 @@ Requires Node.js 22+ and a DSH build that can load local bundles. There is no np
 - No third-party account and no hosted app store; apps, code and data stay on your machine.
 - No telemetry.
 - No system changes; the installer only writes DSH profile dependencies and links, and uninstalling removes exactly those.
-- No bundled CJK fonts, universal-edition binaries or internal history; none of that is in this repository.
-- No claim that Windows is fully validated; the known boundaries are in [Windows validation](docs/windows-validation.md).
+- No CJK office font pack, universal-edition binaries or internal project history in the published tarball or the public source candidate. The tarball's only CJK face is the OFL pixel font declared in THIRD_PARTY_NOTICES.
+- No claim that Windows is fully validated; treat the Windows path as alpha and report what breaks.
 
 ## Develop
 

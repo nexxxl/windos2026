@@ -12,13 +12,18 @@
   var panel = null;
   var titleEl = null;
   var statusEl = null;
+  var backBtn = null;
+  var agentsEl = null;
   var bodyEl = null;
   var composer = null;
   var input = null;
   var mini = null;
   var current = null;
   var items = [];
+  var agents = [];
   var running = false;
+  var statusOpen = readFlag('nexlos.chat.status', true);
+  var agentsSignature = '';
   var timer = 0;
   var inflight = null;
   var loading = false;
@@ -71,8 +76,128 @@
     return String(id || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || '—';
   }
 
+  function readFlag(key, fallback) {
+    try {
+      var raw = localStorage.getItem(key);
+      return raw == null ? fallback : raw === '1';
+    } catch (error) {
+      return fallback;
+    }
+  }
+
+  function writeFlag(key, value) {
+    try { localStorage.setItem(key, value ? '1' : '0'); } catch (error) { /* private mode */ }
+  }
+
+  var TOOL_LABELS = {
+    bash: '运行命令', shell: '运行命令', read: '读取文件', read_file: '读取文件',
+    write: '写入文件', write_file: '写入文件', edit: '修改文件', apply_patch: '修改文件',
+    grep: '搜索内容', glob: '查找文件', ls: '列目录', web_search: '搜索网页',
+    fetch: '抓取网页', task: '子任务', todo_write: '更新任务', image_gen: '生成图片',
+  };
+
+  function toolLabel(name) {
+    return TOOL_LABELS[name] || name || '工具';
+  }
+
+  function formatElapsed(ms) {
+    var value = Math.max(0, Number(ms) || 0);
+    if (value < 1000) return value + 'ms';
+    if (value < 60000) return (value / 1000).toFixed(value < 10000 ? 1 : 0) + 's';
+    var mins = Math.floor(value / 60000);
+    var secs = Math.round((value % 60000) / 1000);
+    return mins + 'm' + (secs ? ' ' + secs + 's' : '');
+  }
+
+  function currentAction(agent) {
+    var now = agent.current || {};
+    if (now.kind === 'tool') return toolLabel(now.name) + (now.text ? ' · ' + String(now.text).replace(/\s+/gu, ' ').slice(0, 60) : '');
+    if (now.kind === 'thinking') return '思考中';
+    if (now.kind === 'message') return String(now.text || '').replace(/\s+/gu, ' ').slice(0, 60);
+    if (agent.status === 'running') return '工作中';
+    if (agent.ended || agent.status === 'done') return '已交付';
+    return '空闲';
+  }
+
   function nearBottom() {
     return !bodyEl || bodyEl.scrollHeight - bodyEl.scrollTop - bodyEl.clientHeight < 90;
+  }
+
+  function agentsSignatureOf() {
+    if (!agents.length) return '0:' + (running ? '1' : '0') + ':' + (statusOpen ? '1' : '0');
+    return agents.map(function (agent) {
+      var now = agent.current || {};
+      return [agent.id, agent.status, agent.steps, agent.label, now.kind, now.text, now.name].join(':');
+    }).join('|') + ':' + (statusOpen ? '1' : '0');
+  }
+
+  function toggleStatus() {
+    statusOpen = !statusOpen;
+    writeFlag('nexlos.chat.status', statusOpen);
+    agentsSignature = '';
+    renderAgents();
+  }
+
+  function openAgent(agent) {
+    if (!agent || !agent.id) return;
+    open({
+      sessionId: agent.id,
+      title: agent.label || '子代理',
+      canWrite: false,
+      parentSessionId: current ? current.sessionId : '',
+    });
+  }
+
+  /* 状态弹窗：队长这一轮里，每个子代理此刻在做什么。
+     一行一个成员，点开就是那个成员的真实会话（只读）。 */
+  function renderAgents() {
+    if (!statusEl || !agentsEl) return;
+    var live = agents.filter(function (agent) { return agent.status === 'running'; }).length;
+    if (agents.length === 0) {
+      statusEl.textContent = running ? '运行中' : '已就绪';
+      statusEl.className = 'nxch-state' + (running ? ' is-live' : '');
+      statusEl.setAttribute('aria-expanded', 'false');
+    } else {
+      statusEl.textContent = (live ? live + '/' : '') + agents.length + ' 子代理';
+      statusEl.className = 'nxch-state is-agents' + (live ? ' is-live' : '');
+      statusEl.setAttribute('aria-expanded', statusOpen ? 'true' : 'false');
+    }
+    var signature = agentsSignatureOf();
+    if (signature === agentsSignature) {
+      agentsEl.hidden = agents.length === 0 || !statusOpen;
+      return;
+    }
+    agentsSignature = signature;
+    agentsEl.hidden = agents.length === 0 || !statusOpen;
+    agentsEl.replaceChildren();
+    if (agents.length === 0) return;
+
+    var head = $('div', { class: 'nxch-agents-head' },
+      $('b', {}, '子代理 ' + agents.length),
+      $('span', { class: 'nxch-agents-count' }, live ? live + ' 个在跑' : '全部结束'));
+    agentsEl.append(head);
+
+    agents.slice().sort(function (a, b) {
+      var rank = function (agent) { return agent.status === 'running' ? 0 : 1; };
+      return rank(a) - rank(b) || (b.startedAt || 0) - (a.startedAt || 0);
+    }).forEach(function (agent) {
+      var now = agent.current || {};
+      var dotClass = agent.status === 'running'
+        ? ' is-running'
+        : (agent.ended || agent.status === 'done' ? ' is-done' : ' is-idle');
+      var meta = agent.status === 'running' ? formatElapsed(agent.elapsedMs) : (agent.steps ? agent.steps + ' 步' : '');
+      agentsEl.append($('button', {
+        class: 'nxch-agent' + dotClass, type: 'button',
+        title: agent.status === 'running' ? '点开看它正在做什么' : '打开该子代理会话',
+        onclick: function () { openAgent(agent); },
+      },
+        $('i', { class: 'nxch-agent-dot', 'aria-hidden': 'true' }),
+        $('span', { class: 'nxch-agent-main' },
+          $('span', { class: 'nxch-agent-label' }, agent.label || ('子代理 · ' + shortId(agent.id))),
+          $('span', { class: 'nxch-agent-action' }, currentAction(agent))),
+        $('span', { class: 'nxch-agent-meta' }, meta || (now.kind === 'tool' ? '工具中' : '')),
+      ));
+    });
   }
 
   function renderItems() {
@@ -125,6 +250,7 @@
       var data = await response.json().catch(function () { return null; });
       if (!response.ok || !data || data.ok !== true) throw new Error(data && data.error ? data.error : 'HTTP ' + response.status);
       items = Array.isArray(data.items) ? data.items : [];
+      agents = Array.isArray(data.agents) ? data.agents : [];
       running = data.running === true;
       if (data.title && !current.title) current.title = data.title;
       var lastSeq = items.length ? (items[items.length - 1].seq || 0) : 0;
@@ -132,11 +258,10 @@
       if (signature !== lastSignature) {
         lastSignature = signature;
         titleEl.textContent = current.title || data.title || 'DSH 会话';
-        statusEl.textContent = running ? '运行中' : '已就绪';
-        statusEl.className = 'nxch-state' + (running ? ' is-live' : '');
         renderItems();
         if (mini) mini.title = (current.title || 'DSH 会话') + (running ? ' · 运行中' : '');
       }
+      renderAgents();
     } catch (error) {
       if (error && error.name === 'AbortError') return;
       if (bodyEl && items.length === 0) bodyEl.replaceChildren($('div', { class: 'nxch-empty' }, '读取会话失败：' + (error.message || String(error))));
@@ -196,13 +321,26 @@
     var os = document.querySelector('.os') || document.body;
     panel = $('section', { class: 'nxch-panel', role: 'dialog', 'aria-label': 'DSH 会话', hidden: true });
     titleEl = $('b', { class: 'nxch-title' }, 'DSH 会话');
-    statusEl = $('span', { class: 'nxch-state' }, '连接中');
+    statusEl = $('button', {
+      class: 'nxch-state', type: 'button', 'aria-expanded': 'false',
+      title: '展开子代理状态', onclick: toggleStatus,
+    }, '连接中');
+    agentsEl = $('div', { class: 'nxch-agents', hidden: true });
+    // 子代理会话是只读的；返回键放在标题栏，叶子成员也能一步回到队长。
+    backBtn = $('button', {
+      class: 'nxch-back', type: 'button', title: '回到上一级会话', 'aria-label': '返回上一级', hidden: true,
+      onclick: function () {
+        if (!current || !current.parentSessionId) return;
+        open({ sessionId: current.parentSessionId, title: '', canWrite: true });
+      },
+    }, '←');
     var head = $('header', { class: 'nxch-head' },
       $('span', { class: 'nxch-mark' }, mark(17)),
       $('div', { class: 'nxch-titles' }, [
         titleEl,
         $('span', { class: 'nxch-sub' }, '真实 DSH 会话 · 会话内容来自 Harness'),
       ]),
+      backBtn,
       statusEl,
       $('button', { class: 'nxch-btn', type: 'button', title: '收起到左侧小条', 'aria-label': '收起', onclick: minimize }, '–'),
       $('button', { class: 'nxch-btn', type: 'button', title: '关闭', 'aria-label': '关闭', onclick: close }, '×'),
@@ -218,7 +356,7 @@
     composer = $('div', { class: 'nxch-composer' },
       input,
       $('button', { class: 'nxch-send', type: 'button', onclick: function () { void send(); } }, '发送'));
-    panel.append(head, bodyEl, composer);
+    panel.append(head, agentsEl, bodyEl, composer);
     os.append(panel);
 
     mini = $('button', { class: 'nxch-mini', type: 'button', hidden: true },
@@ -277,7 +415,10 @@
     if (inflight !== null) { try { inflight.abort(); } catch (_error) { /* already done */ } inflight = null; }
     current = null;
     items = [];
+    agents = [];
+    agentsSignature = '';
     lastSignature = '';
+    if (agentsEl) { agentsEl.hidden = true; agentsEl.replaceChildren(); }
   }
 
   function open(options) {
@@ -288,14 +429,20 @@
       sessionId: options.sessionId,
       title: options.title || '',
       canWrite: options.canWrite === true,
+      parentSessionId: options.parentSessionId || '',
     };
     if (!same) {
       items = [];
+      agents = [];
+      agentsSignature = '';
       lastSignature = '';
       bodyEl.replaceChildren($('div', { class: 'nxch-empty' }, '正在读取会话…'));
+      if (agentsEl) { agentsEl.hidden = true; agentsEl.replaceChildren(); }
     }
     titleEl.textContent = current.title || 'DSH 会话';
+    if (backBtn) backBtn.hidden = !current.parentSessionId;
     statusEl.textContent = '连接中';
+    statusEl.className = 'nxch-state';
     composer.hidden = !current.canWrite;
     input.placeholder = current.canWrite ? '继续对队长说话，Enter 发送' : '成员会话由队长调度（只读）';
     panel.hidden = false;

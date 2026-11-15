@@ -51,7 +51,7 @@ const S = {
   books: [], space: null, book: null, chapters: [], view: 'desktop',
   chapter: null, text: '', dirty: false, saving: false, savedAt: null,
   cast: [], outline: '', exportText: '', status: null, error: null,
-  tasks: [], task: null, taskNote: '', apps: [], appBusy: '',
+  tasks: [], task: null, taskNote: '', tasksError: '', apps: [], appBusy: '',
 };
 
 // Chrome for Android 的 100vh 取“地址栏收起后的高度”，系统应用会把底栏画到地址栏后面。
@@ -270,8 +270,16 @@ async function loadViewData() {
     }
   }
   if (S.view === 'tasks') {
-    const r = await api('task.list', { space: S.space });
-    S.tasks = r.append;
+    // 插件版没有任务库，命令返回 UNSUPPORTED_CAPABILITY(501)。
+    // 这里必须把原因显示出来，不能把失败画成「0 个任务」。
+    try {
+      const r = await api('task.list', { space: S.space });
+      S.tasks = r.append;
+      S.tasksError = '';
+    } catch (err) {
+      S.tasks = [];
+      S.tasksError = err.message;
+    }
     if (S.task && !S.tasks.some((t) => t.id === S.task.id)) S.task = null;
     if (S.task) {
       try {
@@ -397,8 +405,14 @@ async function openTask(id) {
 
 async function refreshTasks() {
   if (!S.space) return;
-  const r = await api('task.list', { space: S.space });
-  S.tasks = r.append;
+  try {
+    const r = await api('task.list', { space: S.space });
+    S.tasks = r.append;
+    S.tasksError = '';
+  } catch (err) {
+    S.tasks = [];
+    S.tasksError = err.message;
+  }
   if (S.task) {
     try {
       S.task = (await api('task.open', { space: S.space, query: { task: S.task.id } })).fields.task;
@@ -508,6 +522,8 @@ function viewTasks() {
       h('div', { class: 'stat' },
         h('b', {}, S.tasks.filter((t) => t.stage !== 'done').length),
         h('span', {}, '件未完成'))),
+    // 不支持时先把原因说清楚，再显示空看板；顺序反过来就成了「确实没有任务」。
+    S.tasksError ? h('p', { class: 'hint task-empty' }, `本版不提供任务库：${S.tasksError}`) : null,
     form, board,
     S.task ? taskDetail(S.task) : null);
 }

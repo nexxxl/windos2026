@@ -1,7 +1,7 @@
 {
   "version": "1.1.0-lite.0",
   "packsBase": "/extras/",
-  "note": "可选包不进 npm 包；安装后由 webos/a/locales/installed-packs.js 与 /extras/ 路径生效。运行 scripts/install-extras.sh 安装。",
+  "note": "可选包不进 npm 包；安装后由 /extras/ 路径生效。运行 scripts/install-extras.sh 安装。CJK 字体包不随公开仓分发，需自行解压到 extras/fonts-cjk 后再安装。",
   "langs": [
     {
       "code": "ar",
@@ -44,53 +44,6 @@
       "file": "extras/langs/lang-vi.js",
       "bytes": 190662,
       "sha256": "aa2954c8186a3063d5c0ae101c49189b6c76dac571abde1e91a558e226b693e0"
-    }
-  ],
-  "fontsCJK": [
-    {
-      "file": "extras/fonts-cjk/LXGWNeoZhiSong-gb.woff2",
-      "bytes": 1221604,
-      "sha256": "e194cf0a931ede5cde219cd81212a0550fc015aedcd300c96c81f508af8e042d"
-    },
-    {
-      "file": "extras/fonts-cjk/LXGWWenKai-500.woff",
-      "bytes": 2098296,
-      "sha256": "734bd187392579417ac83effe31d37b9de43c7b290bcb400800456511ed79e8f"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSansSC-500.woff",
-      "bytes": 1416188,
-      "sha256": "928d841b1ec663ebce82593568cbc19749fe652f88b8ec960723b7d87b551512"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSansSC-700.woff",
-      "bytes": 1425340,
-      "sha256": "dd0d39a9780eb995c499af0c20cca93b1dfdda865da70871a20890b3e406b968"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSansSC-800.woff",
-      "bytes": 1426988,
-      "sha256": "b57f9c645b1a4967a3c8914ed41f24d109394a8175e36af08f93e40803e84664"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSansSC-900.woff",
-      "bytes": 1394104,
-      "sha256": "d2d8a42438b18b65b6577434df4e41bb08c6b5051281757849af00ab743bb58f"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSerifSC-400.woff2",
-      "bytes": 1329860,
-      "sha256": "b6f3916f22a9390dcbbc9242d65877d2fce5367ec392fbd68a4fdc7ece5bc0c2"
-    },
-    {
-      "file": "extras/fonts-cjk/NotoSerifSC-700.woff2",
-      "bytes": 1373356,
-      "sha256": "49c50f2244233772c481e3770add51e646850b62881dd6d5461b57a7982b37b9"
-    },
-    {
-      "file": "extras/fonts-cjk/SmileySans-Oblique.woff2",
-      "bytes": 1150924,
-      "sha256": "731f22973349404b15a88a99ef3b5dd4104c0965c23b7e485c1f11e84fea99e2"
     }
   ],
   "artcraftport": {

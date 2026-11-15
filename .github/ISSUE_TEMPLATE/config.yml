@@ -1,13 +1,11 @@
-# Replace `nexlos-authors` with the GitHub organization or account that owns
-# the public repository before publishing.
 blank_issues_enabled: false
 contact_links:
   - name: Questions and app showcases
-    url: https://github.com/nexlos-authors/Windos2026/discussions
+    url: https://github.com/nexxxl/windos2026/discussions
     about: Ask usage questions or show the app you ported.
   - name: Security report
-    url: https://github.com/nexlos-authors/Windos2026/security/advisories/new
+    url: https://github.com/nexxxl/windos2026/security/advisories/new
     about: Report a vulnerability privately. Do not open a public issue.
   - name: Licensing
-    url: https://github.com/nexlos-authors/Windos2026/blob/main/EULA.md
+    url: https://github.com/nexxxl/windos2026/blob/main/EULA.md
     about: Read the license scope before asking about commercial use.

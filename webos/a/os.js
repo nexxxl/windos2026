@@ -22,7 +22,7 @@ import { createCompanionLayer } from './companion.js';
 // 桌面外壳的分层：壁纸 → 桌面图标 → 窗口层 → 任务栏 → 开始菜单。
 // 窗口是常驻 DOM，交互只改 transform/opacity，绝不触发整页重渲染。
 //
-// 应用清单以 Go 的 app.list 为唯一来源（id/icon/kind/route/window/dock/desktop）。
+// 应用清单以 /c/app.list 为唯一来源（id/icon/kind/route/window/dock/desktop）。
 // 这里的 FALLBACK 只在接口短暂不可用时兜底，不带尺寸，避免两处维护。
 const FALLBACK = [
   { id: 'pc', name: '此电脑', kind: 'internal', icon: 'pc', route: '#/pc', category: '系统' },
@@ -369,6 +369,8 @@ function createOS(host) {
   const spaceFeed = h('div', { class: 'os-space-feed', role: 'log', 'aria-live': 'polite' });
   // 集群条：只有出现子代理时才占一行，回答「几个人、走到哪」。
   const spaceCluster = h('div', { class: 'os-cluster', hidden: true });
+  // 成员区：谁的独立一行。它不跟日志一起滚走，蜂群在跑时始终看得见。
+  const spaceAgents = h('div', { class: 'os-agents', hidden: true });
   // 团队条：原生 Agent Team 的成员与任务板；没有团队时整块不占位。
   const spaceTeam = h('div', { class: 'os-team', hidden: true });
   // 引一句命令，像终端里的输入块；过程从下一行开始，不再重复命令本身。
@@ -379,6 +381,7 @@ function createOS(host) {
       spaceTimer),
     spaceAction,
     spaceCluster,
+    spaceAgents,
     spaceTeam,
     spaceFeed);
 
@@ -541,6 +544,9 @@ function createOS(host) {
 
   function paintCluster() {
     const ids = Object.keys(agentNodes);
+    // 有成员时把命令行压成一行，紧凑态的高度留给「谁在做什么」。
+    agentSpace.classList.toggle('has-agents', ids.length > 0);
+    spaceAgents.hidden = ids.length === 0;
     if (!ids.length) {
       spaceCluster.hidden = true;
       clear(spaceCluster);
@@ -653,14 +659,14 @@ function createOS(host) {
     if (!id) return null;
     if (agentNodes[id]) return agentNodes[id];
     const parent = ev.parent ? agentNodes[ev.parent] : null;
-    const host = parent ? parent.body : spaceFeed;
+    const host = parent ? parent.body : spaceAgents;
     const label = h('b', { class: 'os-agent-label' }, '子代理');
     const meta = h('span', { class: 'os-agent-meta' }, '运行中');
     const mark = h('span', { class: 'os-agent-mark' }, '⋯');
     const body = h('div', { class: 'os-agent-body' });
-    const node = { el: null, body, label, meta, mark, steps: 0 };
+    const node = { el: null, body, label, meta, mark, steps: 0, parentId: ev.parent || '' };
     const head = h('button', {
-      class: 'os-agent-head', type: 'button', 'aria-expanded': 'true',
+      class: 'os-agent-head', type: 'button', 'aria-expanded': 'false',
       onclick: () => {
         const open = node.el.classList.toggle('open');
         head.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -668,7 +674,19 @@ function createOS(host) {
     },
       h('span', { class: 'os-agent-glyph' }, '◇'),
       label, meta, mark);
-    node.el = h('div', { class: 'os-agent open' }, head, body);
+    // 过程在右栏里读，追问与完整对话去对话窗口：只读地打开这个子代理，返回键回到队长。
+    const openBtn = h('button', {
+      class: 'os-agent-open', type: 'button', 'aria-label': '在对话窗口里打开这个子代理',
+      title: '在对话窗口里打开',
+      onclick: (event) => {
+        event.stopPropagation();
+        const popup = window.__nxChatPopup;
+        if (popup && typeof popup.open === 'function') {
+          popup.open({ sessionId: id, title: label.textContent || '子代理', canWrite: false, parentSessionId: node.parentId });
+        }
+      },
+    }, '↗');
+    node.el = h('div', { class: 'os-agent' }, h('div', { class: 'os-agent-row' }, head, openBtn), body);
     host.append(node.el);
     agentNodes[id] = node;
     paintCluster();
@@ -680,6 +698,68 @@ function createOS(host) {
     if (!node) return;
     node.steps += 1;
     node.meta.textContent = `${node.steps} 步`;
+    paintCluster();
+  }
+
+  // 主代理收尾后，后台成员可能还会跑一阵：轮询一次目录直到没有在跑的成员，
+  // 把「后台继续」改回「完成」，否则右栏会一直停在旧状态。
+  let agentReconcileTimer = 0;
+  function reconcileAgents() {
+    const first = Object.keys(agentNodes).map((id) => agentNodes[id]).find((node) => node && node.parentId);
+    if (!first) return;
+    const parentId = first.parentId;
+    let tries = 0;
+    const step = () => {
+      tries += 1;
+      fetch(`/agent/agents?sessionId=${encodeURIComponent(parentId)}`, { cache: 'no-store' })
+        .then((res) => (res.ok ? res.json() : null))
+        .then((data) => {
+          if (!data || !data.ok || !Array.isArray(data.agents)) return;
+          // 对账只刷新已在屏上的成员：目录里还有历史，不能借这次轮询把旧的加回来。
+          applyAgentRoster(data.agents, { onlyKnown: true });
+          const stillRunning = data.agents.some((agent) => agent && agent.status === 'running');
+          if (stillRunning && tries < 20 && agentSpace.classList.contains('has-run')) {
+            agentReconcileTimer = setTimeout(step, 3000);
+          }
+        })
+        .catch(() => { /* 用最后一次已知状态收尾 */ });
+    };
+    step();
+  }
+
+  // 桌面端的「agents」快照：批量对账子代理状态。主代理这一轮收尾后，
+  // 仍在后台跑的成员还能被标成「后台继续」，不靠一串易丢的增量事件。
+  function applyAgentRoster(list, options) {
+    if (!Array.isArray(list) || !list.length) return;
+    const onlyKnown = !!(options && options.onlyKnown);
+    list.forEach((agent) => {
+      if (!agent || !agent.id) return;
+      if (onlyKnown && !agentNodes[agent.id]) return;
+      const node = ensureAgent({ agent: agent.id, parent: agent.parentId, label: agent.label });
+      if (!node) return;
+      if (agent.label) {
+        node.label.textContent = agent.label;
+        node.label.title = agent.label;
+      }
+      if (typeof agent.steps === 'number' && agent.steps > node.steps) node.steps = agent.steps;
+      const current = agent.current || {};
+      if (agent.status === 'running') {
+        node.el.classList.remove('is-done', 'is-error');
+        node.parked = false;
+        node.mark.textContent = '⋯';
+        node.meta.textContent = current.kind === 'tool'
+          ? `${toolLabel(current.name)}${current.text ? ' · ' + String(current.text).slice(0, 22) : ''}`
+          : current.kind === 'message' && current.text
+            ? String(current.text).replace(/\s+/g, ' ').slice(0, 26)
+            : '思考中';
+      } else if (agent.ended || agent.status === 'done') {
+        node.el.classList.add('is-done');
+        node.mark.textContent = '✓';
+        node.meta.textContent = '完成';
+      } else {
+        node.meta.textContent = `${node.steps} 步`;
+      }
+    });
     paintCluster();
   }
 
@@ -871,12 +951,18 @@ function createOS(host) {
 
   function clearSpace() {
     clear(spaceFeed);
+    clear(spaceAgents);
+    spaceAgents.hidden = true;
     cmdAnswer = null;
     cmdAnswerText = '';
     toolRows = {};
     agentNodes = {};
     teamMembers = {};
     teamTasks = {};
+    // 没有运行过程时把高度还给工作台会话列表（见 dsh-workbench.js 的 has-run 规则）。
+    agentSpace.classList.remove('has-run');
+    clearTimeout(agentReconcileTimer);
+    agentReconcileTimer = 0;
     paintCluster();
     paintTeam();
     setSpaceAction('');
@@ -1562,6 +1648,19 @@ function createOS(host) {
           setCmdRoute('未装 dsh', '没有找到 DeepSeek Harness');
           return;
         }
+        // DSH 在，但模型运行时或模型选择没就绪：按服务端给的四态显示，不冒充可用。
+        if (info.readyState === 'unknown') {
+          setCmdRoute('状态未知', '读不到模型目录');
+          return;
+        }
+        if (info.readyState === 'degraded') {
+          setCmdRoute('未选模型', '宿主没有默认模型');
+          return;
+        }
+        if (info.ready === false) {
+          setCmdRoute('未就绪', '模型服务未就绪');
+          return;
+        }
         setCmdRoute(shortModel(info.model) || '本机', `${info.provider || 'dsh'} · ${info.model || ''}`);
         // 状态空间头部说明「现在用的是哪条运行时路由」，与 magpie 的模型面分开显示。
         if (!cmdBusy) spaceRoute.textContent = `${info.provider || 'dsh'} · ${info.model || ''}`;
@@ -1700,6 +1799,8 @@ function createOS(host) {
     runningText = text;
     pushCmdHistory(text);
     clearSpace();
+    // 一次运行的过程（运行卡 + 子代理）优先占高度，工作台列表让位。
+    agentSpace.classList.add('has-run');
     setSpaceCmdText(text);
     spaceCmdText.title = text;
     spaceRoute.textContent = cmdChipLabel.textContent === '本机' ? '' : `→ ${cmdChipLabel.textContent}`;
@@ -1751,6 +1852,8 @@ function createOS(host) {
       setSpaceStatus('运行中', 'busy');
     } else if (ev.type === 'team') {
       handleTeam(ev);
+    } else if (ev.type === 'agents') {
+      applyAgentRoster(ev.agents);
     } else if (ev.type === 'subagent') {
       handleSubagent(ev);
       setSpaceAction(ev.phase === 'end' ? '子代理已交付' : '子代理工作中', 'busy');
@@ -1804,6 +1907,7 @@ function createOS(host) {
         if (!r || !r.running || cmdBusy) return;
         openSpace();
         clearSpace();
+        agentSpace.classList.add('has-run');
         setSpaceCmdHint('接回上一次运行');
         spaceCmdText.title = r.commandId || '';
         spaceRoute.textContent = '';
@@ -1877,6 +1981,7 @@ function createOS(host) {
       // 主代理收尾但子代理还在跑：伴侣继续演多线程，而不是假装全部结束。
       if (companion) companion.signal('juggling');
       spaceStep('info', `${pending.length} 个子代理仍在后台运行；本轮汇报只覆盖主代理的这一步。`, '子代理');
+      reconcileAgents();
     }
     setSpaceStatus(`完成 · ${secs}s`, 'done');
     setSpaceAction('完成', 'done');

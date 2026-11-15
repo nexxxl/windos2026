@@ -149,13 +149,11 @@ html[data-appearance="win98"] .nxrt-row, html[data-appearance="win98"] .nxrt-eff
   .nxrt-panel * { transition: none !important; animation: none !important; }
 }
 
-/* Plugin edition: the state space is a run trace. Team detail lives in the
- * Agent Cluster floater and the final report lives in the notification center,
- * so hide the expanded console / team / subagent blocks here. */
+/* Plugin edition: the state space is a run trace. The expanded console stays
+ * hidden (it would be a second work surface), but the cluster bar, the team
+ * board and the subagent tree belong to the trace: they answer "what are the
+ * delegates doing right now" without opening another window. */
 .os-agentspace .os-console,
-.os-agentspace .os-team,
-.os-agentspace .os-cluster,
-.os-agentspace .os-agent,
 .os-agentspace .os-space-expand { display: none !important; }
 .nxrt-foot-links { display: inline-flex; align-items: center; gap: 10px; }
 .nxrt-container small { word-break: break-all; }

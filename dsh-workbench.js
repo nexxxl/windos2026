@@ -21,6 +21,8 @@
       .nx-dsh-panel{border:1px solid rgba(30,45,70,.13);border-radius:11px;background:rgba(255,255,255,.62);padding:10px 11px;margin-bottom:10px}
       .nx-dsh-compact{border:1px solid rgba(30,45,70,.12);border-radius:10px;background:rgba(255,255,255,.6);padding:7px 8px;margin:0 0 8px}
       .os-agentspace.expanded .nx-dsh-compact{display:none}
+      /* 一次运行的过程优先：紧凑态里 run card 需要的高度比工作台列表重要。 */
+      .os-agentspace.has-run .nx-dsh-compact{display:none!important}
       .nx-dsh-compact-head{display:flex;align-items:center;justify-content:space-between;gap:6px;margin-bottom:3px}
       .nx-dsh-compact-title{font-size:9px;font-weight:700;letter-spacing:.08em;color:#566274;text-transform:uppercase}
       .nx-dsh-compact-count{font-size:8px;color:#8a94a3}

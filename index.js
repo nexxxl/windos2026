@@ -27,6 +27,7 @@ import { inflateRawSync } from 'node:zlib'
 import { createBrowserBridge } from './browser-bridge.js'
 import { compileAppSpec, renderAppTemplate, validateGeneratedHtml } from './app-templates.js'
 import { verifyAppHtml } from './app-verifier.js'
+import { capabilityList, capabilityOf, unsupportedCapability } from './lib/capabilities.js'
 
 /** Plugin name; the Loader row, the bundle and the client entry share it. */
 export const name = 'nexlos-os'
@@ -3450,6 +3451,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
       }
     })
     let dshSessionId
+    let stopWatch = () => {}
     const startedAt = Date.now()
     try {
       emit({ type: 'status', phase: 'sent' })
@@ -3477,6 +3479,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         clientTimeZone: safeTimeZone(),
       }, controller.signal)
       emit({ type: 'status', phase: 'running' })
+      // Child agents are ordinary Sessions under this captain; watch them for
+      // the life of this response so the status surface shows real work.
+      // `since` keeps the trace to this turn: the catalog also holds older runs.
+      stopWatch = watchAgentTree(dshSessionId, emit, controller.signal, { since: startedAt })
       let finished = false
       const capture = { tools: [], assistantText: '', errorText: '', doneReason: '', openCalls: {}, baselineTurn }
       const selectionPromise = currentSelectionOf(dshSessionId).catch(() => undefined)
@@ -3527,6 +3533,16 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
           }
         }
       }
+      // A final snapshot keeps parked children visible after the captain's
+      // turn closes (their own sessions may still be settling). Same turn
+      // filter as the watcher, so older runs do not reappear at the finish line.
+      try {
+        const roster = await collectAgentRoster(dshSessionId, { fresh: true, since: startedAt })
+        emit({ type: 'agents', agents: (roster.agents || []).map(agent => publicAgent(agent)) })
+      } catch (_error) {
+        /* the popup can still poll the roster route */
+      }
+      stopWatch()
       if (!finished) await finishRun(capture.doneReason || (controller.signal.aborted ? 'aborted' : 'completed'))
       else await finishRun(capture.doneReason || 'completed')
     } catch (error) {
@@ -3544,6 +3560,7 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         }
       }
     } finally {
+      stopWatch()
       clearInterval(heartbeat)
       activeChats.delete(uiSessionId)
       try {
@@ -3590,28 +3607,61 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
   }
 
   async function handleAgentStatus(res) {
-    let provider = 'deepseek'
-    let model = 'dsh'
+    // 就绪与否看的是「能不能真跑模型」，不是「DSH 装没装」：
+    // 以前无条件 ready:true，宿主缺模型服务时界面仍然显示就绪，属于误报。
+    const llm = ctx.get('llm')
+    const sc = ctx.get('sessionController')
+    const hasRuntime = (llm !== undefined && typeof llm.stream === 'function') || sc !== undefined
+    let provider = ''
+    let model = ''
+    let catalogReadable = false
     try {
-      const selection = ctx.get('agentDefaultModel')
-      if (selection && typeof selection.currentSelection === 'function') {
-        const current = selection.currentSelection()
+      const fallback = ctx.get('agentDefaultModel')
+      if (fallback && typeof fallback.currentSelection === 'function') {
+        const current = fallback.currentSelection()
         if (current && typeof current.provider === 'string') provider = current.provider
         if (current && typeof current.model === 'string') model = current.model
       }
     } catch (_error) {
-      /* defaults are truthful enough for the chip */
+      /* 读不到选择就按未解析处理，不猜默认值 */
+    }
+    if ((provider === '' || model === '') && sc !== undefined && typeof sc.modelCatalog === 'function') {
+      try {
+        const catalog = await sc.modelCatalog()
+        const fallbackSelection = catalog && catalog.default
+        if (fallbackSelection && typeof fallbackSelection.provider === 'string') provider = fallbackSelection.provider
+        if (fallbackSelection && typeof fallbackSelection.model === 'string') model = fallbackSelection.model
+        catalogReadable = true
+      } catch (_error) {
+        /* 目录读不到就保持未解析，并按「未知」报告，不猜默认值 */
+      }
+    }
+    const resolved = provider !== '' && model !== ''
+    // 两态布尔会把「读不到」说成「不可用」。这里给四态，界面按状态说话：
+    // unavailable 没运行时 / ready 有且有模型 / degraded 有运行时但没有默认模型 / unknown 问不到
+    let readyState = 'ready'
+    let reason = ''
+    if (!hasRuntime) {
+      readyState = 'unavailable'
+      reason = 'model-service-missing'
+    } else if (!resolved) {
+      readyState = catalogReadable ? 'degraded' : 'unknown'
+      reason = catalogReadable ? 'model-selection-unresolved' : 'model-catalog-unavailable'
     }
     sendJson(res, 200, {
       ok: true,
-      available: true,
-      ready: true,
+      available: hasRuntime,
+      ready: readyState === 'ready',
+      readyState,
+      reason,
       provider,
       model,
       workspace: home(),
-      last_error: '',
+      last_error: reason,
       byok: null,
       byokActive: false,
+      // BYOK 由宿主配置页承担，插件不保存也不回显密钥。
+      byokStatus: 'unavailable',
     })
   }
 
@@ -3638,6 +3688,527 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
 
   const conversationCache = new Map()
 
+  /* ------------------------------------------------------------------ */
+  /* Live subagent roster                                                */
+  /*                                                                     */
+  /* DSH keeps every delegation in the parent's durable `subagentCatalog` */
+  /* projection, and each child is an ordinary Session. That gives the    */
+  /* status surface two truthful layers: who exists (catalog) and what    */
+  /* they are doing now (the child's own last events + live Agent state). */
+  /* ------------------------------------------------------------------ */
+  const agentRosterCache = new Map(); // rootSessionId -> { at, value }
+  const agentSnapshotCache = new Map(); // childSessionId -> { at, value }
+  const swarmRuns = new Map(); // swarmId -> { at, text, members: [{ id, name }] }
+
+  function shortAgentId(id) {
+    return String(id || '').replace(/[^a-zA-Z0-9]/g, '').slice(-8) || '—';
+  }
+
+  function agentToolDetail(raw) {
+    if (!raw) return '';
+    let text = String(raw);
+    try {
+      const obj = JSON.parse(text);
+      text = obj.command || obj.path || obj.file || obj.query || obj.pattern || obj.description
+        || Object.keys(obj).map((key) => obj[key]).find((value) => typeof value === 'string')
+        || text;
+    } catch (_error) {
+      /* not JSON: keep the raw argument text */
+    }
+    return String(text).replace(/\s+/gu, ' ').slice(0, 160);
+  }
+
+  /* Fold a child Session's event tail into one "what is it doing" answer.
+     The window is bounded: enough to see the open tool call and the last
+     sentence, never the whole transcript. */
+  function agentDigestFromEvents(events) {
+    const rows = Array.isArray(events) ? events : [];
+    const start = Math.max(0, rows.length - 200);
+    const open = new Map();
+    let steps = 0;
+    let lastAssistant = '';
+    let turnStart = 0;
+    let stopReason = '';
+    let lastEventAt = 0;
+    let lastSeq = 0;
+    for (let index = start; index < rows.length; index += 1) {
+      const event = rows[index];
+      if (!event) continue;
+      const data = event.data;
+      if (typeof event.seq === 'number' && event.seq > lastSeq) lastSeq = event.seq;
+      if (typeof event.time === 'number' && event.time > lastEventAt) lastEventAt = event.time;
+      if (event.type === 'turn/start') {
+        turnStart = event.time || turnStart;
+      } else if (event.type === 'tool/call') {
+        steps += 1;
+        const call = {
+          id: (data && data.callId) || '',
+          name: (data && data.name) || 'tool',
+          detail: agentToolDetail(data && data.arguments),
+          at: event.time || Date.now(),
+          seq: event.seq || 0,
+        };
+        if (call.id) open.set(call.id, call);
+      } else if (event.type === 'tool/result') {
+        const callId = data && data.message && data.message.toolCallId;
+        if (callId) open.delete(callId);
+      } else if (event.type === 'assistant/message') {
+        const text = eventMessageText(data);
+        if (text.trim() !== '') lastAssistant = text.trim();
+      } else if (event.type === 'turn/end') {
+        stopReason = (data && data.reason && data.reason.kind) || 'completed';
+      }
+    }
+    const pending = [...open.values()].sort((a, b) => b.seq - a.seq)[0] || null;
+    return { steps, pending, lastAssistant, turnStart, stopReason, lastEventAt, lastSeq };
+  }
+
+  async function agentEventsOf(sessionId) {
+    const sc = ctx.get('sessionController');
+    if (sc === undefined || typeof sc.inspect !== 'function') return { events: [], meta: null };
+    try {
+      const inspection = await sc.inspect(sessionId);
+      return {
+        events: (inspection && inspection.events) || [],
+        meta: inspection && inspection.meta ? inspection.meta : null,
+      };
+    } catch (_error) {
+      return { events: [], meta: null };
+    }
+  }
+
+  function liveAgentStatus(sessionId) {
+    let agent;
+    try {
+      const registry = ctx.get('agents');
+      agent = registry && typeof registry.get === 'function' ? registry.get(sessionId) : undefined;
+    } catch (_error) {
+      agent = undefined;
+    }
+    if (agent === undefined) return { live: false, running: false };
+    return { live: true, running: agent.status === 'running' };
+  }
+
+  /* One roster row. `label` prefers the durable catalog label; `current`
+     answers the only question the status popup asks: what now? */
+  async function describeAgentRow(row) {
+    const now = Date.now();
+    const id = row.id;
+    const cached = agentSnapshotCache.get(id);
+    if (cached !== undefined && now - cached.at < 800) return cached.value;
+    const { events, meta } = await agentEventsOf(id);
+    const digest = agentDigestFromEvents(events);
+    const live = liveAgentStatus(id);
+    const running = live.live ? live.running : false;
+    const lastTurnClosed = digest.stopReason !== '' && digest.lastEventAt > 0;
+    const ended = !running && (live.live ? lastTurnClosed : true);
+    let current;
+    if (running && digest.pending) {
+      current = {
+        kind: 'tool',
+        name: digest.pending.name,
+        text: digest.pending.detail ? digest.pending.detail : '',
+        at: digest.pending.at,
+      };
+    } else if (running) {
+      current = { kind: 'thinking', text: '', at: digest.turnStart || now };
+    } else if (digest.lastAssistant) {
+      current = { kind: 'message', text: digest.lastAssistant.slice(0, 200), at: digest.lastEventAt || now };
+    } else {
+      current = { kind: 'idle', text: '', at: now };
+    }
+    const startedAt = digest.turnStart || row.createdAt || now;
+    const title = meta && typeof meta.title === 'string' && meta.title.trim() !== '' ? meta.title.trim() : '';
+    const label = row.label || title || '子代理 · ' + shortAgentId(id);
+    const value = {
+      id,
+      parentId: row.parentId || '',
+      depth: typeof row.depth === 'number' ? row.depth : 1,
+      mode: row.mode || 'continuable',
+      label,
+      // 子会话的创建时刻是「哪一轮派的」唯一可靠依据：一轮的轨迹只收本轮的子代理。
+      createdAt: typeof row.createdAt === 'number' ? row.createdAt : startedAt,
+      status: running ? 'running' : ended ? 'done' : 'idle',
+      running,
+      ended,
+      startedAt,
+      elapsedMs: Math.max(0, now - startedAt),
+      steps: digest.steps,
+      current,
+      lastText: digest.lastAssistant.slice(0, 400),
+      stopReason: digest.stopReason || '',
+      lastEventAt: digest.lastEventAt,
+      canWrite: false,
+      seq: digest.lastSeq,
+      events,
+    };
+    agentSnapshotCache.set(id, { at: now, value });
+    if (agentSnapshotCache.size > 80) {
+      const oldest = [...agentSnapshotCache.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+      if (oldest) agentSnapshotCache.delete(oldest[0]);
+    }
+    return value;
+  }
+
+  function publicAgent(agent, withEvents) {
+    const out = {
+      id: agent.id,
+      parentId: agent.parentId,
+      depth: agent.depth,
+      mode: agent.mode,
+      label: agent.label,
+      createdAt: agent.createdAt,
+      status: agent.status,
+      running: agent.running,
+      ended: agent.ended,
+      startedAt: agent.startedAt,
+      elapsedMs: agent.elapsedMs,
+      steps: agent.steps,
+      current: agent.current,
+      lastText: agent.lastText,
+      stopReason: agent.stopReason,
+      lastEventAt: agent.lastEventAt,
+      canWrite: false,
+      seq: agent.seq,
+    };
+    if (withEvents) out.events = agent.events;
+    return out;
+  }
+
+  async function listChildRows(subs, rootSessionId, since) {
+    // Prefer the direct-child catalog walk: `listChildren` rows keep
+    // `createdAt`, which is how a turn tells its own children from history.
+    // `listDescendants` is the fallback, and it drops that timestamp.
+    if (typeof subs.listChildren === 'function') {
+      const out = [];
+      const queue = [{ id: rootSessionId, depth: 0 }];
+      while (queue.length > 0 && out.length < 80) {
+        const item = queue.shift();
+        let children = [];
+        try {
+          children = await subs.listChildren(item.id, AbortSignal.timeout(2000));
+        } catch (_error) {
+          children = [];
+        }
+        for (const child of Array.isArray(children) ? children : []) {
+          if (!child || typeof child.id !== 'string') continue;
+          // 只走本轮的子代理：历史子会话不进队列，避免为一次轮询读十几个日志；
+          // 仍在后台跑的老成员例外，它们还在做事。
+          if (item.depth === 0 && since > 0 && typeof child.createdAt === 'number' && child.createdAt < since) {
+            if (!liveAgentStatus(child.id).running) continue;
+          }
+          out.push({ ...child, kind: 'child', parentId: item.id, depth: item.depth + 1 });
+          queue.push({ id: child.id, depth: item.depth + 1 });
+        }
+      }
+      return out;
+    }
+    if (typeof subs.listDescendants === 'function') {
+      const rows = await subs.listDescendants(rootSessionId, AbortSignal.timeout(4000));
+      return Array.isArray(rows) ? rows : [];
+    }
+    return [];
+  }
+
+  async function collectAgentRoster(rootSessionId, options) {
+    const now = Date.now();
+    const since = options && typeof options.since === 'number' ? options.since : 0;
+    const key = String(rootSessionId || '') + '|' + since;
+    if (!options || !options.fresh) {
+      const cached = agentRosterCache.get(key);
+      if (cached !== undefined && now - cached.at < 700) return cached.value;
+    }
+    const subs = ctx.get('subagents');
+    if (subs === undefined) {
+      return { supported: false, agents: [], diagnostics: [], updatedAt: now };
+    }
+    let rows = [];
+    let failure = '';
+    try {
+      rows = await listChildRows(subs, rootSessionId, since);
+    } catch (error) {
+      failure = error && error.message ? error.message : String(error);
+    }
+    const agents = [];
+    const diagnostics = [];
+    for (const row of rows) {
+      if (!row || typeof row.id !== 'string') continue;
+      if (row.kind !== 'child') {
+        diagnostics.push({ id: row.id || '', parentId: row.parentId || '', depth: row.depth || 0, reason: row.reason || '' });
+        continue;
+      }
+      // 先按轮次筛选，再读子会话日志：一轮的状态弹窗只付本轮子代理的钱。
+      if (since > 0 && typeof row.createdAt === 'number' && row.createdAt < since) {
+        const live = liveAgentStatus(row.id);
+        if (!live.running) continue;
+      }
+      const agent = await describeAgentRow(row);
+      agents.push(agent);
+      if (agents.length >= 40) break;
+    }
+    agents.sort((a, b) => (a.startedAt || 0) - (b.startedAt || 0));
+    const value = {
+      supported: true,
+      agents,
+      diagnostics: diagnostics.slice(0, 20),
+      error: failure,
+      updatedAt: now,
+    };
+    agentRosterCache.set(key, { at: now, value });
+    if (agentRosterCache.size > 24) {
+      const oldest = [...agentRosterCache.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+      if (oldest) agentRosterCache.delete(oldest[0]);
+    }
+    return value;
+  }
+
+  /* Sessions listed outside any captain's catalog (the standalone swarm
+     roster): describe each by its own log so the panel can still show
+     what it is doing. */
+  async function describeLooseSession(sessionId, labelHint) {
+    const cached = agentSnapshotCache.get(sessionId);
+    if (cached !== undefined && Date.now() - cached.at < 800) return cached.value;
+    const agent = await describeAgentRow({
+      id: sessionId,
+      label: labelHint || '',
+      mode: 'continuable',
+      parentId: '',
+      depth: 1,
+      createdAt: Date.now(),
+    });
+    return agent;
+  }
+
+  function rememberSwarm(text, members) {
+    const swarmId = 'swarm-' + randomUUID().slice(0, 8);
+    swarmRuns.set(swarmId, { at: Date.now(), text, members: members.slice(0, 30) });
+    if (swarmRuns.size > 30) {
+      const oldest = [...swarmRuns.entries()].sort((a, b) => a[1].at - b[1].at)[0];
+      if (oldest) swarmRuns.delete(oldest[0]);
+    }
+    return swarmId;
+  }
+
+  async function swarmRoster(swarmId) {
+    const run = swarmRuns.get(swarmId);
+    if (run === undefined) return { ok: false, error: '蜂群任务不存在或已过期', agents: [] };
+    if (Date.now() - run.at > 30 * 60 * 1000) {
+      swarmRuns.delete(swarmId);
+      return { ok: false, error: '蜂群任务已过期', agents: [] };
+    }
+    const agents = [];
+    for (const member of run.members) {
+      agents.push(await describeLooseSession(member.id, member.name));
+    }
+    return { ok: true, swarmId, text: run.text, agents, updatedAt: Date.now() };
+  }
+
+  async function allSessionRoster() {
+    const sc = ctx.get('sessionController');
+    if (sc === undefined || typeof sc.list !== 'function') return { ok: false, agents: [] };
+    let items = [];
+    try {
+      const value = await sc.list({}, AbortSignal.timeout(5000));
+      items = (value && value.items) || [];
+    } catch (_error) {
+      items = [];
+    }
+    const agents = [];
+    for (const item of items.slice(0, 24)) {
+      const id = item && (item.sessionId || item.id);
+      if (typeof id !== 'string') continue;
+      const label = item.title || item.summary || '';
+      agents.push(await describeLooseSession(id, label));
+    }
+    return { ok: true, agents, updatedAt: Date.now() };
+  }
+
+  function publicRoster(roster, withEvents) {
+    return {
+      ok: true,
+      supported: roster.supported !== false,
+      agents: (roster.agents || []).map((agent) => publicAgent(agent, withEvents)),
+      diagnostics: roster.diagnostics || [],
+      error: roster.error || '',
+      updatedAt: roster.updatedAt || Date.now(),
+    };
+  }
+
+  async function handleAgentRoster(req, res, url) {
+    if (req.method !== 'GET') return sendJson(res, 405, { ok: false, error: 'GET only' });
+    const sessionId = (url.searchParams.get('sessionId') || '').trim();
+    const swarmId = (url.searchParams.get('swarmId') || '').trim();
+    const scope = (url.searchParams.get('scope') || '').trim();
+    const ids = (url.searchParams.get('ids') || '')
+      .split(',')
+      .map((id) => id.trim())
+      .filter((id) => /^[a-zA-Z0-9._:-]{1,80}$/u.test(id))
+      .slice(0, 30);
+    try {
+      if (swarmId !== '') {
+        const roster = await swarmRoster(swarmId);
+        return sendJson(res, roster.ok ? 200 : 404, roster);
+      }
+      if (sessionId !== '') {
+        const roster = await collectAgentRoster(sessionId, { fresh: url.searchParams.get('fresh') === '1' });
+        return sendJson(res, 200, publicRoster(roster, url.searchParams.get('events') === '1'));
+      }
+      if (ids.length > 0) {
+        const agents = [];
+        for (const id of ids) agents.push(publicAgent(await describeLooseSession(id, '')));
+        return sendJson(res, 200, { ok: true, agents, updatedAt: Date.now() });
+      }
+      if (scope === 'all') {
+        const roster = await allSessionRoster();
+        return sendJson(res, roster.ok ? 200 : 503, {
+          ok: roster.ok,
+          agents: (roster.agents || []).map((agent) => publicAgent(agent)),
+          updatedAt: roster.updatedAt || Date.now(),
+          error: roster.ok ? '' : 'DSH session controller 不可用',
+        });
+      }
+      return sendJson(res, 400, { ok: false, error: 'sessionId, swarmId, ids or scope is required' });
+    } catch (error) {
+      return sendJson(res, 500, { ok: false, error: error && error.message ? error.message : String(error), agents: [] });
+    }
+  }
+
+  /* Translate child Session events into the same NDJSON vocabulary the
+     desktop already renders for the captain. `agent` carries the child id
+     so tools land under that node instead of the main feed. */
+  function emitChildEvent(agentId, event, emit) {
+    if (!event) return;
+    const data = event.data;
+    if (event.type === 'tool/call') {
+      emit({
+        type: 'tool',
+        phase: 'call',
+        agent: agentId,
+        callId: (data && data.callId) || '',
+        text: (data && data.name) || 'tool',
+        detail: (data && data.arguments) || '',
+      });
+      return;
+    }
+    if (event.type === 'tool/result') {
+      const ok = !(data && (data.error || (data.message && data.message.isError)));
+      emit({
+        type: 'tool',
+        phase: 'result',
+        agent: agentId,
+        callId: data && data.message ? data.message.toolCallId : '',
+        ok,
+        text: toolResultText(data),
+        detail: toolResultText(data),
+      });
+    }
+  }
+
+  /* Follow the captain's descendant forest while its turn runs. Start and
+     end edges come from the roster's live state; tool traffic comes from
+     each child's own event tail. The watcher never outlives the response. */
+  function watchAgentTree(rootSessionId, emit, signal, options) {
+    const states = new Map();
+    let stopped = false;
+    let rosterHash = '';
+    // 子代理目录是整条会话的历史；运行轨迹只收这一轮派的，或者此刻还在跑的。
+    const since = options && typeof options.since === 'number' ? options.since : 0;
+    const deadline = Date.now() + 15 * 60 * 1000;
+    const tick = async () => {
+      if (stopped || signal.aborted) return;
+      let roster;
+      try {
+        roster = await collectAgentRoster(rootSessionId, { fresh: true, since });
+      } catch (_error) {
+        return;
+      }
+      const agents = (roster.agents || []).filter((agent) => (
+        since === 0 || agent.status === 'running' || !agent.createdAt || agent.createdAt >= since
+      ));
+      const runningCount = agents.filter((agent) => agent.status === 'running').length;
+      for (const agent of agents) {
+        const previous = states.get(agent.id);
+        const agentId = agent.id;
+        if (previous === undefined) {
+          emit({
+            type: 'subagent',
+            phase: 'start',
+            agent: agentId,
+            parent: agent.parentId,
+            label: agent.label,
+            mode: agent.mode,
+            depth: agent.depth,
+          });
+          states.set(agentId, {
+            label: agent.label,
+            status: agent.status,
+            seq: 0,
+            ended: agent.ended,
+            steps: agent.steps,
+          });
+          const state = states.get(agentId);
+          for (const event of (agent.events || []).slice(-40)) {
+            if (typeof event.seq === 'number' && event.seq <= state.seq) continue;
+            emitChildEvent(agentId, event, emit);
+            if (typeof event.seq === 'number' && event.seq > state.seq) state.seq = event.seq;
+          }
+          continue;
+        }
+        if (previous.label !== agent.label) {
+          previous.label = agent.label;
+          emit({
+            type: 'subagent',
+            phase: 'label',
+            agent: agentId,
+            parent: agent.parentId,
+            label: agent.label,
+          });
+        }
+        for (const event of (agent.events || []).slice(-60)) {
+          if (typeof event.seq === 'number' && event.seq <= previous.seq) continue;
+          emitChildEvent(agentId, event, emit);
+          if (typeof event.seq === 'number' && event.seq > previous.seq) previous.seq = event.seq;
+        }
+        const wasRunning = previous.status === 'running';
+        if (agent.status === 'running') {
+          previous.status = 'running';
+          previous.ended = false;
+        } else if (wasRunning || (!previous.ended && agent.ended)) {
+          previous.status = agent.status;
+          previous.ended = agent.ended;
+          emit({
+            type: 'subagent',
+            phase: 'end',
+            agent: agentId,
+            parent: agent.parentId,
+            label: agent.label,
+            text: agent.stopReason || (agent.status === 'done' ? 'completed' : ''),
+            detail: agent.lastText || '',
+          });
+        }
+      }
+      const hash = agents
+        .map((agent) => [agent.id, agent.status, agent.steps, agent.current && agent.current.kind, agent.current && agent.current.text].join(':'))
+        .join('|');
+      if (hash !== rosterHash) {
+        rosterHash = hash;
+        emit({ type: 'agents', agents: agents.map((agent) => publicAgent(agent)) });
+      }
+      // The captain's response usually closes before background children do.
+      // Keep observing while the response is open: a child may start after a
+      // quiet tick, and that late start is exactly what the rail must show.
+      if (runningCount === 0 && Date.now() > deadline) stop();
+    };
+    const timer = setInterval(() => { void tick(); }, 1200);
+    const stop = () => {
+      if (stopped) return;
+      stopped = true;
+      clearInterval(timer);
+    };
+    void tick();
+    return stop;
+  }
+
   async function handleAgentConversation(req, res, url) {
     const sessionId = (url.searchParams.get('sessionId') || '').trim()
     if (sessionId === '') return sendJson(res, 400, { ok: false, error: 'sessionId is required' })
@@ -3655,10 +4226,16 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         const items = transcriptFromEvents(events)
         const last = events[events.length - 1]
         const recent = last && typeof last.time === 'number' && Date.now() - last.time < 15000
+        // 这一轮的起点：状态弹窗只回答「本轮派的子代理」，历史留在会话本身里。
+        let turnStartAt = 0
+        for (const event of events) {
+          if (event && event.type === 'turn/start' && typeof event.time === 'number' && event.time > turnStartAt) turnStartAt = event.time
+        }
         snapshot = {
           items,
           running: !!(last && last.type !== 'turn/end' && recent),
           updatedAt: last && last.time ? last.time : Date.now(),
+          turnStartAt,
         }
         conversationCache.set(sessionId, { at: Date.now(), snapshot })
         if (conversationCache.size > 12) {
@@ -3668,12 +4245,23 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
       }
       const items = snapshot.items
       const firstUser = items.find(item => item.role === 'user')
+      // The popup's status drawer reads the same durable catalog as the
+      // desktop rail, so both surfaces answer from one source.
+      let agents = []
+      try {
+        const since = typeof snapshot.turnStartAt === 'number' ? snapshot.turnStartAt : 0
+        const roster = await collectAgentRoster(sessionId, { since })
+        agents = (roster.agents || []).map(agent => publicAgent(agent))
+      } catch (_error) {
+        agents = []
+      }
       sendJson(res, 200, {
         ok: true,
         sessionId,
         title: requestedTitle || (firstUser ? truncateText(firstUser.text.replace(/\s+/gu, ' '), 40) : 'DSH 会话'),
         items,
-        running: snapshot.running,
+        agents,
+        running: snapshot.running || agents.some(agent => agent.running),
         updatedAt: snapshot.updatedAt,
       })
     } catch (error) {
@@ -3731,7 +4319,10 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         failed.push({ name: member.name || member.id, error: error && error.message ? error.message : String(error) })
       }
     }))
-    sendJson(res, 200, { ok: true, delivered, failed, total: members.length })
+    // Remember the fan-out so the cluster panel can poll live worker activity
+    // without pretending these sessions are an AgentTeams team.
+    const swarmId = rememberSwarm(text, members)
+    sendJson(res, 200, { ok: true, swarmId, delivered, failed, total: members.length })
   }
 
   async function handleAgentSend(req, res) {
@@ -4494,16 +5085,24 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         return { detail: await browserBridge.agent({ ...fields, action }) }
       }
       case 'task.list': {
-        return { append: [], detail: { count: 0, open: 0, done: 0 } }
+        // 以前返回 { append: [], count: 0 }：形状合法，语义是假的。
+        // 界面会显示「0 个任务」，用户分不清「没有任务」和「本版没有任务库」。
+        throw unsupportedCapability('task.list')
       }
       case 'companion.list': {
-        return { append: [], detail: { count: 0 } }
+        throw unsupportedCapability('companion.list')
       }
       case 'companion.get': {
         // The plugin edition does not ship companion life-packs. A null manifest
         // makes the stock companion module unload silently instead of showing
         // "DSH 内核暂未实现命令：companion.get" on the desktop.
-        return { detail: { manifest: null, mood: 'calm', state: null } }
+        // unsupported 字段让调用方能分清「本版没有」和「还没加载」。
+        const entry = capabilityOf('companion.get')
+        return { detail: { manifest: null, mood: 'calm', state: null, unsupported: true, reason: entry.reason } }
+      }
+      case 'capability.list': {
+        const entries = capabilityList()
+        return { append: entries, detail: { count: entries.length } }
       }
       case 'clip.set': {
         return { detail: { copied: false } }
@@ -4547,7 +5146,12 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         if (output.text !== undefined) envelope.text = output.text
         sendJson(res, 200, envelope)
       } catch (error) {
-        sendJson(res, error && error.status ? error.status : 400, { ok: false, error: error && error.message ? error.message : String(error) })
+        const body = { ok: false, error: error && error.message ? error.message : String(error) }
+        // 机器可判的失败要能分辨：不支持的能力、缺服务、参数错，都是 400 但含义不同。
+        if (error && error.code) body.code = error.code
+        if (error && error.capability) body.capability = error.capability
+        if (error && error.detail) body.detail = error.detail
+        sendJson(res, error && error.status ? error.status : 400, body)
       }
     })()
   }
@@ -4928,6 +5532,7 @@ window.SongBoard.importSvg = function (svgText) {
       const rest = url.pathname.replace(/^\/agent/u, '')
       if (rest === '/status') return void handleAgentStatus(res)
       if (rest === '/picker') return void handleAgentPicker(req, res, url)
+      if (rest === '/agents') return void handleAgentRoster(req, res, url)
       if (rest === '/conversation') return void handleAgentConversation(req, res, url)
       if (rest === '/containers') return void handleContainers(req, res)
       if (rest === '/swarm') return void handleSwarm(req, res)
@@ -4941,8 +5546,15 @@ window.SongBoard.importSvg = function (svgText) {
       if (rest === '/chat') return void handleAgentChat(req, res)
       if (rest === '/stop') return void handleStop(req, res)
       if (rest === '/warm') return sendJson(res, 200, { ok: true, warming: true })
-      if (rest === '/run/current') return sendJson(res, 200, { running: false, taskId: '' })
-      if (rest === '/byok') return sendJson(res, 200, { ok: true, config: null, active: false })
+      if (rest === '/run/current') {
+        // 没有运行项索引就别假装「有索引且为空」。
+        const entry = capabilityOf('agent.run.current')
+        return sendJson(res, 200, { running: false, taskId: '', unsupported: true, reason: entry.reason })
+      }
+      if (rest === '/byok') {
+        const entry = capabilityOf('agent.byok')
+        return sendJson(res, 200, { ok: true, config: null, active: false, unsupported: true, reason: entry.reason })
+      }
       return sendJson(res, 404, { ok: false, error: 'unknown agent route' })
     })
     register('prefix', '/p', (req, res) => {

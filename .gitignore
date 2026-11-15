@@ -15,9 +15,3 @@
 !**/.env.example
 /spaces/
 /.nexlos/
-/applications/reader/out/
-/applications/reader/results/
-/tools/companion-factory/out/
-/tools/companion-factory/nexl-life-out/
-/tools/companion-factory/nexl-life-examples/
-/tools/ebook-supplychain/factory/builds/

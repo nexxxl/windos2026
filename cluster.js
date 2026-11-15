@@ -48,6 +48,9 @@
   var swarmWrap = null;
   var swarmInput = null;
   var swarmModal = null;
+  var swarmId = '';
+  var swarmText = '';
+  var swarmAgents = [];
 
   function $(tag, attrs) {
     var kids = Array.prototype.slice.call(arguments, 2);
@@ -138,7 +141,51 @@
       (team.members || []).map(function (m) { return [m.id, m.name, m.status, m.activity, m.currentTask, m.progress, m.done, m.total, m.unread]; }),
       (team.tasks || []).map(function (t) { return [t.id, t.status, t.state, t.assignee, t.verdict]; }),
       (team.captainInbox || []).map(function (m) { return [m.from, m.content]; }),
+      swarmId,
+      swarmAgents.map(function (a) { return [a.id, a.status, a.steps, a.current && a.current.kind, a.current && a.current.text]; }),
     ]);
+  }
+
+  function agentStateLabel(agent) {
+    var now = agent.current || {};
+    if (agent.status === 'running') {
+      if (now.kind === 'tool') return (now.name || '工具') + (now.text ? ' · ' + String(now.text).slice(0, 80) : '');
+      return now.kind === 'thinking' ? '思考中' : '工作中';
+    }
+    if (agent.ended || agent.status === 'done') return now.kind === 'message' && now.text ? String(now.text).slice(0, 80) : '已交付';
+    return '空闲';
+  }
+
+  function swarmRow(agent) {
+    var running = agent.status === 'running';
+    var node = $('div', { class: 'nxcl-member' + (running ? ' is-working is-clickable' : '') },
+      $('span', { class: 'nxcl-dot' + (running ? ' is-live' : '') }),
+      $('div', { class: 'nxcl-member-main' },
+        $('div', { class: 'nxcl-member-name' }, $('b', {}, agent.label || agent.id)),
+        $('div', { class: 'nxcl-member-meta' }, agentStateLabel(agent) + (agent.steps ? ' · ' + agent.steps + ' 步' : ''))),
+      $('span', { class: 'nxcl-go' }, '↗'));
+    node.addEventListener('click', function () {
+      var popup = window.__nxChatPopup;
+      if (popup && typeof popup.open === 'function') {
+        popup.open({ sessionId: agent.id, title: agent.label || '蜂群成员', canWrite: false });
+      }
+    });
+    return node;
+  }
+
+  async function refreshSwarm() {
+    if (!swarmId) { swarmAgents = []; return; }
+    try {
+      var response = await fetch('/agent/agents?swarmId=' + encodeURIComponent(swarmId), { cache: 'no-store' });
+      var data = await response.json().catch(function () { return null; });
+      if (response.ok && data && data.ok && Array.isArray(data.agents)) {
+        swarmAgents = data.agents;
+        return;
+      }
+      swarmAgents = [];
+    } catch (error) {
+      swarmAgents = [];
+    }
   }
 
   function showPanel() {
@@ -348,6 +395,11 @@
         $('span', {}, [$('b', {}, String(members.length)), ' 成员']),
         $('span', {}, [$('b', {}, String(tasks.filter(function (t) { return t.state === 'completed'; }).length)), '/', String(tasks.length), ' 任务']),
         team.messageCount ? $('span', {}, [String(team.messageCount), ' 消息']) : null),
+      swarmId ? $('div', { class: 'nxcl-section' }, [
+        $('div', { class: 'nxcl-section-head' }, '蜂群活动 · ' + String(swarmAgents.filter(function (a) { return a.status === 'running'; }).length) + '/' + String(swarmAgents.length) + ' 运行中'),
+        swarmText ? $('p', { class: 'nxcl-desc' }, '指令：' + swarmText.slice(0, 120)) : null,
+        ...(swarmAgents.length ? swarmAgents.map(swarmRow) : [$('div', { class: 'nxcl-none' }, '等待成员回报…')]),
+      ]) : null,
       $('div', { class: 'nxcl-section' }, [
         $('div', { class: 'nxcl-section-head' }, '成员'),
         ...(members.length ? members.map(function (m) { return memberRow(m, team); }) : [$('div', { class: 'nxcl-none' }, '队长尚未派出成员')]),
@@ -409,12 +461,14 @@
         if (isWorking(team) || teams.length === 1) showPanel();
       }
     }
+    if (swarmId) await refreshSwarm();
     var hash = teamHash(team);
     if (hash !== lastHash) {
       lastHash = hash;
       render(team);
     }
-    schedulePoll();
+    // 蜂群成员在跑时拉快一点，让「在干什么」接近实时。
+    schedulePoll(swarmId && swarmAgents.some(function (a) { return a.status === 'running'; }) ? 1500 : undefined);
   }
 
   function closeSwarmComposer() {
@@ -453,8 +507,20 @@
           if (!response.ok || !data || data.ok !== true) throw new Error((data && data.error) || ('HTTP ' + response.status));
           var done = (data.delivered || []).length;
           var failed = (data.failed || []).length;
+          if (typeof data.swarmId === 'string' && data.swarmId !== '') {
+            swarmId = data.swarmId;
+            swarmText = text;
+            void refreshSwarm().then(function () {
+              lastHash = '';
+              var current = teams.filter(function (t) { return t.teamId === selectedTeamId; })[0] || null;
+              render(current);
+            });
+          }
           feedback.textContent = '已投递 ' + done + ' 位' + (failed ? '，失败 ' + failed + ' 位' : '') + '。';
-          setTimeout(closeSwarmComposer, 900);
+          setTimeout(function () {
+            closeSwarmComposer();
+            schedulePoll(500);
+          }, 900);
         });
       }).catch(function (error) {
         feedback.textContent = '投递失败：' + (error && error.message ? error.message : String(error));

@@ -1,14 +1,21 @@
 # 内置字体许可 · Font licenses
 
-本目录字体全部为 **SIL Open Font License 1.1**（全文见 `OFL.txt`），可随应用再分发、可用于商业文档，不能单独售卖字体文件。带 Reserved Font Name 的字体只以未修改的官方文件分发。
+本目录字体除 `LXGWNeoZhiSong-gb.woff2`（**IPA Font License 1.0**，全文见 `IPA-Font-License-1.0.md`）外均为 **SIL Open Font License 1.1**（全文见 `OFL.txt`），可随应用再分发、可用于商业文档，不能单独售卖字体文件。带 Reserved Font Name 的字体只以未修改的官方文件分发。
 
 | 文件 | 字体 | 版权与来源 |
 |---|---|---|
 | `NotoSansSC-500/700/800/900.woff` | 思源黑体 Noto Sans SC（GB2312 子集，按字重实例化） | © 2014-2021 Adobe，Reserved Font Name "Source"；Google Fonts |
 | `NotoSerifSC-400/700.woff2` | 思源宋体 Noto Serif SC（GB2312 子集，按字重实例化，woff2） | © 2014-2021 Adobe，Reserved Font Name "Source"；Google Fonts |
 | `LXGWWenKai-500.woff` | 霞鹜文楷 LXGW WenKai（子集） | © 2021-2025 LXGW；© 2020 The Klee Project Authors；github.com/lxgw/LxgwWenKai |
-| `LXGWNeoZhiSong-gb.woff2` | 霞鹜新致宋 LXGW Neo ZhiSong（GB2312 子集，woff2） | © LXGW；github.com/lxgw/LxgwNeoZhiSong |
-| `SmileySans-Oblique.woff2` | 得意黑 Smiley Sans Oblique | © 2022-2024 artcraftportAnchor，Reserved Font Name "Smiley"/"得意黑"；github.com/artcraftport-anchor/smiley-sans |
+| `LXGWNeoZhiSong-gb.woff2` | 霞鹜新致宋 LXGW Neo ZhiSong（GB2312 子集，woff2） | **IPA Font License 1.0**；github.com/lxgw/LxgwNeoZhiSong |
+| `SmileySans-Oblique.woff2` | 得意黑 Smiley Sans Oblique | OFL 1.1，Reserved Font Name "Smiley"/"得意黑"；https://atelier-anchor.com；github.com/atelier-anchor/smiley-sans |
+
+字体 name 表原文（版权字段，未经改写）：
+
+- `LXGWNeoZhiSong-gb.woff2`：`Copyright(c) 2023-2026 LXGW; Information-technology Promotion Agency, Japan (IPA), 2003-2019. You must accept "https://opensource.org/licenses/IPA/" to use this product.`
+- `SmileySans-Oblique.woff2`：`Copyright © 2022–2024 atelierAnchor. All rights reserved.`（厂商 URL：`https://atelier-anchor.com`；许可声明：SIL Open Font License 1.1）
+
+`LXGWNeoZhiSong-gb.woff2` 与 `SmileySans-Oblique.woff2` 不随 npm 包分发，由 `scripts/install-extras.sh fonts` 从 `extras/fonts-cjk/` 装入本目录，许可全文同时落到本目录（`IPA-Font-License-1.0.md` 与 `OFL-cjk.txt`）。
 | `Inter-var.woff` | Inter（可变字重） | © 2016 The Inter Project Authors；github.com/rsms/inter |
 | `RobotoCondensed-var.woff` | Roboto Condensed（可变字重） | © 2011 The Roboto Project Authors；Google Fonts |
 | `Poppins-600/700/800.woff` | Poppins | © 2020 The Poppins Project Authors；Google Fonts |

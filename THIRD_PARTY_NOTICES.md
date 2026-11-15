@@ -44,7 +44,8 @@
 - **Files**：`webos/a/vendor/retro-font/`、`webos/a/vendor/space-grotesk/`、`webos/a/office/fonts/`
 - **Origin**：各字体上游项目
 - **Taken**：字体文件及随附说明
-- **License**：OFL 1.1（多数）、CC BY-SA 3.0（个别）；原版权与许可随字体保留，见目录内 `LICENSE` / `LICENSES.md`
+- **License**：OFL 1.1（多数）、CC BY-SA 3.0（个别）；原版权与许可随字体保留，见目录内 `LICENSE` / `LICENSES.md`。
+- **CC BY-SA 3.0 部分**：`webos/a/vendor/retro-font/` 的 `ms_sans_serif*.woff2` 来自 FontStruct 用户 lou（FontStruction 1384746），经 `jdan/98.css` 固定提交 `b1d7a90` 分发；作者、来源、固定版本与 ShareAlike 声明见 `webos/a/vendor/retro-font/README.md`
 
 ### 1.6 Nayuki 二维码生成
 

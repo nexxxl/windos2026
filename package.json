@@ -2,6 +2,7 @@
   "name": "@nexlos/os",
   "version": "1.1.0-lite.0",
   "private": false,
+  "license": "Apache-2.0",
   "description": "NexlOS lite desktop for DeepSeek Harness: English-first, optional language and art packs.",
   "type": "module",
   "exports": {
@@ -13,13 +14,13 @@
   "files": [
     "*.js",
     "*.css",
+    "lib",
     "cordis.patch.yml",
     "locale",
     "icon.svg",
     "README.md",
     "THIRD_PARTY_NOTICES.md",
     "docs/artcraftport/ATTRIBUTION.md",
-    "docs/validation.md",
     "webos",
     "vendor",
     "extension",
@@ -28,10 +29,8 @@
     "TRADEMARK.md",
     "EULA.md",
     "DISCLAIMER.md",
-    "README.en.md",
-    "docs/windows-validation.md",
-    "docs/naming-migration.md",
-    "docs/split-validation.md"
+    "extras",
+    "!extras/fonts-cjk"
   ],
   "dsh": {
     "bundle": {
@@ -66,7 +65,6 @@
     "packsBase": "/extras/",
     "packs": [
       "langs",
-      "fonts-cjk",
       "artcraftport"
     ]
   }

@@ -3252,6 +3252,10 @@ html:not([data-appearance="win98"]) .os-space-cmd {
   display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden;
   word-break: break-word;
 }
+/* 蜂群在跑：命令压成一行，省下的高度给成员行，两三个人也能同时看见。 */
+html:not([data-appearance="win98"]) .os-agentspace.has-agents .os-space-cmd {
+  -webkit-line-clamp: 1;
+}
 html:not([data-appearance="win98"]) .os-space-timer {
   flex: 0 0 auto; margin-left: 8px; padding-top: 1px;
   font-family: "SF Mono", Menlo, Consolas, monospace;
@@ -3459,6 +3463,16 @@ html:not([data-appearance="win98"]) .os-cluster b {
 html:not([data-appearance="win98"]) .os-cluster span + span { margin-left: 8px; }
 html:not([data-appearance="win98"]) .os-cluster .is-live { color: #2f7cf6; }
 html:not([data-appearance="win98"]) .os-cluster .is-parked { color: #b7791f; }
+/* 成员区独立滚动：日志继续往下走，成员行留在原地。 */
+html:not([data-appearance="win98"]) .os-agents {
+  flex: 0 1 auto; min-height: 0; max-height: 96px; overflow-y: auto;
+  margin: 0 12px 2px;
+}
+html:not([data-appearance="win98"]) .os-agents[hidden] { display: none; }
+/* 蜂群在跑：快捷入口让位给过程；运行结束后它们自己回来。 */
+html:not([data-appearance="win98"]) .os-agentspace.has-run.has-agents.busy .os-space-quick {
+  display: none;
+}
 
 /* 团队条：成员胶囊 + 任务行。紧凑态只露三行，展开态全量。 */
 html:not([data-appearance="win98"]) .os-team {
@@ -3638,11 +3652,17 @@ html:not([data-appearance="win98"]) .os-agent {
 }
 html:not([data-appearance="win98"]) .os-agent.is-done { border-left-color: rgba(31, 157, 85, .34); }
 html:not([data-appearance="win98"]) .os-agent.is-error { border-left-color: rgba(198, 63, 50, .42); }
+html:not([data-appearance="win98"]) .os-agent-row { display: flex; align-items: center; }
 html:not([data-appearance="win98"]) .os-agent-head {
-  display: flex; align-items: baseline; width: 100%;
+  display: flex; align-items: baseline; flex: 1 1 auto; min-width: 0;
   padding: 3px 5px; border-radius: 7px; background: transparent; text-align: left;
 }
 html:not([data-appearance="win98"]) .os-agent-head:hover { background: var(--nx-hover); }
+html:not([data-appearance="win98"]) .os-agent-open {
+  flex: 0 0 auto; padding: 2px 6px; border-radius: 6px;
+  font-size: 10px; line-height: 1.2; color: var(--nx-text-dim); background: transparent;
+}
+html:not([data-appearance="win98"]) .os-agent-open:hover { background: var(--nx-hover); color: #2f7cf6; }
 html:not([data-appearance="win98"]) .os-agent-glyph {
   flex: 0 0 auto; width: 14px; margin-right: 4px;
   font-size: 9px; color: #2f7cf6;
@@ -3650,12 +3670,14 @@ html:not([data-appearance="win98"]) .os-agent-glyph {
 html:not([data-appearance="win98"]) .os-agent.is-done .os-agent-glyph { color: #1f9d55; }
 html:not([data-appearance="win98"]) .os-agent.is-error .os-agent-glyph { color: #c63f32; }
 html:not([data-appearance="win98"]) .os-agent-label {
-  flex: 0 1 auto; min-width: 0;
+  flex: 0 0 auto; min-width: 0; max-width: 62%;
   font-size: 11px; font-weight: 600; color: var(--nx-text);
   overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 html:not([data-appearance="win98"]) .os-agent-meta {
-  flex: 0 0 auto; margin-left: 7px; font-size: 9.5px; color: var(--nx-text-dim);
+  flex: 1 1 auto; min-width: 0; margin-left: 7px;
+  font-size: 9.5px; color: var(--nx-text-dim);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
 }
 html:not([data-appearance="win98"]) .os-agent-mark {
   flex: 0 0 auto; margin-left: auto; padding-left: 7px;

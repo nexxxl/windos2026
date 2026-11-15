@@ -13,7 +13,7 @@ const packageRoot = process.env.NEXLOS_TEST_PACKAGE
   : fileURLToPath(new URL('../', import.meta.url))
 const { apply } = await import(pathToFileURL(path.join(packageRoot, 'index.js')).href)
 
-test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
+test('standalone plugin Host HTTP contract', { timeout: 20000 }, async (t) => {
   const temporary = await fs.mkdtemp(path.join(os.tmpdir(), 'nexlos-plugin-test-'))
   const home = path.join(temporary, 'workspace')
   const routes = []
@@ -24,16 +24,16 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       register(route) {
         routes.push(route)
         return () => routes.splice(routes.indexOf(route), 1)
-      },
+      }
     },
     connection: {
       requestRejection({ headers }) {
         return requireCredential && headers['x-test-auth'] !== 'allowed' ? 401 : undefined
-      },
-    },
+      }
+    }
   }
   const context = {
-    get: key => services[key],
+    get: (key) => services[key],
     effect(callback) {
       const dispose = callback()
       if (typeof dispose === 'function') effects.push(dispose)
@@ -41,13 +41,18 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
     // Agent tools are provided by the real DSH host; this fixture deliberately
     // exercises only the HTTP boundary without opening any user session.
     inject() {},
-    logger: { warn(message) { throw new Error(message) } },
+    logger: {
+      warn(message) {
+        throw new Error(message)
+      }
+    }
   }
   apply(context, { home })
   const server = http.createServer((req, res) => {
     const pathname = new URL(req.url, 'http://localhost').pathname
-    const route = routes.find(item => item.kind === 'exact' && pathname === item.path)
-      || routes.find(item => item.kind === 'prefix' && (pathname === item.path || pathname.startsWith(item.path + '/')))
+    const route =
+      routes.find((item) => item.kind === 'exact' && pathname === item.path) ||
+      routes.find((item) => item.kind === 'prefix' && (pathname === item.path || pathname.startsWith(item.path + '/')))
     if (route) return route.handler(req, res)
     res.writeHead(404)
     res.end('route not found')
@@ -62,11 +67,15 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       method: method || (fields ? 'POST' : 'GET'),
       headers: { ...(fields ? { 'content-type': 'application/json' } : {}), ...headers },
       ...(fields ? { body: JSON.stringify(fields) } : {}),
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(5000)
     })
     const text = await response.text()
     let body
-    try { body = JSON.parse(text) } catch { body = text }
+    try {
+      body = JSON.parse(text)
+    } catch {
+      body = text
+    }
     return { status: response.status, body, headers: response.headers }
   }
   try {
@@ -80,7 +89,14 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
     })
 
     await t.test('serves bundled desktop, application and Office assets', async () => {
-      for (const route of ['/nexlos/', '/a/app.js', '/a/os.js', '/a/office/', '/a/office/editors.js', '/nexlos/perf.js']) {
+      for (const route of [
+        '/nexlos/',
+        '/a/app.js',
+        '/a/os.js',
+        '/a/office/',
+        '/a/office/editors.js',
+        '/nexlos/perf.js'
+      ]) {
         const response = await request(route)
         assert.equal(response.status, 200, route)
         assert.equal(typeof response.body, 'string', route)
@@ -130,7 +146,9 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       const prefix = '/s/' + encodeURIComponent(space) + '/c/'
       const chapter = await request(prefix + 'chapter.create', { fields: { title: 'One' } })
       const file = chapter.body.append[0].file
-      const saved = await request(prefix + 'chapter.save', { fields: { chapter: file, text: '# One\n\nNexlOS fixture.\n' } })
+      const saved = await request(prefix + 'chapter.save', {
+        fields: { chapter: file, text: '# One\n\nNexlOS fixture.\n' }
+      })
       assert.equal(saved.body.ok, true)
       const read = await request(prefix + 'chapter.read?chapter=' + encodeURIComponent(file))
       assert.equal(read.body.fields.chapter.text, '# One\n\nNexlOS fixture.\n')
@@ -142,7 +160,10 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       const escape = await request('/c/fs.read?path=' + encodeURIComponent('../outside.txt'))
       assert.equal(escape.status, 400)
       assert.equal(escape.body.ok, false)
-      const mutation = await request('/c/settings.set', { fields: { appearance: 'current' }, headers: { origin: 'https://outside.invalid' } })
+      const mutation = await request('/c/settings.set', {
+        fields: { appearance: 'current' },
+        headers: { origin: 'https://outside.invalid' }
+      })
       assert.equal(mutation.status, 403)
       assert.equal(await fs.readFile(path.join(temporary, 'outside.txt'), 'utf8'), 'outside fixture')
       assert.equal((await request('/c/settings.get')).body.detail.appearance, 'win98')
@@ -169,9 +190,23 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
       assert.equal(read.body.rev, saved.body.rev)
     })
 
+    await t.test('subagent roster degrades honestly without a host session controller', async () => {
+      // 没有 sessionController 时必须报 503 带原因；返回空列表会让界面误报「没有子代理」。
+      const all = await request('/agent/agents?scope=all')
+      assert.equal(all.status, 503)
+      assert.equal(all.body.ok, false)
+      assert.match(all.body.error, /session controller/iu)
+      const missing = await request('/agent/agents')
+      assert.equal(missing.status, 400)
+      assert.equal(missing.body.ok, false)
+      const wrongMethod = await request('/agent/agents?scope=all', { method: 'POST', fields: {} })
+      assert.equal(wrongMethod.status, 405)
+    })
+
     await t.test('applies the DSH authentication boundary', async () => {
       requireCredential = true
       assert.equal((await request('/nexlos/health')).status, 401)
+      assert.equal((await request('/agent/agents?scope=all')).status, 401)
       assert.equal((await request('/c/settings.get')).status, 401)
       assert.equal((await request('/a/office/')).status, 401)
       assert.equal((await request('/nexlos/health', { headers: { 'x-test-auth': 'allowed' } })).status, 200)
@@ -179,7 +214,7 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async t => {
   } finally {
     for (const dispose of effects.reverse()) dispose()
     server.closeAllConnections()
-    await new Promise(resolve => server.close(resolve))
+    await new Promise((resolve) => server.close(resolve))
     await fs.rm(temporary, { recursive: true, force: true })
   }
 })
@@ -194,21 +229,34 @@ test('NEXLOS_HOME selects a new directory before it contains settings', async ()
   try {
     apply({
       get(key) {
-        if (key === 'webServer') return { register(route) { routes.push(route); return () => {} } }
+        if (key === 'webServer')
+          return {
+            register(route) {
+              routes.push(route)
+              return () => {}
+            }
+          }
         return undefined
       },
       effect(callback) {
         const dispose = callback()
         if (typeof dispose === 'function') effects.push(dispose)
       },
-      inject() {},
+      inject() {}
     })
     let body
-    const healthRoute = routes.find(route => route.kind === 'prefix' && route.path === '/nexlos')
-    healthRoute.handler({ url: '/nexlos/health', headers: {} }, {
-      writeHead(status) { assert.equal(status, 200) },
-      end(text) { body = JSON.parse(text) },
-    })
+    const healthRoute = routes.find((route) => route.kind === 'prefix' && route.path === '/nexlos')
+    healthRoute.handler(
+      { url: '/nexlos/health', headers: {} },
+      {
+        writeHead(status) {
+          assert.equal(status, 200)
+        },
+        end(text) {
+          body = JSON.parse(text)
+        }
+      }
+    )
     assert.equal(body.home, expected)
     assert.equal((await fs.stat(expected)).isDirectory(), true)
   } finally {

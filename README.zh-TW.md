@@ -2,11 +2,11 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7 MB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
+7.94 MiB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
 
 如果回到千禧年，你的電腦意外打開一個2026年的AI原生作業系統，你會用來幹嘛？
 
-windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.38 MiB，只有一個執行階段相依套件。桌面上的每個應用程式都是 `apps/<id>/index.html` 加一份 `app.json`，可以直接讀、直接改、直接帶走。
+windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.94 MiB，只有一個執行階段相依套件。生成的應用程式就是 `apps/<id>/index.html` 加一份 `app.json`；17 個內建應用程式以程式碼形式放在 `webos/`。
 
 ## 安裝
 
@@ -37,14 +37,14 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 - **打開桌面**：裝好後進入 Web 桌面；首次會先過一次 hello 引導，選好介面語言再進系統。
 - **說一句話造應用**：在 DSH 裡描述你要的東西，它會生成一個內嵌應用程式，落到桌面上。
 - **把倉庫搬進來**：給一個 GitHub 網址，它會複製、找入口，裝成桌面應用程式。
-- **帶走**：應用程式就是檔案。複製 `apps/<id>/`，換一台機器照樣能跑。
+- **帶走**：生成的應用程式就是檔案。複製 `apps/<id>/`，換一台機器照樣能跑。
 
 ## 裡面有什麼
 
 | 項目 | 數字 |
 | --- | --- |
-| 壓縮包 | 7.38 MiB |
-| 解包 | 10.8 MiB / 274 檔案 |
+| 壓縮包 | 7.94 MiB |
+| 解包 | 12.6 MiB / 293 檔案 |
 | 應用程式 | 17 |
 | 指令 | 25 |
 | 介面語言 | 8 種內建，7 種可選語言包 |
@@ -57,8 +57,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 - 不需要第三方帳號，不需要託管的應用程式商店；應用程式、程式碼和資料都在你自己的機器上。
 - 不收集遙測。
 - 不改系統設定；安裝指令碼只寫 DSH profile 的相依與連結，解除安裝只移除這些。
-- 不綁定 CJK 字型、通用版二進位檔和內部歷史；這些不在這個倉庫裡。
-- 不聲稱 Windows 已完整驗證；已知邊界寫在 [Windows 驗證](docs/windows-validation.md)。
+- 發布的壓縮包與公開原始碼候選不含 CJK 辦公字型包、通用版二進位檔和內部專案歷史；包內唯一的中文字面是 THIRD_PARTY_NOTICES 裡聲明的 OFL 像素字型。
+- 不聲稱 Windows 已完整驗證；Windows 路徑按 alpha 對待，發現問題請提 issue。
 
 ## 開發
 

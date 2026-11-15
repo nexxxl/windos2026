@@ -20,10 +20,17 @@ esac
 
 case "$what" in
   all|fonts)
+    # 公开仓不含 CJK 字体包（许可与体积原因），缺目录时给一句明确的处置，而不是 cp 报错。
+    if [ ! -d extras/fonts-cjk ]; then
+      echo "extras/fonts-cjk 不在这个副本里：公开仓不携带 CJK 字体包。拿到字体包后解压到 extras/fonts-cjk，再重跑本命令。" >&2
+      exit 1
+    fi
     # 办公应用的 @font-face 指向 webos/a/office/fonts/，字体包要落到同一个目录。
     cp extras/fonts-cjk/*.woff webos/a/office/fonts/
     cp extras/fonts-cjk/*.woff2 webos/a/office/fonts/
     cp extras/fonts-cjk/OFL.txt webos/a/office/fonts/OFL-cjk.txt
+    # 霞鹜新致宋是 IPA 1.0，不是 OFL；两份许可文本都要跟着字体走。
+    cp extras/fonts-cjk/IPA-Font-License-1.0.md webos/a/office/fonts/
     echo "fonts-cjk: $(ls extras/fonts-cjk/*.woff extras/fonts-cjk/*.woff2 | wc -l | tr -d ' ') 字体"
     ;;
 esac

@@ -2,11 +2,11 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français** · [Deutsch](README.de.md)
 
-7 MB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
+7,94 MiB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
 
 Si un système d'exploitation AI-native de 2026 s'était ouvert sur votre ordinateur au millénaire, qu'en auriez-vous fait ?
 
-windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 7,31 MiB et une seule dépendance d'exécution. Chaque application du bureau est un `apps/<id>/index.html` plus un `app.json` : lisible, modifiable, emportable.
+windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 7,94 MiB et une seule dépendance d'exécution. Les applications générées sont de simples fichiers sous `apps/<id>/` ; les 17 applications intégrées sont du code sous `webos/`.
 
 *Traduction. La version de référence est le README anglais.*
 
@@ -39,14 +39,14 @@ Nécessite Node.js 22+ et une version de DSH capable de charger des bundles loca
 - **Ouvrir le bureau** : après l'installation, entrez dans le bureau web. Le premier lancement passe par l'écran hello et demande une langue d'interface.
 - **Une phrase, une application** : décrivez ce que vous voulez dans DSH ; il génère une application intégrée et la place sur le bureau.
 - **Importer un dépôt** : donnez une URL GitHub ; il clone le dépôt, trouve le point d'entrée et l'installe comme application de bureau.
-- **L'emporter** : une application n'est que des fichiers. Copiez `apps/<id>/` et elle fonctionne sur une autre machine.
+- **L'emporter** : une application générée n'est que des fichiers. Copiez `apps/<id>/` et elle fonctionne sur une autre machine.
 
 ## Contenu
 
 | Élément | Nombre |
 | --- | --- |
-| Archive | 7,31 MiB |
-| Décompressé | 10,8 MiB / 274 fichiers |
+| Archive | 7,94 MiB |
+| Décompressé | 12,6 MiB / 293 fichiers |
 | Applications | 17 |
 | Commandes | 25 |
 | Langues d'interface | 8 intégrées, 7 paquets optionnels |
@@ -59,8 +59,8 @@ Nécessite Node.js 22+ et une version de DSH capable de charger des bundles loca
 - Pas de compte tiers, pas de boutique d'applications hébergée ; les applications, le code et les données restent sur votre machine.
 - Aucune télémétrie.
 - Aucune modification du système ; l'installateur écrit uniquement les dépendances et liens du profil DSH, et la désinstallation retire exactement cela.
-- Pas de polices CJK, de binaires de l'édition universelle ni d'historique interne inclus ; rien de tout cela n'est dans ce dépôt.
-- Aucune affirmation que Windows est entièrement validé ; les limites connues sont dans [Validation Windows](docs/windows-validation.md).
+- L'archive publiée et le candidat public de code source ne contiennent ni pack de polices CJK pour la bureautique, ni binaires de l'édition universelle, ni historique interne. La seule police CJK de l'archive est la police pixel OFL déclarée dans THIRD_PARTY_NOTICES.
+- Aucune affirmation que Windows est entièrement validé ; le chemin Windows est traité comme alpha.
 
 ## Développement
 

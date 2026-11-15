@@ -39,7 +39,11 @@ function Write-JsonFile($path, $obj) {
   [System.IO.File]::WriteAllText($path, $json + "`n", $Utf8NoBom)
 }
 
-function Get-ProfilesRoot { Join-Path $env:USERPROFILE '.dsh\profiles' }
+# dsh 用 $env:DSH_HOME 定位档案；这里必须跟它一致，否则自定义 DSH_HOME 的机器会装到错误的 home。
+function Get-ProfilesRoot {
+  $root = if ($env:DSH_HOME) { $env:DSH_HOME } else { Join-Path $env:USERPROFILE '.dsh' }
+  Join-Path $root 'profiles'
+}
 
 # 没给 -Profile 时，从正在运行的 dsh 进程里读 --profile，避免装到别的档案。
 function Resolve-Profile {
@@ -130,5 +134,7 @@ if ($Restart) {
 }
 
 Write-Host ""
-Write-Host "下一步：重启 DSH（关掉当前 dsh 进程后按原方式启动），再打开 /nexlos/ 确认。"
-Write-Host "验证命令： curl.exe -s -o NUL -w `"%{http_code}`" http://127.0.0.1:8891/nexlos/health"
+Write-Host "下一步：重启 DSH（关掉当前 dsh 进程后按原方式启动），在 DSH 侧栏点「NexlOS 桌面」进入。"
+# 浏览器的地址栏直达会被宿主的导航护栏拦成 403；宿主页面里的 iframe 入口才是受支持的路径。
+Write-Host "说明：不要在地址栏直接打开 /nexlos/（宿主返回 forbidden），要从 DSH 界面进入。"
+Write-Host "验证命令： curl.exe -s -o NUL -w `"%{http_code}`" http://127.0.0.1:8891/nexlos/health   # 需带宿主 cookie，否则 401"
