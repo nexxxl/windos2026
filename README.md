@@ -2,11 +2,22 @@
 
 **English** · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.94 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
+7.95 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.95 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
+
+## Editions and licenses
+
+| Edition | What you get | License |
+| --- | --- | --- |
+| **Plugin** (source in this repository) | the 7.95 MiB package described below | [Apache-2.0](LICENSE) |
+| **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel and shell under [NexlOS Binary License 1.0](LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
+
+The authoritative file-by-file map is [LICENSING.md](LICENSING.md).
+
+The universal edition is not published yet: Releases stays empty until that edition clears its asset-rights review.
 
 ## Install
 
@@ -43,7 +54,7 @@ Requires Node.js 22+ and a DSH build that can load local bundles. There is no np
 
 | Item | Number |
 | --- | --- |
-| Tarball | 7.94 MiB (measured with `npm pack --dry-run --json`) |
+| Tarball | 7.95 MiB (measured with `npm pack --dry-run --json`) |
 | Unpacked | 12.6 MiB / 293 files |
 | Apps | 17 |
 | Commands | 25 |
@@ -76,6 +87,8 @@ Size gate:
 ```
 
 ## License
+
+The plugin source in this repository is Apache-2.0. Release binaries of the universal edition follow a separate license; see [LICENSING.md](LICENSING.md) for the map and [LICENSE-BINARY.md](LICENSE-BINARY.md) for its terms.
 
 Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](DISCLAIMER.md).
 

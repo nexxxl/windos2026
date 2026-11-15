@@ -4,6 +4,12 @@
   "private": false,
   "license": "Apache-2.0",
   "description": "NexlOS lite desktop for DeepSeek Harness: English-first, optional language and art packs.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nexxxl/windos2026.git"
+  },
+  "homepage": "https://github.com/nexxxl/windos2026#readme",
+  "bugs": "https://github.com/nexxxl/windos2026/issues",
   "type": "module",
   "exports": {
     ".": "./index.js",
@@ -25,9 +31,9 @@
     "vendor",
     "extension",
     "LICENSE",
+    "LICENSING.md",
     "NOTICE",
     "TRADEMARK.md",
-    "EULA.md",
     "DISCLAIMER.md",
     "extras",
     "!extras/fonts-cjk"

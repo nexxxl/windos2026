@@ -2,13 +2,24 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français** · [Deutsch](README.de.md)
 
-7,94 MiB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
+7,95 MiB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
 
 Si un système d'exploitation AI-native de 2026 s'était ouvert sur votre ordinateur au millénaire, qu'en auriez-vous fait ?
 
-windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 7,94 MiB et une seule dépendance d'exécution. Les applications générées sont de simples fichiers sous `apps/<id>/` ; les 17 applications intégrées sont du code sous `webos/`.
+windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 7,95 MiB et une seule dépendance d'exécution. Les applications générées sont de simples fichiers sous `apps/<id>/` ; les 17 applications intégrées sont du code sous `webos/`.
 
 *Traduction. La version de référence est le README anglais.*
+
+## Deux éditions, deux licences
+
+| Édition | Ce que vous obtenez | Licence |
+| --- | --- | --- |
+| **Plugin** (source de ce dépôt) | le paquet de 7.95 MiB décrit ci-dessous | [Apache-2.0](LICENSE) |
+| **Universelle** (Releases) | un binaire autonome avec sa propre coque de fenêtre native | le noyau et la coque fermés sous [NexlOS Binary License 1.0](LICENSE-BINARY.md) ; la couche bureau embarquée reste Apache-2.0 |
+
+La carte faisant autorité, fichier par fichier, est dans [LICENSING.md](LICENSING.md).
+
+L'édition universelle n'est pas encore publiée : Releases restera vide jusqu'à la fin de la vérification des droits sur ses ressources.
 
 ## Installation
 
@@ -45,7 +56,7 @@ Nécessite Node.js 22+ et une version de DSH capable de charger des bundles loca
 
 | Élément | Nombre |
 | --- | --- |
-| Archive | 7,94 MiB |
+| Archive | 7,95 MiB |
 | Décompressé | 12,6 MiB / 293 fichiers |
 | Applications | 17 |
 | Commandes | 25 |
@@ -78,5 +89,7 @@ Contrôle de taille :
 ```
 
 ## Licence
+
+Le code du plugin dans ce dépôt est sous Apache-2.0. Les binaires de l'édition universelle suivent une licence distincte ; voir [LICENSING.md](LICENSING.md) pour la carte et [LICENSE-BINARY.md](LICENSE-BINARY.md) pour les conditions.
 
 Le code et la documentation du plugin sont sous [Apache-2.0](LICENSE). Les marques ne sont pas concédées par Apache-2.0 ; les ressources tierces conservent leurs propres licences. Voir [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md) et [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).

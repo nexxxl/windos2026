@@ -2,13 +2,24 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.94 MiB。2026年の AI ネイティブで超軽量なオペレーティングシステム。ミレニアムに持っていけば異星のテクノロジー、今日のあなたにとってはプライベートなソフトウェア工場。Bring anything. Leave with an HTML app.
+7.95 MiB。2026年の AI ネイティブで超軽量なオペレーティングシステム。ミレニアムに持っていけば異星のテクノロジー、今日のあなたにとってはプライベートなソフトウェア工場。Bring anything. Leave with an HTML app.
 
 もしミレニアムに戻ったとき、あなたのコンピューターが突然 2026年の AI ネイティブ OS を開いたら、何に使いますか？
 
-windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.94 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `webos/` のコードとして同梱します。
+windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.95 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `webos/` のコードとして同梱します。
 
 *翻訳版です。正式な内容は英語版を参照してください。*
+
+## 2 つのエディション、2 つのライセンス
+
+| エディション | 入手するもの | ライセンス |
+| --- | --- | --- |
+| **プラグイン版**（本リポジトリのソース） | 後述の 7.95 MiB パッケージ | [Apache-2.0](LICENSE) |
+| **ユニバーサル版**（Releases） | ネイティブウィンドウシェルを同梱した単体バイナリ | 非公開のカーネルとシェルは [NexlOS Binary License 1.0](LICENSE-BINARY.md)、同梱のデスクトップ層は Apache-2.0 のまま |
+
+ファイル単位の正式な対応表は [LICENSING.md](LICENSING.md)。
+
+ユニバーサル版は未公開です。資産権利の確認が終わるまで、Releases にバイナリは掲載しません。
 
 ## インストール
 
@@ -45,7 +56,7 @@ Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。n
 
 | 項目 | 数字 |
 | --- | --- |
-| tarball | 7.94 MiB |
+| tarball | 7.95 MiB |
 | 展開後 | 12.6 MiB / 293 ファイル |
 | アプリ | 17 |
 | コマンド | 25 |
@@ -78,5 +89,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 ```
 
 ## ライセンス
+
+本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](LICENSING.md)、条件は [LICENSE-BINARY.md](LICENSE-BINARY.md) にあります。
 
 プラグインのソースとドキュメントは [Apache-2.0](LICENSE) です。商標は Apache-2.0 では付与されず、第三者素材はそれぞれのライセンスに従います。[NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。

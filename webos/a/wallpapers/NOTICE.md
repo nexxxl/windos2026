@@ -13,7 +13,7 @@
 
 | 文件 | 用途 | 来源 | 边界 |
 | --- | --- | --- | --- |
-| `../wallpaper.jpg` | Win98 主题任务栏纹理 | NexlOS Authors 用自有脚本程序化生成 | 随本仓库按 Apache-2.0 提供；通用版发行包按 `EULA.md` 随软件分发 |
+| `../wallpaper.jpg` | Win98 主题任务栏纹理 | NexlOS Authors 用自有脚本程序化生成 | 随本仓库按 Apache-2.0 提供；通用版发行包按 `LICENSE-BINARY.md` 随软件分发 |
 
 ## 已移除的素材
 

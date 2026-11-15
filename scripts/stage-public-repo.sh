@@ -22,7 +22,7 @@ if not root.is_dir():
     sys.exit(1)
 for name in ('universal','plugin','applications','tools','docs/project-history','docs/import-manifest.json','docs/baseline-manifest.json','extras/fonts-cjk'):
     if (root/name).exists(): errors.append('Excluded source boundary: '+name)
-for name in ('LICENSE','NOTICE','TRADEMARK.md','EULA.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
+for name in ('LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','LICENSE-BINARY.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
     if not (root/name).is_file(): errors.append('Missing runtime or notice: '+name)
 for p in root.rglob('*'):
     rel=p.relative_to(root).as_posix()
@@ -105,7 +105,7 @@ import shutil,sys
 src=Path(sys.argv[1]);out=Path(sys.argv[2]);out.mkdir(parents=True,exist_ok=False)
 
 def stage():
-  files={'package.json','package-lock.json','cordis.patch.yml','icon.svg','README.md','THIRD_PARTY_NOTICES.md','LICENSE','NOTICE','TRADEMARK.md','EULA.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','DCO','.gitignore','.editorconfig','.gitattributes','.prettierrc.json','.prettierignore','pyproject.toml','Makefile'}
+  files={'package.json','package-lock.json','cordis.patch.yml','icon.svg','README.md','THIRD_PARTY_NOTICES.md','LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','LICENSE-BINARY.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','DCO','.gitignore','.editorconfig','.gitattributes','.prettierrc.json','.prettierignore','pyproject.toml','Makefile'}
   files.update(p.name for p in src.glob('*.js'))
   files.update(p.name for p in src.glob('*.css'))
   for name in sorted(files):

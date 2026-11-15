@@ -2,11 +2,22 @@
 
 [English](README.md) · [简体中文](README.zh-CN.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.94 MiB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
+7.95 MiB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
 
 如果回到千禧年，你的電腦意外打開一個2026年的AI原生作業系統，你會用來幹嘛？
 
-windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.94 MiB，只有一個執行階段相依套件。生成的應用程式就是 `apps/<id>/index.html` 加一份 `app.json`；17 個內建應用程式以程式碼形式放在 `webos/`。
+windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.95 MiB，只有一個執行階段相依套件。生成的應用程式就是 `apps/<id>/index.html` 加一份 `app.json`；17 個內建應用程式以程式碼形式放在 `webos/`。
+
+## 兩種發行，兩套授權
+
+| 形態 | 你拿到的東西 | 授權 |
+| --- | --- | --- |
+| **外掛版**（本倉原始碼） | 下文所述的 7.95 MiB 外掛包 | [Apache-2.0](LICENSE) |
+| **通用版**（Releases） | 自帶原生視窗殼的獨立二進位 | 閉源內核與視窗殼按 [NexlOS Binary License 1.0](LICENSE-BINARY.md)；內建桌面層保持 Apache-2.0 |
+
+逐檔案、逐產物的權威對映見 [LICENSING.md](LICENSING.md)。
+
+通用版還沒發布：在它的資產授權複核完成之前，Releases 不會掛出二進位檔。
 
 ## 安裝
 
@@ -43,7 +54,7 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 | 項目 | 數字 |
 | --- | --- |
-| 壓縮包 | 7.94 MiB |
+| 壓縮包 | 7.95 MiB |
 | 解包 | 12.6 MiB / 293 檔案 |
 | 應用程式 | 17 |
 | 指令 | 25 |
@@ -76,5 +87,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 ```
 
 ## 授權
+
+本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](LICENSING.md)，條款見 [LICENSE-BINARY.md](LICENSE-BINARY.md)。
 
 外掛原始碼與文件依 [Apache-2.0](LICENSE) 提供。商標不隨 Apache-2.0 授予，第三方素材依各自授權，見 [NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
