@@ -53,6 +53,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 需要 Node.js 22+ 和可加载本地 bundle 的 DSH。没有 npm 发布，请用上面的仓库安装或本地脚本。
 
+![NexlOS 在 DSH 里](docs/images/host-dsh.jpg)
+
 ### Octop（工作台）
 
 桌面不依赖 DSH。同一份 `webos/` 和 `index.js` 也能作为独立宿主运行，一条命令把它挂进 Octop：
@@ -64,6 +66,8 @@ cd windos2026
 ```
 
 Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作区；命令栏回答用的是你自己的 Octop agent。`./bin/octop-install status|up|down|uninstall` 负责管理。需要 Node.js 22+ 和装在 `~/.octop` 的 Octop。宿主差异、边界与回滚见 [docs/octop.md](docs/octop.md)。
+
+![NexlOS 在 Octop 里](docs/images/host-octop.jpg)
 
 ## 用
 

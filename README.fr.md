@@ -55,6 +55,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 Nécessite Node.js 22+ et une version de DSH capable de charger des bundles locaux. Il n'y a pas de publication npm ; installez depuis ce dépôt ou avec le script local ci-dessus.
 
+![NexlOS dans DSH](docs/images/host-dsh.jpg)
+
 ### Octop (espace de travail)
 
 Le bureau n'a pas besoin de DSH. Les mêmes `webos/` et `index.js` tournent comme hôte autonome, et une commande ajoute une entrée permanente à Octop :
@@ -66,6 +68,8 @@ cd windos2026
 ```
 
 La barre latérale d'Octop affiche **NexlOS desktop** ; le bureau s'ouvre dans l'espace de travail principal et la barre de commandes répond avec votre propre agent Octop. `./bin/octop-install status|up|down|uninstall` gère l'ensemble. Nécessite Node.js 22+ et Octop installé dans `~/.octop`. Différences selon l'hôte, limites et retour arrière : [docs/octop.md](docs/octop.md).
+
+![NexlOS dans Octop](docs/images/host-octop.jpg)
 
 ## Utilisation
 
