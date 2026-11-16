@@ -23,6 +23,27 @@ from pathlib import Path
 
 STATUSES = ("PASS", "FAIL", "SKIP")
 
+# 门禁的检查清单。run_all 会核对「实际执行」与「登记」两端：
+# 新加一项检查却忘了登记，或登记了却从未执行，都会直接变红。
+# scripts/test-audit-release.py 另外保证每一项都有反例测试。
+CHECK_NAMES = (
+    "check-registry",
+    "license-copies",
+    "no-eula-reference",
+    "binary-license-entry",
+    "workflow-contract",
+    "workflow-hardening",
+    "security-surface",
+    "build-gogarble-scope",
+    "update-channel",
+    "package-layout",
+    "manifest-obfuscation",
+    "binary-buildinfo",
+    "binary-command-set",
+    "binary-symbols",
+    "binary-self-report",
+)
+
 
 # ---------- 基础设施 ----------
 
@@ -78,6 +99,10 @@ class Report:
     def failed(self) -> bool:
         return any(row["status"] == "FAIL" for row in self.rows)
 
+    def names(self) -> list[str]:
+        """已执行过的检查名（二进制类检查可重复出现）。"""
+        return [row["check"] for row in self.rows]
+
     def print(self, as_json: bool) -> None:
         if as_json:
             print(json.dumps({"ok": not self.failed(), "checks": self.rows}, ensure_ascii=False, indent=2))
@@ -93,16 +118,22 @@ class Report:
 
 # ---------- 检查 ----------
 
-def check_license_copies(root: Path, report: Report) -> None:
-    """四处二进制许可必须逐字节相同：任何一处手改都会让下载者读到不同条款。"""
+def check_license_copies(root: Path, public: Path | None, report: Report) -> None:
+    """每份二进制许可必须逐字节相同：任何一处手改都会让下载者读到不同条款。"""
     candidates = [
         root / "docs" / "LICENSE-BINARY.md",
         root / "public-repo" / "docs" / "LICENSE-BINARY.md",
         root / "GitHub公开目录" / "docs" / "LICENSE-BINARY.md",
     ]
+    if public and public != root:
+        candidates.append(public / "docs" / "LICENSE-BINARY.md")
     present = [p for p in candidates if p.is_file()]
     if len(present) < 2:
-        report.add("license-copies", "SKIP", "只找到一份 LICENSE-BINARY.md，无法比较")
+        # 源码树本来就该有源码副本与公开副本；只剩一份说明有人删了东西。
+        if (root / "go.mod").is_file():
+            report.add("license-copies", "FAIL", "源码树只找到一份 LICENSE-BINARY.md，副本被删了")
+        else:
+            report.add("license-copies", "SKIP", "这棵树只有一份二进制许可（插件版）")
         return
     digests = {p: sha256(p) for p in present}
     unique = set(digests.values())
@@ -112,18 +143,32 @@ def check_license_copies(root: Path, report: Report) -> None:
         report.add("license-copies", "FAIL", "; ".join(f"{p.relative_to(root)}={d[:12]}" for p, d in digests.items()))
 
 
+def shipped_docs(root: Path):
+    """只扫会随仓库或安装包发布的文档。
+    构建脚本与它们的 README 是维护者说明，里面提到 EULA 是在描述这条检查本身，
+    不能因为解释“不要再引用 EULA”而让门禁变红。"""
+    for name in ("README.md", "README.en.md", "NOTICE", "DISCLAIMER.md", "TRADEMARK.md",
+                 "THIRD_PARTY_NOTICES.md", "SECURITY.md"):
+        path = root / name
+        if path.is_file():
+            yield path
+    for dirname in ("docs", "public-repo", "GitHub公开目录", ".github"):
+        base = root / dirname
+        if not base.is_dir():
+            continue
+        for path in base.rglob("*"):
+            if path.is_file() and path.suffix.lower() in (".md", ".txt", ".yml", ".yaml"):
+                if "node_modules" in path.parts or "baseline-manifest.json" == path.name:
+                    continue
+                yield path
+
+
 def check_no_eula(root: Path, report: Report) -> None:
-    """EULA 已并入二进制许可；残留的引用会让条款出现第二个版本。"""
+    """EULA 已并入二进制许可；发布物里残留的引用会让条款出现第二个版本。"""
     problems = []
-    for path in text_files(root, (".md", ".txt", ".yml", ".yaml", ".json", ".js", ".go")):
+    for path in shipped_docs(root):
         raw = path.read_text(encoding="utf-8", errors="ignore")
         if re.search(r"\bEULA(?:\.md)?\b", raw):
-            # 两个豁免：审计脚本自己会提到 EULA；baseline-manifest.json 是
-            # 逐文件哈希快照，冻结时才重生成，它不随包发布。
-            if path.name == "audit-release.py":
-                continue
-            if path.name == "baseline-manifest.json":
-                continue
             problems.append(str(path.relative_to(root)))
     if problems:
         report.add("no-eula-reference", "FAIL", ", ".join(sorted(set(problems))[:6]))
@@ -154,15 +199,17 @@ def check_workflow_contract(repo: Path, report: Report) -> None:
     """插件工作流只做校验与留档：建 Release、写 contents 都会抢走通用版的发布位。"""
     path = repo / ".github" / "workflows" / "release.yml"
     if not path.is_file():
-        report.add("workflow-contract", "SKIP", f"{repo.name} 没有 .github/workflows/release.yml")
+        # 分发包（build.py 导出的 public-repo）按设计不带 .github；这时该由 CI 对着仓库根跑。
+        report.add("workflow-contract", "SKIP", "这棵树没有 .github/workflows/release.yml")
         return
     raw = path.read_text(encoding="utf-8")
     problems = []
-    if re.search(r"\bgh\s+release\s+create\b", raw) or "softprops/action-gh-release" in raw:
+    if (re.search(r"\bgh\s+release\s+create\b", raw) or "softprops/action-gh-release" in raw
+            or re.search(r"gh\s+api\b[^\n]*/releases(?![\w/])[^\n]*\bPOST\b", raw, re.IGNORECASE)):
         problems.append("仍然会创建 GitHub Release")
     if "contents: write" in raw:
         problems.append("permissions 仍是 contents: write")
-    if not re.search(r"tags:\s*\[?\s*'plugin-v\*'", raw):
+    if not re.search(r"""tags:\s*\[?\s*['"]plugin-v\*['"]""", raw):
         problems.append("tag 触发不是 plugin-v*")
     if "contents: read" not in raw:
         problems.append("缺少显式的 contents: read")
@@ -170,6 +217,92 @@ def check_workflow_contract(repo: Path, report: Report) -> None:
         report.add("workflow-contract", "FAIL", "; ".join(problems))
     else:
         report.add("workflow-contract", "PASS")
+
+
+def check_workflow_hardening(repo: Path, report: Report) -> None:
+    """工作流本身就是攻击面：默认权限、不可信触发器、漂移的动作版本都是入口。"""
+    base = repo / ".github" / "workflows"
+    if not base.is_dir():
+        report.add("workflow-hardening", "SKIP", "这棵树没有 .github/workflows")
+        return
+    problems = []
+    for path in sorted([*base.glob("*.yml"), *base.glob("*.yaml")]):
+        raw = path.read_text(encoding="utf-8", errors="ignore")
+        if "permissions:" not in raw:
+            problems.append(f"{path.name} 没有声明 permissions")
+        # pull_request_target 在基分支上下文里跑，并可能拿到写令牌与密钥。
+        if re.search(r"^on:.*\bpull_request_target\b", raw, re.MULTILINE) or \
+                re.search(r"^\s{2}pull_request_target\s*:", raw, re.MULTILINE):
+            problems.append(f"{path.name} 使用 pull_request_target")
+        for mt in re.finditer(r"uses:\s*(\S+)", raw):
+            ref = mt.group(1).strip("'\"")
+            if "@" not in ref:
+                problems.append(f"{path.name} 的 {ref} 没有固定版本")
+                continue
+            tag = ref.rsplit("@", 1)[1]
+            if tag in ("main", "master", "HEAD") or tag.startswith("refs/"):
+                problems.append(f"{path.name} 的 {ref} 跟着分支走")
+    if problems:
+        report.add("workflow-hardening", "FAIL", "; ".join(problems[:6]))
+    else:
+        report.add("workflow-hardening", "PASS")
+
+
+def check_security_surface(repo: Path, report: Report) -> None:
+    """公开仓的安全入口必须是文件而非承诺：报告渠道、依赖更新、归属人、换行归一。"""
+    # 私有构建树不带 .github，它的仓库级设置由公开仓那份检查。发布仓一旦有 .github
+    # （工作流总在这里），这些文件就一个都不能少。
+    if not (repo / ".github").is_dir():
+        report.add("security-surface", "SKIP", "这棵树没有 .github，不是发布仓")
+        return
+    problems = []
+    security = repo / ".github" / "SECURITY.md"
+    if not security.is_file():
+        security = repo / "SECURITY.md"
+    if not security.is_file():
+        problems.append("缺少 SECURITY.md")
+    else:
+        raw = security.read_text(encoding="utf-8", errors="ignore")
+        if not re.search(r"Report a vulnerability|Security Advisor", raw, re.IGNORECASE):
+            problems.append("SECURITY.md 没有指明私密报告渠道")
+        if not re.search(r"^#{1,3}\s*Scope\b", raw, re.MULTILINE | re.IGNORECASE):
+            problems.append("SECURITY.md 没有 Scope 段")
+    dependabot = repo / ".github" / "dependabot.yml"
+    if not dependabot.is_file():
+        problems.append("缺少 .github/dependabot.yml")
+    else:
+        raw = dependabot.read_text(encoding="utf-8", errors="ignore")
+        if not re.search(r"^version:\s*[\"']?2", raw, re.MULTILINE):
+            problems.append("dependabot.yml 不是 version 2")
+        for eco in ("npm", "github-actions"):
+            if f"package-ecosystem: {eco}" not in raw:
+                problems.append(f"dependabot 没有覆盖 {eco}")
+    if not (repo / ".github" / "CODEOWNERS").is_file():
+        problems.append("缺少 CODEOWNERS")
+    if not (repo / ".gitattributes").is_file():
+        problems.append("缺少 .gitattributes")
+    if problems:
+        report.add("security-surface", "FAIL", "; ".join(problems))
+    else:
+        report.add("security-surface", "PASS")
+
+
+def check_registry(report: Report) -> None:
+    """登记表与实现必须一致：否则「全绿」可能只是少跑了几项。"""
+    # 本项自己还没输出，比较时先排除，否则它永远把自己算成「未执行」。
+    expected = [name for name in CHECK_NAMES if name != "check-registry"]
+    emitted = [name for name in report.names() if name != "check-registry"]
+    missing = [name for name in expected if name not in emitted]
+    unknown = sorted(set(emitted) - set(expected))
+    problems = []
+    if missing:
+        problems.append("未执行: " + ", ".join(missing))
+    if unknown:
+        problems.append("未登记: " + ", ".join(unknown))
+    if problems:
+        report.add("check-registry", "FAIL", "; ".join(problems))
+    else:
+        report.add("check-registry", "PASS", f"{len(CHECK_NAMES)} 项")
 
 
 def check_build_scope(root: Path, report: Report) -> None:
@@ -277,8 +410,15 @@ def check_binary(binary: Path, report: Report) -> None:
     else:
         report.add("binary-buildinfo", "FAIL", first[:160])
 
-    # 抽样符号：这几类名字最容易被依赖图带回来；出现一个就说明范围漏了。
+    # 命令名是字符串字面量，garble 默认不动它们；用它证明这批产物确实包含当前代码。
+    # 否则一个旧的候选包也能在“符号检查”上全绿。
     data = binary.read_bytes()
+    missing = [cmd for cmd in ("update.status", "update.check", "update.download") if cmd.encode() not in data]
+    if missing:
+        report.add("binary-command-set", "FAIL", "缺少命令字面量: " + ", ".join(missing))
+    else:
+        report.add("binary-command-set", "PASS", "update.* 三条命令都在")
+
     leaked = [name for name in ("registerStarCommands", "newUpdateManager", "nexloffice.") if name.encode() in data]
     path_hits = data.count(b"nexlos/")
     if leaked:
@@ -303,6 +443,36 @@ def check_binary(binary: Path, report: Report) -> None:
 
 # ---------- 入口 ----------
 
+def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]) -> Report:
+    """唯一执行路径。自测也走它，保证测的就是门禁本身。"""
+    report = Report()
+    check_license_copies(root, public, report)
+    check_no_eula(root, report)
+    check_license_link(public, report)
+    check_workflow_contract(public, report)
+    check_workflow_hardening(public, report)
+    check_security_surface(public, report)
+    check_build_scope(root, report)
+    check_update_channel(root, report)
+
+    if package:
+        check_package(root, package, report)
+        check_manifest(package, report)
+    else:
+        report.add("package-layout", "SKIP", "未提供 --package")
+        report.add("manifest-obfuscation", "SKIP", "未提供 --package")
+
+    if binaries:
+        for binary in binaries:
+            check_binary(binary, report)
+    else:
+        for name in ("binary-buildinfo", "binary-command-set", "binary-symbols", "binary-self-report"):
+            report.add(name, "SKIP", "未提供 --binary")
+
+    check_registry(report)
+    return report
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="NexlOS 发行审计回归门禁")
     parser.add_argument("--root", type=Path, help="源码根；默认从脚本位置向上找")
@@ -314,30 +484,10 @@ def main() -> int:
 
     root = (args.root or find_root(Path(__file__).resolve().parent)).resolve()
     public = (args.public_repo or root).resolve()
-    report = Report()
+    package = args.package.resolve() if args.package else None
+    binaries = [b.resolve() for b in args.binary]
 
-    check_license_copies(root, report)
-    check_no_eula(root, report)
-    check_license_link(public, report)
-    check_workflow_contract(public, report)
-    check_build_scope(root, report)
-    check_update_channel(root, report)
-
-    if args.package:
-        check_package(root, args.package.resolve(), report)
-        check_manifest(args.package.resolve(), report)
-    else:
-        report.add("package-layout", "SKIP", "未提供 --package")
-        report.add("manifest-obfuscation", "SKIP", "未提供 --package")
-
-    if args.binary:
-        for binary in args.binary:
-            check_binary(binary.resolve(), report)
-    else:
-        report.add("binary-buildinfo", "SKIP", "未提供 --binary")
-        report.add("binary-symbols", "SKIP", "未提供 --binary")
-        report.add("binary-self-report", "SKIP", "未提供 --binary")
-
+    report = run_all(root, public, package, binaries)
     report.print(args.json)
     return 1 if report.failed() else 0
 
