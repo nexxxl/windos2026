@@ -57,7 +57,9 @@ These are repository settings, not files. Apply them once, before the repository
 is made public, and re-check them at each major release:
 
 `scripts/harden-repo.sh` applies the automatable half (dry-run by default,
-`--apply` to write). What it sets:
+`--apply` to write). `--verify` reads every control back and prints PASS/FAIL
+without changing anything, so a setting that drifts back is visible instead of
+assumed. What it sets:
 
 - `main`: force pushes and deletion rejected, admins allowed. Approval rules are
   left off so a single maintainer is not locked out of their own release.

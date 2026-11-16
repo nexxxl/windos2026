@@ -29,6 +29,8 @@ jobs:
       - run: python3 scripts/check-source.py
       # 发行契约的回归门禁：许可只有一份、工作流不建 Release、NOTICE 指向正确的条款。
       - run: python3 scripts/audit-release.py
+      # 门禁自己的反例测试：检查被改空时必须变红，否则上面那条只是安慰剂。
+      - run: python3 scripts/test-audit-release.py
 
   plugin:
     name: Standalone plugin (Node ${{ matrix.node }})
