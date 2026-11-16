@@ -1,12 +1,12 @@
 # windos2026
 
-[English](README.md) · [简体中文](README.zh-CN.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · **繁體中文** · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.95 MiB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
+7.94 MiB，一台 2026 年的 AI 超輕原生作業系統：回到千禧年是外星科技，留在今天是你的私人軟體工廠。Bring anything. Leave with an HTML app.
 
 如果回到千禧年，你的電腦意外打開一個2026年的AI原生作業系統，你會用來幹嘛？
 
-windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.95 MiB，只有一個執行階段相依套件。生成的應用程式就是 `apps/<id>/index.html` 加一份 `app.json`；17 個內建應用程式以程式碼形式放在 `webos/`。
+windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH：17 個應用程式、25 條指令、8 種內建介面語言，壓縮包 7.94 MiB，只有一個執行階段相依套件。生成的應用程式就是 `apps/<id>/index.html` 加一份 `app.json`；17 個內建應用程式以程式碼形式放在 `webos/`。
 
 你還記得你用過的第一台電腦桌面長什麼樣子嗎？這一台可以完全是你自己的：一句話生出一個應用程式，每個應用程式都以檔案的形式跟著你走。Linux 給了每個程式一台機器；NexlOS 給了每個 agent 一台電腦。
 
@@ -16,16 +16,16 @@ windos2026 是 NexlOS 的 DSH 外掛版。它把一台完整的桌面裝進 DSH�
 
 **你的應用程式。** 在 DSH 裡說一句話：生成器寫出 `apps/<id>/index.html` 和 `app.json`，用瀏覽器打開頁面做驗收，驗收不過就自動修一次，然後把圖示放上桌面。把這個目錄複製到任何靜態伺服器上，它照樣能跑；給它一個 GitHub 位址，`importGithubApp` 會複製倉庫、找到建置後的入口，掛成應用程式。
 
-**你的機器。** 7.95 MiB 換來 17 個應用程式、25 條指令、8 種介面語言，裝在你正在跑的宿主裡：不用再部署一套控制面，沒有帳號，沒有遙測。把同一個 bundle 裝進另一個 DSH 設定檔，它用的是那個設定檔的模型，不是我們的。
+**你的機器。** 7.94 MiB 換來 17 個應用程式、25 條指令、8 種介面語言，裝在你正在跑的宿主裡：不用再部署一套控制面，沒有帳號，沒有遙測。把同一個 bundle 裝進另一個 DSH 設定檔，它用的是那個設定檔的模型，不是我們的。
 
 ## 兩種發行，兩套授權
 
 | 形態 | 你拿到的東西 | 授權 |
 | --- | --- | --- |
-| **外掛版**（本倉原始碼） | 下文所述的 7.95 MiB 外掛包 | [Apache-2.0](LICENSE) |
-| **通用版**（Releases） | 自帶原生視窗殼的獨立二進位 | 閉源內核與視窗殼按 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md)；內建桌面層保持 Apache-2.0 |
+| **外掛版**（本倉原始碼） | 下文所述的 7.94 MiB 外掛包 | [Apache-2.0](../../LICENSE) |
+| **通用版**（Releases） | 自帶原生視窗殼的獨立二進位 | 閉源內核與視窗殼按 [NexlOS Binary License 1.0](../LICENSE-BINARY.md)；內建桌面層保持 Apache-2.0 |
 
-逐檔案、逐產物的權威對映見 [LICENSING.md](LICENSING.md)。
+逐檔案、逐產物的權威對映見 [LICENSING.md](../legal/LICENSING.md)。
 
 通用版還沒發布：在它的資產授權複核完成之前，Releases 不會掛出二進位檔。
 
@@ -53,7 +53,7 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 需要 Node.js 22+ 和可載入本機 bundle 的 DSH。沒有 npm 發佈，請用上面的倉庫安裝或本機腳本。
 
-![NexlOS 在 DSH 裡](docs/images/host-dsh.jpg)
+![NexlOS 在 DSH 裡](../images/host-dsh.jpg)
 
 ### Octop（工作台）
 
@@ -65,9 +65,9 @@ cd windos2026
 ./bin/octop-install install
 ```
 
-Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作區；命令列回答用的是你自己的 Octop agent。`./bin/octop-install status|up|down|uninstall` 負責管理。需要 Node.js 22+ 和裝在 `~/.octop` 的 Octop。宿主差異、邊界與回滾見 [docs/octop.md](docs/octop.md)。
+Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作區；命令列回答用的是你自己的 Octop agent。`./bin/octop-install status|up|down|uninstall` 負責管理。需要 Node.js 22+ 和裝在 `~/.octop` 的 Octop。宿主差異、邊界與回滾見 [docs/octop.md](../octop.md)。
 
-![NexlOS 在 Octop 裡](docs/images/host-octop.jpg)
+![NexlOS 在 Octop 裡](../images/host-octop.jpg)
 
 ## 使用
 
@@ -80,8 +80,8 @@ Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作�
 
 | 項目 | 數字 |
 | --- | --- |
-| 壓縮包 | 7.95 MiB |
-| 解包 | 12.6 MiB / 293 檔案 |
+| 壓縮包 | 7.94 MiB |
+| 解包 | 12.6 MiB / 286 檔案 |
 | 應用程式 | 17 |
 | 指令 | 25 |
 | 介面語言 | 8 種內建，7 種可選語言包 |
@@ -89,7 +89,7 @@ Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作�
 | 執行階段相依 | 1（`jpeg-js`） |
 | 授權 | Apache-2.0（商標與第三方素材除外） |
 
-2026 年定位與搜尋詞對照，以及本專案明確不宣稱的能力：見 [docs/highlights.md](docs/highlights.md)。價值頁與常見搜尋：見 [docs/faq.md](docs/faq.md)。使用與再分發邊界：見 [docs/research-use.md](docs/research-use.md)。給 AI 抓取器的摘要：[llms.txt](llms.txt)。
+2026 年定位與搜尋詞對照，以及本專案明確不宣稱的能力：見 [docs/highlights.md](../highlights.md)。價值頁與常見搜尋：見 [docs/faq.md](../faq.md)。使用與再分發邊界：見 [docs/research-use.md](../research-use.md)。給 AI 抓取器的摘要：[llms.txt](../../llms.txt)。
 
 ## 它不做什麼
 
@@ -116,6 +116,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 授權
 
-本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](LICENSING.md)，條款見 [LICENSE-BINARY.md](docs/LICENSE-BINARY.md)。
+本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](../legal/LICENSING.md)，條款見 [LICENSE-BINARY.md](../LICENSE-BINARY.md)。
 
-外掛原始碼與文件依 [Apache-2.0](LICENSE) 提供。商標不隨 Apache-2.0 授予，第三方素材依各自授權，見 [NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+外掛原始碼與文件依 [Apache-2.0](../../LICENSE) 提供。商標不隨 Apache-2.0 授予，第三方素材依各自授權，見 [NOTICE](../legal/NOTICE)、[TRADEMARK.md](../legal/TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md)。

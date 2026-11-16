@@ -1,12 +1,12 @@
 # windos2026
 
-[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · **日本語** · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.95 MiB。2026年の AI ネイティブで超軽量なオペレーティングシステム。ミレニアムに持っていけば異星のテクノロジー、今日のあなたにとってはプライベートなソフトウェア工場。Bring anything. Leave with an HTML app.
+7.94 MiB。2026年の AI ネイティブで超軽量なオペレーティングシステム。ミレニアムに持っていけば異星のテクノロジー、今日のあなたにとってはプライベートなソフトウェア工場。Bring anything. Leave with an HTML app.
 
 もしミレニアムに戻ったとき、あなたのコンピューターが突然 2026年の AI ネイティブ OS を開いたら、何に使いますか？
 
-windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.95 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `webos/` のコードとして同梱します。
+windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.94 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `webos/` のコードとして同梱します。
 
 *翻訳版です。正式な内容は英語版を参照してください。*
 
@@ -18,16 +18,16 @@ windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台の�
 
 **あなたのアプリ。** DSH でひとこと伝えると、生成器が `apps/<id>/index.html` と `app.json` を書き、ブラウザーでページを開いて検証し、失敗したら一度だけ自動修復してからデスクトップにアイコンを置きます。そのディレクトリを任意の静的サーバーにコピーしても動きます。GitHub の URL を渡すと `importGithubApp` がリポジトリを複製し、ビルド済みのエントリを見つけてアプリとしてマウントします。
 
-**あなたのマシン。** 7.95 MiB で 17 のアプリ、25 のコマンド、8 つの UI 言語が、すでに動かしているハーネスの中に入ります。デプロイする第二のコントロールプレーンも、アカウントも、テレメトリーもありません。同じ bundle を別の DSH プロファイルに入れても、使うのはそのプロファイルのモデルであり、私たちのものではありません。
+**あなたのマシン。** 7.94 MiB で 17 のアプリ、25 のコマンド、8 つの UI 言語が、すでに動かしているハーネスの中に入ります。デプロイする第二のコントロールプレーンも、アカウントも、テレメトリーもありません。同じ bundle を別の DSH プロファイルに入れても、使うのはそのプロファイルのモデルであり、私たちのものではありません。
 
 ## 2 つのエディション、2 つのライセンス
 
 | エディション | 入手するもの | ライセンス |
 | --- | --- | --- |
-| **プラグイン版**（本リポジトリのソース） | 後述の 7.95 MiB パッケージ | [Apache-2.0](LICENSE) |
-| **ユニバーサル版**（Releases） | ネイティブウィンドウシェルを同梱した単体バイナリ | 非公開のカーネルとシェルは [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md)、同梱のデスクトップ層は Apache-2.0 のまま |
+| **プラグイン版**（本リポジトリのソース） | 後述の 7.94 MiB パッケージ | [Apache-2.0](../../LICENSE) |
+| **ユニバーサル版**（Releases） | ネイティブウィンドウシェルを同梱した単体バイナリ | 非公開のカーネルとシェルは [NexlOS Binary License 1.0](../LICENSE-BINARY.md)、同梱のデスクトップ層は Apache-2.0 のまま |
 
-ファイル単位の正式な対応表は [LICENSING.md](LICENSING.md)。
+ファイル単位の正式な対応表は [LICENSING.md](../legal/LICENSING.md)。
 
 ユニバーサル版は未公開です。資産権利の確認が終わるまで、Releases にバイナリは掲載しません。
 
@@ -55,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。npm での公開はありません。上のリポジトリまたはローカルスクリプトからインストールしてください。
 
-![DSH 上の NexlOS](docs/images/host-dsh.jpg)
+![DSH 上の NexlOS](../images/host-dsh.jpg)
 
 ### Octop（ワークベンチ）
 
@@ -67,9 +67,9 @@ cd windos2026
 ./bin/octop-install install
 ```
 
-Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メインワークスペースに開きます。コマンドバーはあなた自身の Octop agent が答えます。`./bin/octop-install status|up|down|uninstall` で管理します。Node.js 22+ と `~/.octop` にインストールされた Octop が必要です。ホストごとの違い、制限、ロールバックは [docs/octop.md](docs/octop.md) を参照してください。
+Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メインワークスペースに開きます。コマンドバーはあなた自身の Octop agent が答えます。`./bin/octop-install status|up|down|uninstall` で管理します。Node.js 22+ と `~/.octop` にインストールされた Octop が必要です。ホストごとの違い、制限、ロールバックは [docs/octop.md](../octop.md) を参照してください。
 
-![Octop 上の NexlOS](docs/images/host-octop.jpg)
+![Octop 上の NexlOS](../images/host-octop.jpg)
 
 ## 使い方
 
@@ -82,8 +82,8 @@ Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メイ�
 
 | 項目 | 数字 |
 | --- | --- |
-| tarball | 7.95 MiB |
-| 展開後 | 12.6 MiB / 293 ファイル |
+| tarball | 7.94 MiB |
+| 展開後 | 12.6 MiB / 286 ファイル |
 | アプリ | 17 |
 | コマンド | 25 |
 | UI 言語 | 8 内蔵、7 の追加パック |
@@ -91,7 +91,7 @@ Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メイ�
 | ランタイム依存 | 1（`jpeg-js`） |
 | ライセンス | Apache-2.0（商標と第三者素材を除く） |
 
-2026 年の位置づけと検索語の対応、および本プロジェクトが明確に主張しないこと：[docs/highlights.md](docs/highlights.md)。価値ページとよくある検索：[docs/faq.md](docs/faq.md)。利用と再配布の境界：[docs/research-use.md](docs/research-use.md)。AI クローラー向け要約：[llms.txt](llms.txt)。
+2026 年の位置づけと検索語の対応、および本プロジェクトが明確に主張しないこと：[docs/highlights.md](../highlights.md)。価値ページとよくある検索：[docs/faq.md](../faq.md)。利用と再配布の境界：[docs/research-use.md](../research-use.md)。AI クローラー向け要約：[llms.txt](../../llms.txt)。
 
 ## やらないこと
 
@@ -118,6 +118,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## ライセンス
 
-本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](LICENSING.md)、条件は [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) にあります。
+本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](../legal/LICENSING.md)、条件は [LICENSE-BINARY.md](../LICENSE-BINARY.md) にあります。
 
-プラグインのソースとドキュメントは [Apache-2.0](LICENSE) です。商標は Apache-2.0 では付与されず、第三者素材はそれぞれのライセンスに従います。[NOTICE](NOTICE)、[TRADEMARK.md](TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) を参照してください。
+プラグインのソースとドキュメントは [Apache-2.0](../../LICENSE) です。商標は Apache-2.0 では付与されず、第三者素材はそれぞれのライセンスに従います。[NOTICE](../legal/NOTICE)、[TRADEMARK.md](../legal/TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md) を参照してください。

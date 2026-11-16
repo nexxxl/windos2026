@@ -11,37 +11,43 @@
   "homepage": "https://github.com/nexxxl/windos2026#readme",
   "bugs": "https://github.com/nexxxl/windos2026/issues",
   "type": "module",
+  "prettier": {
+    "printWidth": 120,
+    "tabWidth": 2,
+    "useTabs": false,
+    "semi": false,
+    "singleQuote": true,
+    "trailingComma": "none",
+    "arrowParens": "always",
+    "endOfLine": "lf",
+    "proseWrap": "preserve"
+  },
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
     "./locale/*.json": "./locale/*.json",
-    "./icon": "./icon.svg"
+    "./icon": "./docs/assets/icon.svg"
   },
   "files": [
     "index.js",
     "client.js",
     "src",
     "lib",
-    "cordis.patch.yml",
     "locale",
-    "icon.svg",
+    "docs/assets/icon.svg",
+    "docs/legal",
     "README.md",
-    "THIRD_PARTY_NOTICES.md",
     "docs/artcraftport/ATTRIBUTION.md",
     "webos",
     "vendor",
     "extension",
     "LICENSE",
-    "LICENSING.md",
-    "NOTICE",
-    "TRADEMARK.md",
-    "DISCLAIMER.md",
     "extras",
     "!extras/fonts-cjk"
   ],
   "dsh": {
     "bundle": {
-      "patch": "./cordis.patch.yml"
+      "patch": "./src/cordis.patch.yml"
     },
     "client": {
       "platform": "web",

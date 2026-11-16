@@ -59,8 +59,8 @@ such use.
 ## 5. Third-party components and imported content
 
 Third-party libraries, fonts and assets are listed in
-[THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md) with their own licences.
-Trademarks are addressed in [TRADEMARK.md](../TRADEMARK.md).
+[THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md) with their own licences.
+Trademarks are addressed in [TRADEMARK.md](legal/TRADEMARK.md).
 
 When you import a repository, its code, assets and licence obligations become yours
 to review and honour. The import path does not grant you any right you did not
@@ -90,7 +90,7 @@ counsel for your jurisdiction and your use case.
 ## 9. Reporting
 
 Open an issue in this repository for licence, attribution or acceptable-use
-questions. For security reports, follow [SECURITY.md](../SECURITY.md).
+questions. For security reports, follow [SECURITY.md](../.github/SECURITY.md).
 
 ## 10. Changes
 
@@ -141,8 +141,8 @@ Apache-2.0 部分可按 [LICENSE](../LICENSE) 阅读、运行、修改与再分�
 
 ## 5. 第三方组件与导入内容
 
-第三方库、字体与素材列在 [THIRD_PARTY_NOTICES.md](../THIRD_PARTY_NOTICES.md)，各自适用其
-许可。商标见 [TRADEMARK.md](../TRADEMARK.md)。
+第三方库、字体与素材列在 [THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md)，各自适用其
+许可。商标见 [TRADEMARK.md](legal/TRADEMARK.md)。
 
 导入仓库后，其代码、素材与许可义务由你自行核对与履行；导入路径不会授予你原本没有的权利。
 
@@ -164,7 +164,7 @@ Apache-2.0 部分可按 [LICENSE](../LICENSE) 阅读、运行、修改与再分�
 ## 9. 反馈
 
 许可、署名与可接受使用问题请在本仓库开 issue；安全问题请按
-[SECURITY.md](../SECURITY.md) 报告。
+[SECURITY.md](../.github/SECURITY.md) 报告。
 
 ## 10. 变更
 

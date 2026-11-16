@@ -1,12 +1,12 @@
 # windos2026
 
-[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · **한국어** · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.95 MiB. 2026년의 AI 네이티브 초경량 운영체제. 밀레니엄으로 가면 외계 기술, 오늘은 당신의 개인 소프트웨어 공장. Bring anything. Leave with an HTML app.
+7.94 MiB. 2026년의 AI 네이티브 초경량 운영체제. 밀레니엄으로 가면 외계 기술, 오늘은 당신의 개인 소프트웨어 공장. Bring anything. Leave with an HTML app.
 
 밀레니엄으로 돌아갔을 때 컴퓨터가 갑자기 2026년의 AI 네이티브 OS를 열었다면, 무엇에 쓰시겠습니까?
 
-windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전한 데스크톱을 넣습니다. 앱 17개, 명령 25개, 내장 UI 언어 8개, tarball 7.95 MiB, 런타임 의존성 1개. 생성한 앱은 `apps/<id>/index.html`과 `app.json`뿐인 파일입니다. 내장 17개 앱은 `webos/`의 코드로 함께 배포합니다.
+windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전한 데스크톱을 넣습니다. 앱 17개, 명령 25개, 내장 UI 언어 8개, tarball 7.94 MiB, 런타임 의존성 1개. 생성한 앱은 `apps/<id>/index.html`과 `app.json`뿐인 파일입니다. 내장 17개 앱은 `webos/`의 코드로 함께 배포합니다.
 
 *번역본입니다. 기준 문서는 영어판입니다.*
 
@@ -18,16 +18,16 @@ windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전�
 
 **당신의 앱.** DSH에서 한 문장을 말하면 생성기가 `apps/<id>/index.html`과 `app.json`을 쓰고, 브라우저로 페이지를 열어 검증하고, 실패하면 한 번 자동으로 고친 뒤 아이콘을 데스크톱에 올립니다. 그 디렉터리를 아무 정적 서버에 복사해도 그대로 실행됩니다. GitHub URL을 주면 `importGithubApp`이 저장소를 복제하고 빌드된 진입점을 찾아 앱으로 마운트합니다.
 
-**당신의 기계.** 7.95 MiB로 앱 17개, 명령 25개, UI 언어 8개를 이미 돌리고 있는 하네스 안에 넣습니다. 배포할 두 번째 제어면도, 계정도, 텔레메트리도 없습니다. 같은 bundle을 다른 DSH 프로필에 설치해도 그것은 그 프로필의 모델을 쓰지, 우리 것을 쓰지 않습니다.
+**당신의 기계.** 7.94 MiB로 앱 17개, 명령 25개, UI 언어 8개를 이미 돌리고 있는 하네스 안에 넣습니다. 배포할 두 번째 제어면도, 계정도, 텔레메트리도 없습니다. 같은 bundle을 다른 DSH 프로필에 설치해도 그것은 그 프로필의 모델을 쓰지, 우리 것을 쓰지 않습니다.
 
 ## 두 가지 에디션, 두 가지 라이선스
 
 | 에디션 | 받는 것 | 라이선스 |
 | --- | --- | --- |
-| **플러그인판**(이 저장소의 소스) | 아래에 설명된 7.95 MiB 패키지 | [Apache-2.0](LICENSE) |
-| **유니버설판**(Releases) | 자체 네이티브 창 셸을 포함한 단일 바이너리 | 비공개 커널과 셸은 [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md), 내장 데스크톱 계층은 Apache-2.0 유지 |
+| **플러그인판**(이 저장소의 소스) | 아래에 설명된 7.94 MiB 패키지 | [Apache-2.0](../../LICENSE) |
+| **유니버설판**(Releases) | 자체 네이티브 창 셸을 포함한 단일 바이너리 | 비공개 커널과 셸은 [NexlOS Binary License 1.0](../LICENSE-BINARY.md), 내장 데스크톱 계층은 Apache-2.0 유지 |
 
-파일 단위의 권위 있는 대응표는 [LICENSING.md](LICENSING.md)에 있습니다.
+파일 단위의 권위 있는 대응표는 [LICENSING.md](../legal/LICENSING.md)에 있습니다.
 
 유니버설판은 아직 공개되지 않았습니다. 자산 권리 검토가 끝날 때까지 Releases에 바이너리를 올리지 않습니다.
 
@@ -55,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 Node.js 22+와 로컬 bundle을 로드할 수 있는 DSH가 필요합니다. npm 배포는 없습니다. 위 저장소 또는 로컬 스크립트에서 설치하세요.
 
-![DSH 안의 NexlOS](docs/images/host-dsh.jpg)
+![DSH 안의 NexlOS](../images/host-dsh.jpg)
 
 ### Octop(워크벤치)
 
@@ -67,9 +67,9 @@ cd windos2026
 ./bin/octop-install install
 ```
 
-Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공간에 열립니다. 명령 바는 당신의 Octop agent가 답합니다. `./bin/octop-install status|up|down|uninstall`로 관리합니다. Node.js 22+와 `~/.octop`에 설치된 Octop이 필요합니다. 호스트별 차이, 제한, 롤백은 [docs/octop.md](docs/octop.md)를 참고하세요.
+Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공간에 열립니다. 명령 바는 당신의 Octop agent가 답합니다. `./bin/octop-install status|up|down|uninstall`로 관리합니다. Node.js 22+와 `~/.octop`에 설치된 Octop이 필요합니다. 호스트별 차이, 제한, 롤백은 [docs/octop.md](../octop.md)를 참고하세요.
 
-![Octop 안의 NexlOS](docs/images/host-octop.jpg)
+![Octop 안의 NexlOS](../images/host-octop.jpg)
 
 ## 사용
 
@@ -82,8 +82,8 @@ Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공
 
 | 항목 | 숫자 |
 | --- | --- |
-| tarball | 7.95 MiB |
-| 압축 해제 | 12.6 MiB / 293 파일 |
+| tarball | 7.94 MiB |
+| 압축 해제 | 12.6 MiB / 286 파일 |
 | 앱 | 17 |
 | 명령 | 25 |
 | UI 언어 | 내장 8개, 선택 팩 7개 |
@@ -91,7 +91,7 @@ Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공
 | 런타임 의존성 | 1 (`jpeg-js`) |
 | 라이선스 | Apache-2.0 (상표와 제3자 자산 제외) |
 
-2026년 위치와 검색어 대응, 그리고 이 프로젝트가 명확히 주장하지 않는 것: [docs/highlights.md](docs/highlights.md). 가치 페이지와 자주 검색되는 질문: [docs/faq.md](docs/faq.md). 사용과 재배포 경계: [docs/research-use.md](docs/research-use.md). AI 크롤러용 요약: [llms.txt](llms.txt).
+2026년 위치와 검색어 대응, 그리고 이 프로젝트가 명확히 주장하지 않는 것: [docs/highlights.md](../highlights.md). 가치 페이지와 자주 검색되는 질문: [docs/faq.md](../faq.md). 사용과 재배포 경계: [docs/research-use.md](../research-use.md). AI 크롤러용 요약: [llms.txt](../../llms.txt).
 
 ## 하지 않는 것
 
@@ -118,6 +118,6 @@ npm pack --pack-destination /absolute/path/to/artifacts
 
 ## 라이선스
 
-이 저장소의 플러그인 소스는 Apache-2.0입니다. 유니버설판 Release 바이너리는 별도 라이선스를 따르며, 대응표는 [LICENSING.md](LICENSING.md), 조건은 [LICENSE-BINARY.md](docs/LICENSE-BINARY.md)에 있습니다.
+이 저장소의 플러그인 소스는 Apache-2.0입니다. 유니버설판 Release 바이너리는 별도 라이선스를 따르며, 대응표는 [LICENSING.md](../legal/LICENSING.md), 조건은 [LICENSE-BINARY.md](../LICENSE-BINARY.md)에 있습니다.
 
-플러그인 소스와 문서는 [Apache-2.0](LICENSE)입니다. 상표는 Apache-2.0으로 부여되지 않으며, 제3자 자산은 각자의 라이선스를 따릅니다. [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md), [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)를 참고하세요.
+플러그인 소스와 문서는 [Apache-2.0](../../LICENSE)입니다. 상표는 Apache-2.0으로 부여되지 않으며, 제3자 자산은 각자의 라이선스를 따릅니다. [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md), [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md)를 참고하세요.

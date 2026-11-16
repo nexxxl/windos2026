@@ -22,7 +22,7 @@ if not root.is_dir():
     sys.exit(1)
 for name in ('universal','plugin','applications','tools','docs/project-history','docs/import-manifest.json','docs/baseline-manifest.json','extras/fonts-cjk'):
     if (root/name).exists(): errors.append('Excluded source boundary: '+name)
-for name in ('LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','docs/LICENSE-BINARY.md','DISCLAIMER.md','.github/SECURITY.md','.github/CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
+for name in ('LICENSE','docs/legal/NOTICE','docs/legal/TRADEMARK.md','docs/legal/LICENSING.md','docs/LICENSE-BINARY.md','docs/legal/DISCLAIMER.md','docs/legal/THIRD_PARTY_NOTICES.md','docs/assets/icon.svg','docs/i18n/README.zh-CN.md','.github/SECURITY.md','.github/CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','src/cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
     if not (root/name).is_file(): errors.append('Missing runtime or notice: '+name)
 for p in root.rglob('*'):
     rel=p.relative_to(root).as_posix()
@@ -40,11 +40,11 @@ for p in root.rglob('*'):
     if re.search('/'+'Users/'+r'[A-Za-z0-9._-]+/',value): errors.append('Developer-specific path: '+rel)
     if re.search(r'-----BEGIN (?:[A-Z0-9.]+ )*PRIVATE KEY(?: BLOCK)?-----',value): errors.append('Private key: '+rel)
 # 八份 README 必须互链，防止某一语言漏掉语言栏。
-readme_langs=['README.md','README.zh-CN.md','README.zh-TW.md','README.ja.md','README.ko.md','README.es.md','README.fr.md','README.de.md']
-for r in sorted(root.glob('README*.md')):
-    if r.name not in readme_langs: continue
+# 根 README 留在根目录，七份译本下沉到 docs/i18n/；路径不同，按文件名检查。
+readmes=[root/'README.md']+sorted((root/'docs'/'i18n').glob('README*.md'))
+for r in readmes:
     text=r.read_text(encoding='utf-8')
-    missing=[name for name in readme_langs if name!=r.name and ('('+name+')') not in text]
+    missing=[p.name for p in readmes if p.name!=r.name and p.name not in text]
     if missing: errors.append('README language link missing in '+r.name+': '+','.join(missing))
 if errors:
     print('\n'.join(errors),file=sys.stderr)
@@ -105,7 +105,7 @@ import shutil,sys
 src=Path(sys.argv[1]);out=Path(sys.argv[2]);out.mkdir(parents=True,exist_ok=False)
 
 def stage():
-  files={'package.json','package-lock.json','cordis.patch.yml','icon.svg','README.md','THIRD_PARTY_NOTICES.md','LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','DISCLAIMER.md','.gitignore','.editorconfig','.gitattributes','.prettierrc.json','.prettierignore','pyproject.toml','Makefile'}
+  files={'package.json','package-lock.json','README.md','LICENSE','.gitignore','.editorconfig','.gitattributes','.prettierignore','pyproject.toml','Makefile'}
   files.update(p.name for p in src.glob('*.js'))
   files.update(p.name for p in src.glob('*.css'))
   for name in sorted(files):

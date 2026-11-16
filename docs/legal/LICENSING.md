@@ -6,8 +6,8 @@ directory and release artifact in this repository.
 
 | Artifact | License | Text |
 | --- | --- | --- |
-| Source code in this repository (the plugin edition) | Apache License 2.0 | [LICENSE](LICENSE) |
-| Compiled release binaries of the universal edition | NexlOS Binary License 1.0 | [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) |
+| Source code in this repository (the plugin edition) | Apache License 2.0 | [LICENSE](../../LICENSE) |
+| Compiled release binaries of the universal edition | NexlOS Binary License 1.0 | [LICENSE-BINARY.md](../LICENSE-BINARY.md) |
 | Third-party libraries, fonts, images, audio | Their upstream licenses | [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and the license files shipped beside each asset |
 | Names, logos, icons, theme names | Trademark policy, not a copyright license | [TRADEMARK.md](TRADEMARK.md) |
 | Warranty and liability | Both editions | [DISCLAIMER.md](DISCLAIMER.md) |
@@ -47,7 +47,7 @@ layer that is published here under Apache-2.0.
 The split matters:
 
 - **Apache-2.0 survives inside the binary.** For every component that also
-  exists in this repository, the Apache-2.0 grant in [LICENSE](LICENSE) applies
+  exists in this repository, the Apache-2.0 grant in [LICENSE](../../LICENSE) applies
   to the copy you receive in the binary. The binary license adds no restriction
   on those components and cannot revoke rights you already have.
 - **The additional terms cover only the closed components** — the kernel and the
@@ -56,7 +56,7 @@ The split matters:
   build, modify, redistribute and even sell what you build from this source. You
   may not present it as the official universal binary or as a NexlOS release.
 
-Read [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) before installing a release binary.
+Read [LICENSE-BINARY.md](../LICENSE-BINARY.md) before installing a release binary.
 
 ## 3. Third-party components
 
@@ -85,7 +85,7 @@ states what you may and may not do with them.
 
 Contributions are accepted under the Apache-2.0 terms of this repository, with a
 Developer Certificate of Origin sign-off in each commit; see
-[CONTRIBUTING.md](CONTRIBUTING.md) and [DCO](DCO). Submitting a contribution
+[CONTRIBUTING.md](../../.github/CONTRIBUTING.md) and [DCO](../../.github/DCO). Submitting a contribution
 means you have the right to license it under those terms.
 
 ## 6. What this repository does not license

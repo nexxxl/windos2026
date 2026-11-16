@@ -21,7 +21,7 @@ ArtCraft 移植版是 NexlOS 内置「应用生成」的一个示例案例（入
 - 对上游：始终标明「非官方」，不主张商标，不使用上游图标与素材，并完整保留 MIT 声明；
 - 对内：应用 id、路由与目录使用 `artcraftport`，与上游仓库名区分；旧标识 `artcraft`、`artgrft` 与 `baigong` 只在会话迁移里保留映射，用于读取旧 localStorage 键。
 
-早期曾改用中性名「百工 / Baigong」，但这个名字既不说明它是 ArtCraft 的移植，也容易被误读为独立产品，因此回到带限定词的上游名。这个用法属于指名性使用（nominative use），规则写在 `TRADEMARK.md` 第 6.1 节。
+早期曾改用中性名「百工 / Baigong」，但这个名字既不说明它是 ArtCraft 的移植，也容易被误读为独立产品，因此回到带限定词的上游名。这个用法属于指名性使用（nominative use），规则写在 `docs/legal/TRADEMARK.md` 第 6.1 节。
 
 ## 3. 移植实现的思路
 
@@ -84,7 +84,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 ```
 
-许可证不授予商标权。产品名中的 ArtCraft 只用于指出上游来源，并始终带「移植版 / for NexlOS」限定与「非官方」标注；本项目不使用上游的标志、图标或界面素材作为自身标识，也不主张该商标的任何权利。详见 `TRADEMARK.md` 第 6.1 节。
+许可证不授予商标权。产品名中的 ArtCraft 只用于指出上游来源，并始终带「移植版 / for NexlOS」限定与「非官方」标注；本项目不使用上游的标志、图标或界面素材作为自身标识，也不主张该商标的任何权利。详见 `docs/legal/TRADEMARK.md` 第 6.1 节。
 
 ## 7. 界面参照
 

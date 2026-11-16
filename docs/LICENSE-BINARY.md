@@ -9,13 +9,13 @@ and it does not apply to the plugin edition.
 
 **Open components inside the binary.** The universal binaries embed the desktop
 layer whose source is published in this repository under the Apache License 2.0.
-For those components the Apache-2.0 grant in [LICENSE](LICENSE) applies to the
+For those components the Apache-2.0 grant in [LICENSE](../LICENSE) applies to the
 copy you receive, this license adds no restriction on them, and nothing here
 revokes rights you already hold. The additional terms below cover only the
 components that are **not** present in this repository's source tree: the Go
 kernel and the native window shell (together, the "Closed Components").
 
-The license map, including third-party assets, is in [LICENSING.md](LICENSING.md).
+The license map, including third-party assets, is in [LICENSING.md](legal/LICENSING.md).
 
 ## 1. Grant
 
@@ -58,7 +58,7 @@ under Apache-2.0; it will not be the official universal binary.
 ## 4. Third-party components
 
 The binaries include third-party components under their own licenses, listed in
-[THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) and in the release assets. Where
+[THIRD_PARTY_NOTICES.md](legal/THIRD_PARTY_NOTICES.md) and in the release assets. Where
 a third-party license conflicts with this license, that license governs the
 third-party component.
 
@@ -78,7 +78,7 @@ survive termination.
 ## 7. No warranty
 
 The binaries are provided "as is", without express or implied warranties.
-[DISCLAIMER.md](DISCLAIMER.md) states the complete terms and prevails over this
+[DISCLAIMER.md](legal/DISCLAIMER.md) states the complete terms and prevails over this
 section.
 
 ## 8. Limitation of liability
@@ -86,7 +86,7 @@ section.
 To the maximum extent permitted by law, NexlOS Authors is not liable for indirect,
 incidental, special or consequential damages, or for lost profits, revenue, data,
 goodwill or business interruption. The aggregate liability cap is stated in
-[DISCLAIMER.md](DISCLAIMER.md).
+[DISCLAIMER.md](legal/DISCLAIMER.md).
 
 ## 9. Export control and sanctions
 

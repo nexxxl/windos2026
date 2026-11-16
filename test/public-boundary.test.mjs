@@ -18,18 +18,20 @@ const SKIP = existsSync(SCRIPT) ? false : 'scripts/stage-public-repo.sh 不在�
 // 候选校验要求存在的最小文件集；内容为空即可，检查的是路径与边界。
 const REQUIRED = [
   'LICENSE',
-  'NOTICE',
-  'TRADEMARK.md',
-  'LICENSING.md',
+  'docs/legal/NOTICE',
+  'docs/legal/TRADEMARK.md',
+  'docs/legal/LICENSING.md',
   'docs/LICENSE-BINARY.md',
-  'DISCLAIMER.md',
+  'docs/legal/DISCLAIMER.md',
+  'docs/legal/THIRD_PARTY_NOTICES.md',
+  'docs/assets/icon.svg',
   '.github/SECURITY.md',
   '.github/CONTRIBUTING.md',
   'package.json',
   'package-lock.json',
   'index.js',
   'client.js',
-  'cordis.patch.yml',
+  'src/cordis.patch.yml',
   'webos/index.html',
   'webos/a/os.js',
   'vendor/readability.js',
@@ -38,13 +40,13 @@ const REQUIRED = [
 ]
 const LANGS = [
   'README.md',
-  'README.zh-CN.md',
-  'README.zh-TW.md',
-  'README.ja.md',
-  'README.ko.md',
-  'README.es.md',
-  'README.fr.md',
-  'README.de.md'
+  'docs/i18n/README.zh-CN.md',
+  'docs/i18n/README.zh-TW.md',
+  'docs/i18n/README.ja.md',
+  'docs/i18n/README.ko.md',
+  'docs/i18n/README.es.md',
+  'docs/i18n/README.fr.md',
+  'docs/i18n/README.de.md'
 ]
 
 function makeTree(extra = (root) => {}) {
@@ -58,6 +60,7 @@ function makeTree(extra = (root) => {}) {
     const links = LANGS.filter((other) => other !== name)
       .map((other) => `[${other}](${other})`)
       .join(' ')
+    mkdirSync(dirname(join(root, name)), { recursive: true })
     writeFileSync(join(root, name), `# test\n\n${links}\n`)
   }
   extra(root)

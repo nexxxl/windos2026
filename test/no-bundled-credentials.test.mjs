@@ -15,7 +15,7 @@ const RUNTIME_DIRS = ['src', 'webos', 'vendor', 'extension', 'locale', 'extras',
 const TEXT_EXT = new Set(['.js', '.mjs', '.css', '.json', '.yml', '.yaml', '.md', '.html', '.txt'])
 
 function runtimeFiles() {
-  const files = ['cordis.patch.yml']
+  const files = ['src/cordis.patch.yml']
   for (const name of readdirSync(ROOT)) {
     if (name.endsWith('.js') || name.endsWith('.css')) files.push(name)
   }
@@ -53,7 +53,7 @@ test('运行时文件里没有 API key 一类的凭据字面量', () => {
 })
 
 test('插件的 patch 不设置默认模型或 provider', () => {
-  const patch = readFileSync(join(ROOT, 'cordis.patch.yml'), 'utf8')
+  const patch = readFileSync(join(ROOT, 'src', 'cordis.patch.yml'), 'utf8')
   // 只允许插入自己的行；一旦写 agent-default-model 或 provider，就等于覆盖用户的账号选择。
   assert.doesNotMatch(patch, /agent-default-model/u)
   assert.doesNotMatch(patch, /^\s*provider\s*:/mu)

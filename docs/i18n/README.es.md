@@ -1,12 +1,12 @@
 # windos2026
 
-[English](README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Español** · [Français](README.fr.md) · [Deutsch](README.de.md)
+[English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · **Español** · [Français](README.fr.md) · [Deutsch](README.de.md)
 
-7.95 MiB. Un sistema operativo AI-native ultraligero de 2026: tecnología extraterrestre en el milenio, tu fábrica de software privada hoy. Bring anything. Leave with an HTML app.
+7.94 MiB. Un sistema operativo AI-native ultraligero de 2026: tecnología extraterrestre en el milenio, tu fábrica de software privada hoy. Bring anything. Leave with an HTML app.
 
 Si un sistema operativo AI-native de 2026 se hubiera abierto en tu computadora en el milenio, ¿para qué lo habrías usado?
 
-windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.95 MiB y una sola dependencia en tiempo de ejecución. Las apps generadas son archivos bajo `apps/<id>/`; las 17 apps integradas vienen como código en `webos/`.
+windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.94 MiB y una sola dependencia en tiempo de ejecución. Las apps generadas son archivos bajo `apps/<id>/`; las 17 apps integradas vienen como código en `webos/`.
 
 *Traducción. La versión canónica es el README en inglés.*
 
@@ -18,16 +18,16 @@ windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio compl
 
 **Tus apps.** Di una frase en DSH: el generador escribe `apps/<id>/index.html` más `app.json`, abre la página en un navegador para verificarla, la repara una vez si esa comprobación falla y deja el icono en tu escritorio. Copia ese directorio a cualquier servidor estático y sigue funcionando; dale una URL de GitHub y `importGithubApp` clona el repositorio, encuentra el punto de entrada compilado y lo monta como app.
 
-**Tu máquina.** 7,95 MiB dan 17 apps, 25 comandos y 8 idiomas de interfaz dentro del harness que ya ejecutas: sin un segundo plano de control que desplegar, sin cuenta, sin telemetría. Instala el mismo bundle en otro perfil de DSH y usará el modelo de ese perfil, no el nuestro.
+**Tu máquina.** 7,94 MiB dan 17 apps, 25 comandos y 8 idiomas de interfaz dentro del harness que ya ejecutas: sin un segundo plano de control que desplegar, sin cuenta, sin telemetría. Instala el mismo bundle en otro perfil de DSH y usará el modelo de ese perfil, no el nuestro.
 
 ## Dos ediciones, dos licencias
 
 | Edición | Qué obtienes | Licencia |
 | --- | --- | --- |
-| **Plugin** (código de este repositorio) | el paquete de 7.95 MiB descrito abajo | [Apache-2.0](LICENSE) |
-| **Universal** (Releases) | un binario autocontenido con su propia carcasa de ventana nativa | el núcleo y la carcasa cerrados bajo [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); la capa de escritorio incluida mantiene Apache-2.0 |
+| **Plugin** (código de este repositorio) | el paquete de 7.94 MiB descrito abajo | [Apache-2.0](../../LICENSE) |
+| **Universal** (Releases) | un binario autocontenido con su propia carcasa de ventana nativa | el núcleo y la carcasa cerrados bajo [NexlOS Binary License 1.0](../LICENSE-BINARY.md); la capa de escritorio incluida mantiene Apache-2.0 |
 
-El mapa autoritativo archivo por archivo está en [LICENSING.md](LICENSING.md).
+El mapa autoritativo archivo por archivo está en [LICENSING.md](../legal/LICENSING.md).
 
 La edición universal aún no está publicada: Releases seguirá vacío hasta que cierre la revisión de derechos de sus recursos.
 
@@ -55,7 +55,7 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 Requiere Node.js 22+ y una versión de DSH que pueda cargar bundles locales. No hay publicación en npm; instálelo desde este repositorio o con el script local de arriba.
 
-![NexlOS dentro de DSH](docs/images/host-dsh.jpg)
+![NexlOS dentro de DSH](../images/host-dsh.jpg)
 
 ### Octop (banco de trabajo)
 
@@ -67,9 +67,9 @@ cd windos2026
 ./bin/octop-install install
 ```
 
-La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en el espacio de trabajo principal y la barra de comandos responde con tu propio agente de Octop. `./bin/octop-install status|up|down|uninstall` lo gestiona. Requiere Node.js 22+ y Octop instalado en `~/.octop`. Diferencias por host, límites y vuelta atrás: [docs/octop.md](docs/octop.md).
+La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en el espacio de trabajo principal y la barra de comandos responde con tu propio agente de Octop. `./bin/octop-install status|up|down|uninstall` lo gestiona. Requiere Node.js 22+ y Octop instalado en `~/.octop`. Diferencias por host, límites y vuelta atrás: [docs/octop.md](../octop.md).
 
-![NexlOS dentro de Octop](docs/images/host-octop.jpg)
+![NexlOS dentro de Octop](../images/host-octop.jpg)
 
 ## Uso
 
@@ -82,8 +82,8 @@ La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en e
 
 | Elemento | Número |
 | --- | --- |
-| Tarball | 7.95 MiB |
-| Descomprimido | 12.6 MiB / 293 archivos |
+| Tarball | 7.94 MiB |
+| Descomprimido | 12.6 MiB / 286 archivos |
 | Apps | 17 |
 | Comandos | 25 |
 | Idiomas de interfaz | 8 integrados, 7 paquetes opcionales |
@@ -91,7 +91,7 @@ La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en e
 | Dependencias de ejecución | 1 (`jpeg-js`) |
 | Licencia | Apache-2.0 (salvo marcas y recursos de terceros) |
 
-Dónde encaja en 2026, término de búsqueda por término, y lo que este proyecto no afirma: [docs/highlights.md](docs/highlights.md). Página de valor y búsquedas comunes: [docs/faq.md](docs/faq.md). Límites de uso y redistribución: [docs/research-use.md](docs/research-use.md). Resumen para rastreadores de IA: [llms.txt](llms.txt).
+Dónde encaja en 2026, término de búsqueda por término, y lo que este proyecto no afirma: [docs/highlights.md](../highlights.md). Página de valor y búsquedas comunes: [docs/faq.md](../faq.md). Límites de uso y redistribución: [docs/research-use.md](../research-use.md). Resumen para rastreadores de IA: [llms.txt](../../llms.txt).
 
 ## Lo que no hace
 
@@ -118,6 +118,6 @@ Control de tamaño:
 
 ## Licencia
 
-El código del plugin en este repositorio es Apache-2.0. Los binarios de la edición universal siguen una licencia aparte; consulta [LICENSING.md](LICENSING.md) para el mapa y [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) para sus términos.
+El código del plugin en este repositorio es Apache-2.0. Los binarios de la edición universal siguen una licencia aparte; consulta [LICENSING.md](../legal/LICENSING.md) para el mapa y [LICENSE-BINARY.md](../LICENSE-BINARY.md) para sus términos.
 
-El código y la documentación del plugin son [Apache-2.0](LICENSE). Las marcas no se conceden con Apache-2.0; los recursos de terceros mantienen sus propias licencias. Consulta [NOTICE](NOTICE), [TRADEMARK.md](TRADEMARK.md) y [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
+El código y la documentación del plugin son [Apache-2.0](../../LICENSE). Las marcas no se conceden con Apache-2.0; los recursos de terceros mantienen sus propias licencias. Consulta [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md) y [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md).

@@ -135,7 +135,7 @@ platform tax to run them.
 possible without a central store. The permission contract travels with the app.
 
 **Boundary.** Read [research-use.md](research-use.md) and
-[LICENSING.md](../LICENSING.md); neither is legal advice.
+[LICENSING.md](legal/LICENSING.md); neither is legal advice.
 
 ## How do I know which parts are real today?
 

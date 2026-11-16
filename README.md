@@ -1,14 +1,14 @@
 # windos2026
 
-**English** · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
+**English** · [简体中文](docs/i18n/README.zh-CN.md) · [繁體中文](docs/i18n/README.zh-TW.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md)
 
 <img width="880" alt="windos2026 demo: boot, desktop, reader, ArtCraft, multi-window" src="docs/images/hero-demo.gif">
 
-7.95 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
+7.94 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.95 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
 
 Everyone remembers their first desktop. This is the one you get to own: you assemble it yourself, one sentence at a time, and every app leaves with you as a file. Linux gave every program a machine; NexlOS gives every agent a computer.
 
@@ -19,16 +19,16 @@ Everyone remembers their first desktop. This is the one you get to own: you asse
 
 **Your apps.** Say one sentence in DSH: the generator writes `apps/<id>/index.html` plus `app.json`, opens the page in a browser to verify it, repairs it once if that check fails, then puts the icon on your desktop. Copy that directory to any static server and it still runs; hand it a GitHub URL and `importGithubApp` clones the repository, finds the built entry point, and mounts it as an app.
 
-**Your machine.** 7.95 MiB buys 17 apps, 25 commands and 8 interface languages inside the harness you already run: no second control plane to deploy, no account, no telemetry. Install the same bundle into another DSH profile and it uses that profile's model, not ours.
+**Your machine.** 7.94 MiB buys 17 apps, 25 commands and 8 interface languages inside the harness you already run: no second control plane to deploy, no account, no telemetry. Install the same bundle into another DSH profile and it uses that profile's model, not ours.
 
 ## Editions and licenses
 
 | Edition | What you get | License |
 | --- | --- | --- |
-| **Plugin** (source in this repository) | the 7.95 MiB package described below | [Apache-2.0](LICENSE) |
+| **Plugin** (source in this repository) | the 7.94 MiB package described below | [Apache-2.0](LICENSE) |
 | **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel and shell under [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
 
-The authoritative file-by-file map is [LICENSING.md](LICENSING.md).
+The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 
 The universal edition is not published yet: Releases stays empty until that edition clears its asset-rights review.
 
@@ -83,8 +83,8 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 
 | Item | Number |
 | --- | --- |
-| Tarball | 7.95 MiB (measured with `npm pack --dry-run --json`) |
-| Unpacked | 12.6 MiB / 293 files |
+| Tarball | 7.94 MiB (measured with `npm pack --dry-run --json`) |
+| Unpacked | 12.6 MiB / 286 files |
 | Apps | 17 |
 | Commands | 25 |
 | Interface languages | 8 built in, 7 optional packs |
@@ -94,13 +94,13 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 
 ## Where it fits in 2026
 
-If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 7.95 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
+If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 7.94 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
 
 - **Agent-native**: the desktop is the surface; generated apps are the artifacts.
 - **Software factory**: one sentence, one app, checked in a real browser, repaired once.
 - **Verified, not just generated**: a temporary Chromium checks console errors and declared interactions; only a passing app gets a desktop icon.
 - **Browser-surface reconstruction**: behavior capture, spec, rebuild and comparison stop at the browser; binaries stay out of scope.
-- **Tiny and portable**: 7.95 MiB, 293 files, one runtime dependency.
+- **Tiny and portable**: 7.94 MiB, 286 files, one runtime dependency.
 - **Local-first**: no account, no telemetry, no default model provider.
 - **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
 - **3D author layer (universal edition)**: Three.js, glTF/GLB with KTX2, Draco and meshopt, on our own WebGL2/WebGPU surface. In progress, not in this tarball.
@@ -132,8 +132,8 @@ Size gate:
 
 ## License
 
-The plugin source in this repository is Apache-2.0. Release binaries of the universal edition follow a separate license; see [LICENSING.md](LICENSING.md) for the map and [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) for its terms.
+The plugin source in this repository is Apache-2.0. Release binaries of the universal edition follow a separate license; see [LICENSING.md](docs/legal/LICENSING.md) for the map and [LICENSE-BINARY.md](docs/LICENSE-BINARY.md) for its terms.
 
-Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](DISCLAIMER.md).
+Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](docs/legal/TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](docs/legal/DISCLAIMER.md).
 
 ArtCraft for NexlOS (ArtCraft 移植版) is the worked example shipped with the built-in app generator, and the one place where algorithms come from an upstream project. It installs upstream ArtCraft's editor structure and portable algorithms into NexlOS, then rebuilds them against this project's own contract: commands, a single serializable document state, and a mount/destroy panel. The porting approach and the file-by-file mapping are in [docs/artcraftport/ATTRIBUTION.md](docs/artcraftport/ATTRIBUTION.md): the upstream is storytold's ArtCraft (`github.com/storytold/artcraft`, MIT / Apache-2.0), rewritten here as zero-dependency ES modules under the MIT terms. The Rust renderer, Tauri host and AI calls are not included. This port is **unofficial** and has no affiliation with or endorsement from the upstream team; the name ArtCraft in the app title names the upstream project and is always qualified with "for NexlOS". The app id, route and directory are `artcraftport`.

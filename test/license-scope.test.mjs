@@ -23,17 +23,17 @@ function read(name) {
 
 const REQUIRED = [
   'LICENSE',
-  'NOTICE',
-  'LICENSING.md',
+  'docs/legal/NOTICE',
+  'docs/legal/LICENSING.md',
   'docs/LICENSE-BINARY.md',
-  'THIRD_PARTY_NOTICES.md',
-  'TRADEMARK.md',
-  'DISCLAIMER.md',
+  'docs/legal/THIRD_PARTY_NOTICES.md',
+  'docs/legal/TRADEMARK.md',
+  'docs/legal/DISCLAIMER.md',
   '.github/CONTRIBUTING.md',
   '.github/DCO'
 ]
 
-test('仓库根目录的许可与声明文件齐全', () => {
+test('许可与声明文件齐全（根目录只留 LICENSE）', () => {
   for (const name of REQUIRED) {
     assert.ok(existsSync(join(REPO, name)), `缺少 ${name}`)
   }
@@ -49,11 +49,11 @@ test('LICENSE 是未经改写的 Apache 正文', () => {
 })
 
 test('LICENSING.md 同时覆盖两种发行并链接两份许可', () => {
-  const text = read('LICENSING.md')
+  const text = read('docs/legal/LICENSING.md')
   assert.match(text, /Apache-2\.0/)
   assert.match(text, /NexlOS Binary License 1\.0/)
-  assert.match(text, /\(LICENSE\)/)
-  assert.match(text, /\(docs\/LICENSE-BINARY\.md\)/)
+  assert.match(text, /\(\.\.\/\.\.\/LICENSE\)/)
+  assert.match(text, /\(\.\.\/LICENSE-BINARY\.md\)/)
   assert.match(text, /plugin edition/i)
   assert.match(text, /universal edition/i)
 })
@@ -71,17 +71,17 @@ test('插件包声明里不含二进制许可', () => {
   const manifest = JSON.parse(read('package.json'))
   assert.ok(!manifest.files.includes('docs/LICENSE-BINARY.md'), 'package.json.files 不得包含 docs/LICENSE-BINARY.md')
   assert.ok(!manifest.files.includes('EULA.md'), 'package.json.files 不得包含 EULA.md')
-  assert.ok(manifest.files.includes('LICENSING.md'), 'package.json.files 应包含 LICENSING.md')
+  assert.ok(manifest.files.includes('docs/legal'), 'package.json.files 应包含 docs/legal')
 })
 
 test('npm 载荷里没有二进制许可', { skip: PKG === REPO ? '只在打包产物测试时检查' : false }, () => {
   assert.ok(!existsSync(join(PKG, 'docs/LICENSE-BINARY.md')), 'npm 包里出现了 docs/LICENSE-BINARY.md')
   assert.ok(!existsSync(join(PKG, 'EULA.md')), 'npm 包里出现了 EULA.md')
-  assert.ok(existsSync(join(PKG, 'LICENSING.md')), 'npm 包里缺少 LICENSING.md')
+  assert.ok(existsSync(join(PKG, 'docs/legal/LICENSING.md')), 'npm 包里缺少 docs/legal/LICENSING.md')
 })
 
 test('NOTICE 指向二进制许可而不是旧文件名', () => {
-  const text = read('NOTICE')
+  const text = read('docs/legal/NOTICE')
   assert.match(text, /docs\/LICENSE-BINARY\.md/)
   assert.doesNotMatch(text, /EULA\.md/)
 })

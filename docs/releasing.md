@@ -8,7 +8,7 @@ different review requirements, so they ship on different tracks.
 | Plugin | `@nexlos/os` tarball + source tree | Apache-2.0 | npm, plus the tagged commit |
 | Universal | per-platform static binaries | NexlOS Binary License 1.0 (Apache-2.0 parts keep their grant) | GitHub Releases |
 
-The authoritative license map is [LICENSING.md](../LICENSING.md).
+The authoritative license map is [LICENSING.md](legal/LICENSING.md).
 
 ## Plugin release
 
@@ -40,7 +40,7 @@ attached to a release:
    - `LICENSE` (Apache-2.0, for the embedded open components);
    - `NOTICE`;
    - `LICENSE-BINARY.md` (the closed kernel and window shell, copied from `docs/LICENSE-BINARY.md`);
-   - `THIRD_PARTY_NOTICES.md`;
+   - `docs/legal/THIRD_PARTY_NOTICES.md`;
    - `SHA256SUMS`;
    - `BUILD-MANIFEST.txt`.
 
@@ -62,7 +62,7 @@ attached to a release:
   mistake. Publish a new version, mark the old one superseded, and explain the
   correction in the release notes.
 - Do not ship a binary whose third-party notices are incomplete. The asset
-  inventory lives in `THIRD_PARTY_NOTICES.md`; update it in the same commit as
+  inventory lives in `docs/legal/THIRD_PARTY_NOTICES.md`; update it in the same commit as
   the asset.
 
 ## Verification commands
