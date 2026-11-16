@@ -91,6 +91,8 @@ Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공
 | 런타임 의존성 | 1 (`jpeg-js`) |
 | 라이선스 | Apache-2.0 (상표와 제3자 자산 제외) |
 
+2026년 위치와 검색어 대응, 그리고 이 프로젝트가 명확히 주장하지 않는 것: [docs/highlights.md](docs/highlights.md). 사용과 재배포 경계: [docs/research-use.md](docs/research-use.md).
+
 ## 하지 않는 것
 
 - 제3자 계정도, 호스팅 앱 스토어도 필요 없습니다. 앱, 코드, 데이터는 당신의 기기에 남습니다.

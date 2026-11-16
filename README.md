@@ -92,6 +92,18 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 | Runtime dependencies | 1 (`jpeg-js`) |
 | License | Apache-2.0 (trademarks and third-party assets excepted) |
 
+## Where it fits in 2026
+
+If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 7.95 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
+
+- **Agent-native**: the desktop is the surface; generated apps are the artifacts.
+- **Software factory**: one sentence, one app, opened in a browser, checked, repaired once.
+- **Tiny and portable**: 7.95 MiB, 293 files, one runtime dependency.
+- **Local-first**: no account, no telemetry, no default model provider.
+- **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
+
+Each search phrase mapped to what actually exists, plus what this project deliberately does **not** claim: [docs/highlights.md](docs/highlights.md). Use and redistribution boundaries: [docs/research-use.md](docs/research-use.md).
+
 ## What it refuses to do
 
 - No third-party account and no hosted app store; apps, code and data stay on your machine.

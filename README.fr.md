@@ -91,6 +91,8 @@ La barre latérale d'Octop affiche **NexlOS desktop** ; le bureau s'ouvre dans l
 | Dépendances d'exécution | 1 (`jpeg-js`) |
 | Licence | Apache-2.0 (marques et ressources tierces exclues) |
 
+Positionnement 2026, correspondance des termes de recherche, et ce que ce projet ne revendique pas : [docs/highlights.md](docs/highlights.md). Limites d'usage et de redistribution : [docs/research-use.md](docs/research-use.md).
+
 ## Ce qu'il refuse de faire
 
 - Pas de compte tiers, pas de boutique d'applications hébergée ; les applications, le code et les données restent sur votre machine.

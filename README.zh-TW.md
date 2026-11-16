@@ -89,6 +89,8 @@ Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作�
 | 執行階段相依 | 1（`jpeg-js`） |
 | 授權 | Apache-2.0（商標與第三方素材除外） |
 
+2026 年定位與搜尋詞對照，以及本專案明確不宣稱的能力：見 [docs/highlights.md](docs/highlights.md)。使用與再分發邊界：見 [docs/research-use.md](docs/research-use.md)。
+
 ## 它不做什麼
 
 - 不需要第三方帳號，不需要託管的應用程式商店；應用程式、程式碼和資料都在你自己的機器上。

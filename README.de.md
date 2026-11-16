@@ -91,6 +91,8 @@ In der Octop-Seitenleiste steht dann **NexlOS desktop**; der Desktop öffnet sic
 | Laufzeitabhängigkeiten | 1 (`jpeg-js`) |
 | Lizenz | Apache-2.0 (Marken und Fremdmaterial ausgenommen) |
 
+Einordnung für 2026, Zuordnung der Suchbegriffe und was dieses Projekt ausdrücklich nicht behauptet: [docs/highlights.md](docs/highlights.md). Nutzungs- und Weitergabegrenzen: [docs/research-use.md](docs/research-use.md).
+
 ## Was es nicht tut
 
 - Kein Drittanbieter-Konto und kein gehosteter App-Store; Apps, Code und Daten bleiben auf deiner Maschine.
