@@ -157,4 +157,4 @@ ArtCraft for NexlOS (ArtCraft 移植版) is the worked example shipped with the 
 
 ## Project
 
-Release history: [CHANGELOG.md](CHANGELOG.md). Contribution rules and the DCO: [CONTRIBUTING.md](.github/CONTRIBUTING.md). Security reports: [SECURITY.md](.github/SECURITY.md). License map: [LICENSING.md](docs/legal/LICENSING.md). Versioning and support window: [docs/releasing.md](docs/releasing.md).
+Release history: [CHANGELOG.md](CHANGELOG.md). Contribution rules and the DCO: [CONTRIBUTING.md](.github/CONTRIBUTING.md). Security reports: [SECURITY.md](.github/SECURITY.md). License map: [LICENSING.md](docs/legal/LICENSING.md). Versioning and support window: [docs/releasing.md](docs/releasing.md). How release builds detect a newer version: [docs/UPDATES.md](docs/UPDATES.md).

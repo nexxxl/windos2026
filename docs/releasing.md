@@ -22,10 +22,12 @@ The authoritative license map is [LICENSING.md](legal/LICENSING.md).
    (`node --test test/license-scope.test.mjs` enforces this).
 6. Update `CHANGELOG.md`: move the shipped entries out of `Unreleased` into a
    heading named for the version and date. The changelog is the release note.
-7. Tag the commit (`v<version>`) and push the tag. The `release` workflow
-   re-runs the gates on the tag, packs the tarball, runs the contract test on
-   that tarball, and creates the GitHub Release with the tarball attached. It
-   fails if the tag and `package.json` disagree.
+7. Tag the commit (`plugin-v<version>`) and push the tag. The `release`
+   workflow re-runs the gates on the tag, packs the tarball, runs the contract
+   test on it, and keeps the verified tarball as a workflow artifact. It does
+   **not** create a GitHub Release: the Releases page belongs to the universal
+   edition, and the plugin is obtained through `install_bundle` or npm. The
+   workflow fails if the tag and `package.json` disagree.
 8. Publish to npm with provenance from the tagged commit:
 
    ```sh
@@ -54,15 +56,23 @@ binary under `@nexlos/os`.
 These are repository settings, not files. Apply them once, before the repository
 is made public, and re-check them at each major release:
 
-- Branch protection on `main`: require the `plugin-ci` checks, require a pull
-  request, disallow force pushes, and require linear history.
-- Secret scanning and push protection enabled; Dependabot alerts enabled.
-- Private vulnerability reporting enabled, so `SECURITY.md` has a working path.
-- Discussions enabled, because the issue templates point there for questions.
-- About box and topics filled in, so the repository is discoverable after the
-  first public push.
-- `npm publish --provenance` available: the workflow needs `id-token: write` in
-  the publishing job, which is why publishing stays a manual, reviewed step.
+`scripts/harden-repo.sh` applies the automatable half (dry-run by default,
+`--apply` to write). What it sets:
+
+- `main`: force pushes and deletion rejected, admins allowed. Approval rules are
+  left off so a single maintainer is not locked out of their own release.
+- Tag ruleset: `v*`, `plugin-v*` and `update-feed` cannot be moved or deleted.
+  A rewritten `update-feed` would replace the signed update entry point.
+- Secret scanning with push protection, Dependabot alerts and security updates,
+  private vulnerability reporting.
+- Actions default token `contents: read`; a job that needs more asks explicitly.
+
+Still manual:
+
+- The About box and topics, so the repository is discoverable once public.
+- Discussions, if the issue templates should point there for questions.
+- `npm publish --provenance`: the publishing job needs `id-token: write`, which
+  is why publishing stays a manual, reviewed step.
 
 ## Post-release verification
 
@@ -71,8 +81,8 @@ is made public, and re-check them at each major release:
    `node --input-type=module -e "await import('@nexlos/os')"` and
    `import.meta.resolve('@nexlos/os/client')`.
 2. Confirm `npm view @nexlos/os@<version> dist.integrity` matches the tarball
-   attached to the GitHub Release, and that the provenance attestation lists
-   this repository and the tagged commit.
+   kept as the `nexlos-os-plugin-v<version>` workflow artifact for that tag, and
+   that the provenance attestation lists this repository and the tagged commit.
 3. Confirm the release page states the plugin edition's license (Apache-2.0)
    and does not attach binary-license files to the plugin tarball.
 4. Open the repository page once: the README renders, the language links
@@ -106,6 +116,11 @@ attached to a release:
    without the Apache carve-out.
 6. Publish the release as a prerelease until the install path has been verified
    on every advertised platform.
+7. Publish or refresh the signed update manifest on the fixed `update-feed`
+   pre-release: `latest.json` and `latest.json.sig`. Its `sha256` and `size`
+   values must describe the assets attached in step 4 **after** signing and
+   notarization, because those change the bytes. The plugin track never writes
+   this tag.
 
 ## What not to do
 
