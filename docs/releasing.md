@@ -102,8 +102,11 @@ attached to a release:
    binary while a redistribution question is open.
 2. Build with a pinned toolchain and record the build manifest: Go version,
    commit hash, build tags, `CGO_ENABLED=0`, target triple.
-3. Produce the platform matrix and keep the names stable:
-   `nexlos-<os>-<arch>` and `nexlos-<os>-<arch>.exe` for Windows.
+3. Produce the platform matrix. The names come from `build.py` and are not
+   renamed by hand: `NexlOS-<version>-<os>-<arch>-candidate.zip` for Windows and
+   both macOS architectures. The signed update manifest derives its URLs and
+   digests from these names, so a rename after the build invalidates the
+   manifest and forces a fresh build.
 4. Attach, for every release:
 
    - the binaries;
@@ -119,7 +122,12 @@ attached to a release:
    "Apache-2.0" on its own, and never describe the whole binary as proprietary
    without the Apache carve-out.
 6. Publish the release as a prerelease until the install path has been verified
-   on every advertised platform.
+   on every advertised platform. Universal builds currently ship **unsigned**:
+   say so on the release page, put the terminal install steps first, and give
+   the `xattr` / `Unblock-File` fallback for browser downloads. Start from
+   `docs/release-notes-template.md`; the user-facing steps live in the README's
+   *Install the release build* section. Do not describe an unsigned build as
+   verified or notarized.
 7. Publish or refresh the signed update manifest on the fixed `update-feed`
    pre-release: `latest.json` and `latest.json.sig`. Its `sha256` and `size`
    values must describe the assets attached in step 4 **after** signing and

@@ -47,7 +47,10 @@ The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 
 Both forms read the model configuration you already have. Neither ships a key, an account or telemetry.
 
-**Status:** the plugin edition is installable today. The universal edition is still in release review, so Releases stays empty until signing, notarization and the rights review are done.
+**Status:** the plugin edition is installable today. Universal builds publish
+unsigned: Apple notarization and Windows code signing are on the roadmap, so
+install them from a terminal or clear the browser's quarantine attribute. The
+steps, and the reason the warning appears, are under *Install the release build*.
 
 ## Install
 
@@ -88,6 +91,69 @@ cd windos2026
 Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main workspace and the command bar answers with your own Octop agent. `./scripts/octop-install status|up|down|uninstall` manages it. Requires Node.js 22+ and an Octop install under `~/.octop`. Host differences, limits and rollback: [docs/octop.md](docs/octop.md).
 
 ![NexlOS inside Octop](docs/images/host-octop.jpg)
+
+## Install the release build
+
+The release binary carries no Developer ID and no Authenticode signature, so a
+browser download is flagged by Gatekeeper or SmartScreen. `gh` and `curl` write
+the file without the browser's quarantine / Mark-of-the-Web attribute, so
+installing from a terminal starts cleanly.
+
+**macOS.** Use `darwin-arm64` on Apple Silicon and `darwin-amd64` on Intel.
+
+```sh
+TAG=v0.6.15                      # the release you want
+gh release download "$TAG" -R nexxxl/windos2026 -p '*darwin-arm64*.zip'
+unzip -q NexlOS-*-darwin-arm64-candidate.zip -d /tmp/nexlos
+mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
+```
+
+Without `gh`:
+
+```sh
+TAG=v0.6.15
+curl -fL -o /tmp/nexlos.zip \
+  "https://github.com/nexxxl/windos2026/releases/download/$TAG/NexlOS-${TAG#v}-darwin-arm64-candidate.zip"
+unzip -q /tmp/nexlos.zip -d /tmp/nexlos
+mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
+```
+
+**Windows (x64, PowerShell).**
+
+```powershell
+$tag = 'v0.6.15'
+gh release download $tag -R nexxxl/windos2026 -p '*windows-amd64*.zip'
+Expand-Archive .\NexlOS-*-windows-amd64-candidate.zip -DestinationPath "$env:LOCALAPPDATA\NexlOS" -Force
+& "$env:LOCALAPPDATA\NexlOS\NexlOS-*\nexlos.exe"
+```
+
+**If the ZIP came from a browser.** macOS 15 removed the right-click override,
+so clear the attribute once on the extracted app:
+
+```sh
+xattr -dr com.apple.quarantine /Applications/NexlOS.app
+```
+
+On Windows, unblock the file before running it:
+
+```powershell
+Unblock-File -Path .\nexlos.exe
+```
+
+**Why the warning appears.** The universal build ships without an Apple
+Developer ID or a Windows Authenticode certificate; both are paid annual
+programs and neither is in place yet. The binary is built from this repository's
+tagged source by `scripts/release/build.py`, and every release publishes
+`SHA256SUMS`:
+
+```sh
+shasum -a 256 -c SHA256SUMS
+```
+
+Updates are checked against a manifest signed with an Ed25519 key compiled into
+the binary; see [docs/UPDATES.md](docs/UPDATES.md). On Apple Silicon the bundle
+is signed ad-hoc, which the kernel requires before it will run the process at
+all. Ad-hoc signing is not a trust statement.
 
 ## Use
 
