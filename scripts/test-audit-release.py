@@ -226,16 +226,39 @@ jobs:
 
     def test_update_channel(self):
         name = "update-channel"
-        self.assertEqual(self.status(self.call(g.check_update_channel, self.root), name), "SKIP")
 
+        def manifest(channel: dict) -> Path:
+            path = self.tmp / "release-manifest.json"
+            path.write_text(__import__("json").dumps({"updateChannel": channel}), encoding="utf-8")
+            return self.tmp
+
+        # 没有产物时退回读源码里的默认值。
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, None, []), name), "SKIP")
         self.write(self.root / "update.go", 'var updatePublicKey = "AAAA"\n')
-        self.assertEqual(self.status(self.call(g.check_update_channel, self.root), name), "PASS")
-
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, None, []), name), "PASS")
         self.write(self.root / "update.go", 'var updatePublicKey = ""\n')
-        self.assertEqual(self.status(self.call(g.check_update_channel, self.root), name), "SKIP")
-
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, None, []), name), "SKIP")
         self.write(self.root / "update.go", 'const updatePublicKey = 1\n')
-        self.assertEqual(self.status(self.call(g.check_update_channel, self.root), name), "FAIL")
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, None, []), name), "FAIL")
+
+        # 有产物时以清单为准：公钥走 ldflags，源码默认值永远是空的。
+        key = "S9SJ0tLuxrBKVkKoYgBJxxE08N9s5T07Eb2wlQrRUIE="
+        closed = manifest({"configured": False, "publicKey": "", "fingerprint": ""})
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, closed, []), name), "SKIP")
+
+        opened = manifest({"configured": True, "publicKey": key, "fingerprint": "ed25519:x"})
+        with_key = self.fake_binary(f"prefix\0{key}\0".encode())
+        self.assertEqual(
+            self.status(self.call(g.check_update_channel, self.root, opened, [with_key]), name), "PASS")
+
+        without_key = self.fake_binary(b"nothing here")
+        self.assertEqual(
+            self.status(self.call(g.check_update_channel, self.root, opened, [without_key]), name), "FAIL")
+
+        # 没给 --binary 时不能假装核对过。
+        row = self.call(g.check_update_channel, self.root, opened, [])[name]
+        self.assertEqual(row["status"], "PASS")
+        self.assertIn("未核对二进制", row["detail"])
 
     # ---------- 包与清单 ----------
 

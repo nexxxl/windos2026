@@ -323,8 +323,37 @@ def check_build_scope(root: Path, report: Report) -> None:
         report.add("build-gogarble-scope", "PASS")
 
 
-def check_update_channel(root: Path, report: Report) -> None:
-    """公钥为空时更新通道整体关闭；这里只报告状态，避免发布说明超前承诺。"""
+def check_update_channel(root: Path, package: Path | None, binaries: list[Path], report: Report) -> None:
+    """公钥为空时更新通道整体关闭；配置了就必须真的编进二进制。
+
+    公钥走 ldflags（`-X main.updatePublicKey`），源码里的默认值永远是空串，
+    所以只看 update.go 会把「已配置」误报成「关闭」——这正是第一次带公钥
+    构建时暴露的问题。有产物时以清单声明为准，并回到二进制里核对字面量。
+    """
+    manifest = None
+    if package:
+        candidates = list(package.glob("release-manifest.json")) + \
+            list(package.glob("*/release-manifest.json"))
+        if candidates:
+            manifest = json.loads(candidates[0].read_text(encoding="utf-8"))
+
+    if manifest is not None:
+        channel = manifest.get("updateChannel") or {}
+        key = (channel.get("publicKey") or "").strip()
+        note = channel.get("fingerprint") or "无指纹"
+        if not key:
+            report.add("update-channel", "SKIP", "清单未配置公钥：发布说明不能承诺应用内自动更新")
+            return
+        if not binaries:
+            report.add("update-channel", "PASS", f"清单已配置公钥 · {note}（未提供 --binary，未核对二进制）")
+            return
+        absent = [b.name for b in binaries if key.encode() not in b.read_bytes()]
+        if absent:
+            report.add("update-channel", "FAIL", "清单声明了公钥，二进制里却找不到: " + ", ".join(absent))
+        else:
+            report.add("update-channel", "PASS", f"公钥已编入二进制 · {note}")
+        return
+
     path = root / "update.go"
     if not path.is_file():
         report.add("update-channel", "SKIP", "没有 update.go")
@@ -453,7 +482,7 @@ def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]
     check_workflow_hardening(public, report)
     check_security_surface(public, report)
     check_build_scope(root, report)
-    check_update_channel(root, report)
+    check_update_channel(root, package, binaries, report)
 
     if package:
         check_package(root, package, report)
