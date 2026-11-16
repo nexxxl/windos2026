@@ -100,8 +100,10 @@ attached to a release:
 
 1. Resolve outstanding asset-rights questions in that tree; do not attach a
    binary while a redistribution question is open.
-2. Build with a pinned toolchain and record the build manifest: Go version,
-   commit hash, build tags, `CGO_ENABLED=0`, target triple.
+2. Build with a pinned toolchain and keep the build manifest `build.py` writes:
+   Go version, build tags, `sourceTreeSha256` (the tree is not a git repository,
+   so this digest replaces a commit hash), per-target triple and
+   `CGO_ENABLED` — which is 1 for the macOS bundles and 0 for Windows.
 3. Produce the platform matrix. The names come from `build.py` and are not
    renamed by hand: `NexlOS-<version>-<os>-<arch>-candidate.zip` for Windows and
    both macOS architectures. The signed update manifest derives its URLs and

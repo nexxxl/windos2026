@@ -163,9 +163,10 @@ Unblock-File -Path .\nexlos.exe
 
 **Why the warning appears.** The universal build ships without an Apple
 Developer ID or a Windows Authenticode certificate; both are paid annual
-programs and neither is in place yet. The binary is built from this repository's
-tagged source by `scripts/release/build.py`, and every release publishes
-`SHA256SUMS`:
+programs and neither is in place yet. The universal binaries are built from a
+private release tree by `scripts/release/build.py`; this repository carries the
+plugin source, the docs and the release audit. Every release publishes
+`SHA256SUMS` and a `release-manifest.json` with the artifact digests:
 
 ```sh
 shasum -a 256 -c SHA256SUMS
