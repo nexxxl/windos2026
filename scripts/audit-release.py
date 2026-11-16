@@ -99,6 +99,9 @@ class Report:
     def failed(self) -> bool:
         return any(row["status"] == "FAIL" for row in self.rows)
 
+    def skipped(self) -> list[dict]:
+        return [row for row in self.rows if row["status"] == "SKIP"]
+
     def names(self) -> list[str]:
         """已执行过的检查名（二进制类检查可重复出现）。"""
         return [row["check"] for row in self.rows]
@@ -342,7 +345,9 @@ def check_update_channel(root: Path, package: Path | None, binaries: list[Path],
         key = (channel.get("publicKey") or "").strip()
         note = channel.get("fingerprint") or "无指纹"
         if not key:
-            report.add("update-channel", "SKIP", "清单未配置公钥：发布说明不能承诺应用内自动更新")
+            # 有清单说明这是一次正式构建；没有公钥就只能手动下载更新。
+            # 这属于发布决策，必须显式记录，不能靠 SKIP 悄悄过关。
+            report.add("update-channel", "FAIL", "清单存在但 updateChannel 没有公钥：本次构建没有应用内更新通道")
             return
         if not binaries:
             report.add("update-channel", "PASS", f"清单已配置公钥 · {note}（未提供 --binary，未核对二进制）")
@@ -527,6 +532,15 @@ def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]
     return report
 
 
+def exit_code(report: Report, strict: bool) -> int:
+    """FAIL 一律非零；strict 模式下 SKIP 也算失败（发布前用，防止检查被跳过）。"""
+    if report.failed():
+        return 1
+    if strict and report.skipped():
+        return 1
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="NexlOS 发行审计回归门禁")
     parser.add_argument("--root", type=Path, help="源码根；默认从脚本位置向上找")
@@ -534,6 +548,8 @@ def main() -> int:
     parser.add_argument("--package", type=Path, help="包目录或 build.py 输出目录")
     parser.add_argument("--binary", type=Path, action="append", default=[], help="待检二进制，可重复")
     parser.add_argument("--json", action="store_true", help="机器可读输出")
+    parser.add_argument("--strict", action="store_true",
+                        help="任何 SKIP 也算失败：发布前用它，确保没有检查被跳过")
     args = parser.parse_args()
 
     root = (args.root or find_root(Path(__file__).resolve().parent)).resolve()
@@ -541,9 +557,19 @@ def main() -> int:
     package = args.package.resolve() if args.package else None
     binaries = [b.resolve() for b in args.binary]
 
+    # 路径写错时要给出明确错误，不能让门禁自己抛 traceback。
+    missing = [str(b) for b in binaries if not b.is_file()]
+    if missing:
+        print("--binary 路径不存在: " + ", ".join(missing), file=sys.stderr)
+        return 2
+
     report = run_all(root, public, package, binaries)
     report.print(args.json)
-    return 1 if report.failed() else 0
+
+    if args.strict and report.skipped():
+        names = ", ".join(row["check"] for row in report.skipped())
+        print(f"\n--strict: {len(report.skipped())} 项检查被跳过: {names}", file=sys.stderr)
+    return exit_code(report, args.strict)
 
 
 if __name__ == "__main__":
