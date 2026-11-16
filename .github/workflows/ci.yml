@@ -27,6 +27,8 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 scripts/check-source.py
+      # 发行契约的回归门禁：许可只有一份、工作流不建 Release、NOTICE 指向正确的条款。
+      - run: python3 scripts/audit-release.py
 
   plugin:
     name: Standalone plugin (Node ${{ matrix.node }})

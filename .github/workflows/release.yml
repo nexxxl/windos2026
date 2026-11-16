@@ -1,17 +1,19 @@
 name: release
 
-# A tag is the release trigger. Nothing here publishes to npm; the npm step is a
-# human action with provenance, documented in docs/releasing.md.
+# 插件版是这一棵树的唯一发布物，它不创建 GitHub Release：
+# 通用版（Windows/macOS 自包含二进制）通过 update-feed 与本仓的 Release 页发布，
+# 插件版通过 install_bundle / npm 获取。两条链路的发布位不能互相抢占，
+# 所以这里只做「标签 = 版本」的校验与产物留档。
 on:
   push:
-    tags: ['v*']
+    tags: ['plugin-v*']
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   plugin:
-    name: Plugin tarball and GitHub Release
+    name: Plugin tarball (verification only)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -26,7 +28,7 @@ jobs:
 
       - name: Tag matches package.json
         run: |
-          want="v$(node -p "require('./package.json').version")"
+          want="plugin-v$(node -p "require('./package.json').version")"
           if [ "$want" != "$GITHUB_REF_NAME" ]; then
             echo "Tag $GITHUB_REF_NAME does not match package.json $want" >&2
             exit 1
@@ -36,6 +38,7 @@ jobs:
       - run: npm run check
       - run: npm test
       - run: python3 scripts/check-source.py
+      - run: python3 scripts/audit-release.py
       - run: bash scripts/stage-public-repo.sh --check-repo .
 
       - name: Pack
@@ -47,11 +50,15 @@ jobs:
           tar -xzf dist/nexlos-os-*.tgz -C /tmp/pkgext
           NEXLOS_TEST_PACKAGE=/tmp/pkgext/package npm test
 
-      - name: Create the GitHub Release
-        env:
-          GH_TOKEN: ${{ github.token }}
+      # 留档给维护者与 DSH/Octop 分发自检用；它不是 Release，也不会出现在下载页。
+      - name: Upload the tarball as a workflow artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nexlos-os-${{ github.ref_name }}
+          path: dist/nexlos-os-*.tgz
+          if-no-files-found: error
+          retention-days: 90
+
+      - name: Publishing is a human step
         run: |
-          gh release create "$GITHUB_REF_NAME" dist/nexlos-os-*.tgz \
-            --verify-tag \
-            --title "$GITHUB_REF_NAME" \
-            --generate-notes
+          echo "Tarball built and verified. Publishing to npm is a human action with provenance."
