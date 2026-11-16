@@ -81,6 +81,8 @@ if [[ $VERIFY -eq 1 ]]; then
     "$(api "repos/$REPO/actions/permissions/workflow" --jq '.default_workflow_permissions // "missing"' | tr -d '\n')"
   check "Actions PR approval" false \
     "$(api "repos/$REPO/actions/permissions/workflow" --jq '.can_approve_pull_request_reviews // "missing"' | tr -d '\n')"
+  check "web commits require sign-off" true \
+    "$(api "repos/$REPO" --jq '.web_commit_signoff_required // false' | tr -d '\n')"
 
   # 新旧 API 对这两个字段返回布尔或对象，两种形态都要认。
   FORCE_PUSH="$(api "repos/$REPO/branches/main/protection" \
@@ -124,6 +126,10 @@ step "Actions default token read-only" \
   gh api -X PUT "repos/$REPO/actions/permissions/workflow" \
     -f default_workflow_permissions=read \
     -F can_approve_pull_request_reviews=false
+
+# 2b. 网页端提交也要求 sign-off：仓库用 DCO，绕过网页提交等于留一个不用签的口子。
+step "require sign-off on web commits" \
+  gh api -X PATCH "repos/$REPO" -F web_commit_signoff_required=true
 
 # 3. main 只禁止破坏性操作，不强制审批：单人维护的仓库不该被自己锁住。
 #    PUT 是整体替换，所以已有保护先读出来给人看，确认后才覆盖。
