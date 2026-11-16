@@ -22,6 +22,34 @@ The local state is a single file, `$NEXLOS_HOME/update.json`. Delete it to make 
 
 The channel is closed unless the build compiled in a release key. A build without one makes no request at all: **Settings → Update and security** says the channel is not configured and names the reason. This is the state of builds produced before the release key exists.
 
+## Verifying a manifest yourself
+
+The release key is:
+
+```
+public key  rnY8HGD4b5haQboK1WsXRx7wi3Y5B2ZvtHVFYgNulIM=
+fingerprint ed25519:a8dcfdce0dafbc50
+```
+
+The public key is the raw 32-byte Ed25519 key, base64 encoded; the fingerprint
+is the first 16 hex characters of its SHA-256. To check that a `latest.json`
+matches its `.sig` without running NexlOS:
+
+```sh
+printf '%s' 'rnY8HGD4b5haQboK1WsXRx7wi3Y5B2ZvtHVFYgNulIM=' | base64 -d > key.bin
+base64 -d < latest.json.sig > latest.sig.bin
+python3 - <<'PY'
+import pathlib
+open("spki.der","wb").write(bytes.fromhex("302a300506032b6570032100") + pathlib.Path("key.bin").read_bytes())
+PY
+openssl pkeyutl -verify -pubin -keyform DER -inkey spki.der -rawin \
+  -in latest.json -sigfile latest.sig.bin
+```
+
+`Signature Verified Successfully` means the manifest was signed by the holder of
+the release key. It says nothing about whether that holder was careful, which is
+why the key stays offline.
+
 ## What this is not
 
 The check is a convenience. It is not a licence check, not telemetry, and not a remote control. The app sends no identifier, no version and no usage data: it fetches two public files. The signature stops a modified manifest from being accepted; it does not stop someone with the private key from publishing a manifest, which is the point of a release key.
