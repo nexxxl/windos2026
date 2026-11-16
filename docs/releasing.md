@@ -12,7 +12,9 @@ The authoritative license map is [LICENSING.md](legal/LICENSING.md).
 
 ## Plugin release
 
-1. `npm run check`, `npm test`, `./scripts/verify-lite.sh` all green.
+1. `make check` is green: source boundary, the release gate, the gate's
+   counterexample tests, and the plugin self-check. Then `npm test` and
+   `./scripts/verify-lite.sh`.
 2. `bash scripts/stage-public-repo.sh /tmp/candidate` then
    `bash scripts/stage-public-repo.sh --check /tmp/candidate`.
 3. `bash scripts/stage-public-repo.sh --check-repo .` on the pushed tree.
