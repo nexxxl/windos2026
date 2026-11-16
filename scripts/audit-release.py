@@ -368,18 +368,17 @@ def check_update_channel(root: Path, package: Path | None, binaries: list[Path],
         report.add("update-channel", "SKIP", "公钥为空：发布说明不能承诺应用内自动更新")
 
 
-def find_package_dir(package: Path) -> Path | None:
-    """--package 既可以给包目录，也可以给 build.py 的输出目录。"""
+def find_package_dirs(package: Path) -> list[Path]:
+    """--package 可以给单个包目录，也可以给 build.py 的多平台输出目录。"""
     if (package / "LICENSE").is_file():
-        return package
-    dirs = [p for p in package.iterdir() if p.is_dir() and p.name.startswith("NexlOS-")]
-    return dirs[0] if len(dirs) == 1 else None
+        return [package]
+    return sorted(p for p in package.iterdir() if p.is_dir() and p.name.startswith("NexlOS-"))
 
 
 def check_package(root: Path, package: Path, report: Report) -> None:
-    pkg = find_package_dir(package)
-    if pkg is None:
-        report.add("package-layout", "FAIL", f"{package} 里找不到唯一的 NexlOS-* 包目录")
+    pkgs = find_package_dirs(package)
+    if not pkgs:
+        report.add("package-layout", "FAIL", f"{package} 里找不到 NexlOS-* 包目录")
         return
 
     license_binary = root / "public-repo" / "docs" / "LICENSE-BINARY.md"
@@ -387,36 +386,56 @@ def check_package(root: Path, package: Path, report: Report) -> None:
         license_binary = root / "docs" / "LICENSE-BINARY.md"
 
     problems = []
-    root_license = pkg / "LICENSE"
-    if not root_license.is_file():
-        problems.append("包根缺少 LICENSE")
-    elif license_binary.is_file() and sha256(root_license) != sha256(license_binary):
-        problems.append("包根 LICENSE 不是二进制许可")
-    apache = pkg / "licenses" / "APACHE-2.0.txt"
-    if not apache.is_file():
-        problems.append("缺少 licenses/APACHE-2.0.txt（桌面层仍是 Apache-2.0）")
-    elif "Apache License" not in apache.read_text(encoding="utf-8", errors="ignore"):
-        problems.append("licenses/APACHE-2.0.txt 不是 Apache 文本")
-    eula = [p.name for p in pkg.rglob("*") if p.is_file() and "EULA" in p.name.upper()]
-    if eula:
-        problems.append("包里仍有 EULA 文件: " + ", ".join(eula[:3]))
+    for pkg in pkgs:
+        root_license = pkg / "LICENSE"
+        if not root_license.is_file():
+            problems.append(f"{pkg.name}: 包根缺少 LICENSE")
+        elif license_binary.is_file() and sha256(root_license) != sha256(license_binary):
+            problems.append(f"{pkg.name}: 包根 LICENSE 不是二进制许可")
+        apache = pkg / "licenses" / "APACHE-2.0.txt"
+        if not apache.is_file():
+            problems.append(f"{pkg.name}: 缺少 licenses/APACHE-2.0.txt（桌面层仍是 Apache-2.0）")
+        elif "Apache License" not in apache.read_text(encoding="utf-8", errors="ignore"):
+            problems.append(f"{pkg.name}: licenses/APACHE-2.0.txt 不是 Apache 文本")
+        eula = [p.name for p in pkg.rglob("*") if p.is_file() and "EULA" in p.name.upper()]
+        if eula:
+            problems.append(f"{pkg.name}: 包里仍有 EULA 文件: " + ", ".join(eula[:3]))
     if problems:
-        report.add("package-layout", "FAIL", "; ".join(problems))
+        report.add("package-layout", "FAIL", "; ".join(problems[:6]))
     else:
-        report.add("package-layout", "PASS", str(pkg.name))
+        report.add("package-layout", "PASS", f"{len(pkgs)} 个包目录 · " + ", ".join(p.name for p in pkgs))
+
+
+def load_manifest(package: Path) -> dict | None:
+    candidates = list(package.glob("release-manifest.json")) + list(package.glob("*/release-manifest.json"))
+    if not candidates:
+        return None
+    return json.loads(candidates[0].read_text(encoding="utf-8"))
+
+
+def manifest_is_obfuscated(package: Path | None) -> bool:
+    """只有 manifest 明确声明 garble 时，才要求产物呈现混淆后的形态。"""
+    if package is None:
+        return False
+    data = load_manifest(package)
+    return bool(data) and (data.get("obfuscation") or {}).get("tool") == "garble"
 
 
 def check_manifest(package: Path, report: Report) -> None:
     """混淆声明必须与产物一致：静默失效的 garble 不能以“已混淆”名义发出。"""
-    candidates = list(package.glob("release-manifest.json")) + list(package.glob("*/release-manifest.json"))
-    if not candidates:
+    data = load_manifest(package)
+    if data is None:
         report.add("manifest-obfuscation", "SKIP", "没有 release-manifest.json")
         return
-    data = json.loads(candidates[0].read_text(encoding="utf-8"))
     obf = data.get("obfuscation") or {}
+    tool = obf.get("tool")
+    if tool is None:
+        report.add("manifest-obfuscation", "SKIP", "manifest 声明未混淆：" + (obf.get("note") or "无说明"))
+        return
+    if tool != "garble":
+        report.add("manifest-obfuscation", "FAIL", f"未知的混淆工具: {tool}")
+        return
     problems = []
-    if obf.get("tool") != "garble":
-        problems.append("manifest 未记录 garble")
     if "nexloffice" not in str(obf.get("scope", "")):
         problems.append("混淆范围没有覆盖 nexloffice")
     if not obf.get("note"):
@@ -431,10 +450,13 @@ def check_manifest(package: Path, report: Report) -> None:
         report.add("manifest-obfuscation", "PASS")
 
 
-def check_binary(binary: Path, report: Report) -> None:
+def check_binary(binary: Path, report: Report, obfuscated: bool = True) -> None:
     code, out = run(["go", "version", "-m", str(binary)])
     first = out.splitlines()[0] if out else "(no output)"
-    if code == 0 and first.endswith(": unknown"):
+    if not obfuscated:
+        # 未混淆批次：buildinfo 与符号可读是预期结果，不能按失败处理，也不能按通过处理。
+        report.add("binary-buildinfo", "SKIP", "本批次未混淆：buildinfo 可读是预期结果")
+    elif code == 0 and first.endswith(": unknown"):
         report.add("binary-buildinfo", "PASS", "go version -m → unknown")
     else:
         report.add("binary-buildinfo", "FAIL", first[:160])
@@ -450,7 +472,9 @@ def check_binary(binary: Path, report: Report) -> None:
 
     leaked = [name for name in ("registerStarCommands", "newUpdateManager", "nexloffice.") if name.encode() in data]
     path_hits = data.count(b"nexlos/")
-    if leaked:
+    if not obfuscated:
+        report.add("binary-symbols", "SKIP", "本批次未混淆：函数名可读是预期结果")
+    elif leaked:
         report.add("binary-symbols", "FAIL", "残留: " + ", ".join(leaked))
     elif path_hits > 16:
         report.add("binary-symbols", "FAIL", f"nexlos/ 路径残留 {path_hits} 处")
@@ -492,8 +516,9 @@ def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]
         report.add("manifest-obfuscation", "SKIP", "未提供 --package")
 
     if binaries:
+        obfuscated = manifest_is_obfuscated(package)
         for binary in binaries:
-            check_binary(binary, report)
+            check_binary(binary, report, obfuscated)
     else:
         for name in ("binary-buildinfo", "binary-command-set", "binary-symbols", "binary-self-report"):
             report.add(name, "SKIP", "未提供 --binary")
