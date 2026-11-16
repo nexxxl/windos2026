@@ -24,9 +24,9 @@ import { execFile as execFileCallback } from 'node:child_process'
 import { promisify } from 'node:util'
 import { inflateRawSync } from 'node:zlib'
 
-import { createBrowserBridge } from './browser-bridge.js'
-import { compileAppSpec, renderAppTemplate, validateGeneratedHtml } from './app-templates.js'
-import { verifyAppHtml } from './app-verifier.js'
+import { createBrowserBridge } from './src/browser-bridge.js'
+import { compileAppSpec, renderAppTemplate, validateGeneratedHtml } from './src/app-templates.js'
+import { verifyAppHtml } from './src/app-verifier.js'
 import { capabilityList, capabilityOf, unsupportedCapability } from './lib/capabilities.js'
 
 /** Plugin name; the Loader row, the bundle and the client entry share it. */
@@ -1583,7 +1583,7 @@ export function apply(ctx, config = {}) {
           const root = path.join(home(), 'apps', id)
           let relative = slash < 0 ? '' : decodeURIComponent(rest.slice(slash + 1))
           if (relative === 'bridge.js') {
-            const bridge = await fsp.readFile(path.join(HERE, 'app-storage-client.js'))
+            const bridge = await fsp.readFile(path.join(HERE, 'src', 'app-storage-client.js'))
             res.writeHead(200, { 'content-type': 'text/javascript; charset=utf-8', 'cache-control': 'no-store' })
             return res.end(bridge)
           }
@@ -5343,22 +5343,22 @@ window.SongBoard.importSvg = function (svgText) {
         return void handleBrowserRequest(req, res, url)
       }
       if (url.pathname === '/nexlos/app-storage-client.js') {
-        return void serveFile(req, res, HERE, 'app-storage-client.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/app-storage-client.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/browser-frame-worker.js') {
-        return void serveFile(req, res, HERE, 'browser-frame-worker.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/browser-frame-worker.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/perf.js') {
-        return void serveFile(req, res, HERE, 'nexlos-perf.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/nexlos-perf.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/dsh-workbench.js') {
-        return void serveFile(req, res, HERE, 'dsh-workbench.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/dsh-workbench.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/appdata-bridge.js') {
-        return void serveFile(req, res, HERE, 'appdata-bridge.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/appdata-bridge.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/terminal-pending.js') {
-        return void serveFile(req, res, HERE, 'terminal-pending.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/terminal-pending.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/terminal/pending' || url.pathname === '/nexlos/terminal/consumed') {
         return void (async () => {
@@ -5382,7 +5382,7 @@ window.SongBoard.importSvg = function (svgText) {
         })()
       }
       if (url.pathname === '/nexlos/draw-bridge.js') {
-        return void serveFile(req, res, HERE, 'draw-bridge.js', { pluginTransforms: false })
+        return void serveFile(req, res, HERE, 'src/draw-bridge.js', { pluginTransforms: false })
       }
       if (url.pathname === '/nexlos/draw/pending' || url.pathname === '/nexlos/draw/consumed') {
         return void (async () => {
@@ -5410,10 +5410,10 @@ window.SongBoard.importSvg = function (svgText) {
         || url.pathname === '/nexlos/router.js' || url.pathname === '/nexlos/router.css'
         || url.pathname === '/nexlos/chatpopup.js' || url.pathname === '/nexlos/chatpopup.css'
         || url.pathname === '/nexlos/appgen.js' || url.pathname === '/nexlos/appgen.css') {
-        return void serveFile(req, res, HERE, url.pathname.slice('/nexlos/'.length))
+        return void serveFile(req, res, HERE, 'src/' + url.pathname.slice('/nexlos/'.length))
       }
       if (url.pathname === '/nexlos/browser.js' || url.pathname === '/nexlos/browser.css') {
-        const file = url.pathname.endsWith('.js') ? 'nexlos-browser.js' : 'nexlos-browser.css'
+        const file = url.pathname.endsWith('.js') ? 'src/nexlos-browser.js' : 'src/nexlos-browser.css'
         return void serveFile(req, res, HERE, file)
       }
       if (url.pathname === '/nexlos/' || url.pathname === '/nexlos/index.html') {
