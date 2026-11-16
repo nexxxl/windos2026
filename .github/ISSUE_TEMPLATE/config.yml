@@ -7,5 +7,5 @@ contact_links:
     url: https://github.com/nexxxl/windos2026/security/advisories/new
     about: Report a vulnerability privately. Do not open a public issue.
   - name: Licensing
-    url: https://github.com/nexxxl/windos2026/blob/main/EULA.md
+    url: https://github.com/nexxxl/windos2026/blob/main/docs/legal/LICENSING.md
     about: Read the license scope before asking about commercial use.

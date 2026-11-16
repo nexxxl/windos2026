@@ -61,7 +61,7 @@ Search results for the same period, grouped by phrase:
 | --- | --- | --- |
 | Agent-native surface | Strong | A shell, apps and a workspace that a host hands to an agent |
 | OS for agents | Strong | "Linux gave every program a machine; NexlOS gives every agent a computer" |
-| Tiny and deployable | Strong | 7.94 MiB, 286 files, one dependency |
+| Tiny and deployable | Strong | 7.94 MiB, 287 files, one dependency |
 | Software factory | Strong | One sentence → app, browser check, one repair, icon |
 | Local-first / BYOK | Strong | No key, no default provider, no telemetry, no account |
 | Single-file artifacts | Strong | `apps/<id>/index.html` plus `app.json` |

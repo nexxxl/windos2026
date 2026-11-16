@@ -1,0 +1,57 @@
+name: release
+
+# A tag is the release trigger. Nothing here publishes to npm; the npm step is a
+# human action with provenance, documented in docs/releasing.md.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  plugin:
+    name: Plugin tarball and GitHub Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Tag matches package.json
+        run: |
+          want="v$(node -p "require('./package.json').version")"
+          if [ "$want" != "$GITHUB_REF_NAME" ]; then
+            echo "Tag $GITHUB_REF_NAME does not match package.json $want" >&2
+            exit 1
+          fi
+
+      - run: npm ci --no-audit --no-fund
+      - run: npm run check
+      - run: npm test
+      - run: python3 scripts/check-source.py
+      - run: bash scripts/stage-public-repo.sh --check-repo .
+
+      - name: Pack
+        run: npm pack --pack-destination dist
+
+      - name: Contract test on the packed artifact
+        run: |
+          mkdir -p /tmp/pkgext
+          tar -xzf dist/nexlos-os-*.tgz -C /tmp/pkgext
+          NEXLOS_TEST_PACKAGE=/tmp/pkgext/package npm test
+
+      - name: Create the GitHub Release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" dist/nexlos-os-*.tgz \
+            --verify-tag \
+            --title "$GITHUB_REF_NAME" \
+            --generate-notes

@@ -30,4 +30,4 @@ version. Write "not verified" where applicable instead of guessing.
 - [ ] New third-party code or assets include source, version, and license text.
 - [ ] No secrets, private paths, customer data, or build artifacts are included.
 - [ ] Commits are signed off under the DCO (`git commit -s`).
-- [ ] Documentation or `docs/validation.md` is updated when behavior changes.
+- [ ] Documentation under `docs/` is updated when behavior changes.

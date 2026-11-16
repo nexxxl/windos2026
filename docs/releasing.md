@@ -17,10 +17,66 @@ The authoritative license map is [LICENSING.md](legal/LICENSING.md).
    `bash scripts/stage-public-repo.sh --check /tmp/candidate`.
 3. `bash scripts/stage-public-repo.sh --check-repo .` on the pushed tree.
 4. `npm pack --dry-run --json`: record size, file count, unpacked size. Update
-   the numbers in `README.public*.md` and `README-LITE.md` in the same commit.
-5. Confirm the tarball does **not** contain `LICENSE-BINARY.md` or `EULA.md`
+   the numbers in `README.md` and the seven `docs/i18n/README.*.md` in the same commit.
+5. Confirm the tarball does **not** contain `LICENSE-BINARY.md`
    (`node --test test/license-scope.test.mjs` enforces this).
-6. Tag the commit (`v<version>`), push the tag, publish to npm.
+6. Update `CHANGELOG.md`: move the shipped entries out of `Unreleased` into a
+   heading named for the version and date. The changelog is the release note.
+7. Tag the commit (`v<version>`) and push the tag. The `release` workflow
+   re-runs the gates on the tag, packs the tarball, runs the contract test on
+   that tarball, and creates the GitHub Release with the tarball attached. It
+   fails if the tag and `package.json` disagree.
+8. Publish to npm with provenance from the tagged commit:
+
+   ```sh
+   npm publish --provenance --access public
+   ```
+
+   `publishConfig.access` is already `public`; `--provenance` attaches the
+   Sigstore attestation that ties the tarball to this workflow run and commit.
+
+## Versioning
+
+Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+| Change | Bump |
+| --- | --- |
+| Breaking change to the plugin contract, app format, or export map | major |
+| New capability, app, command, language or host | minor |
+| Fix that keeps every contract | patch |
+
+`-lite.N` marks the plugin-only edition. The universal edition has its own
+version line; do not reuse these numbers for it, and do not publish a universal
+binary under `@nexlos/os`.
+
+## Repository settings before the first public release
+
+These are repository settings, not files. Apply them once, before the repository
+is made public, and re-check them at each major release:
+
+- Branch protection on `main`: require the `plugin-ci` checks, require a pull
+  request, disallow force pushes, and require linear history.
+- Secret scanning and push protection enabled; Dependabot alerts enabled.
+- Private vulnerability reporting enabled, so `SECURITY.md` has a working path.
+- Discussions enabled, because the issue templates point there for questions.
+- About box and topics filled in, so the repository is discoverable after the
+  first public push.
+- `npm publish --provenance` available: the workflow needs `id-token: write` in
+  the publishing job, which is why publishing stays a manual, reviewed step.
+
+## Post-release verification
+
+1. Install the published tarball into an empty project and import both entry
+   points:
+   `node --input-type=module -e "await import('@nexlos/os')"` and
+   `import.meta.resolve('@nexlos/os/client')`.
+2. Confirm `npm view @nexlos/os@<version> dist.integrity` matches the tarball
+   attached to the GitHub Release, and that the provenance attestation lists
+   this repository and the tagged commit.
+3. Confirm the release page states the plugin edition's license (Apache-2.0)
+   and does not attach binary-license files to the plugin tarball.
+4. Open the repository page once: the README renders, the language links
+   resolve, and the hero demo loads.
 
 ## Universal binary release
 

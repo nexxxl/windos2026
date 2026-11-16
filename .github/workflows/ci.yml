@@ -6,6 +6,10 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
+  schedule:
+    # Weekly dependency audit; failures show up here instead of blocking a PR
+    # on a registry advisory published mid-review.
+    - cron: '0 3 * * 1'
 
 permissions:
   contents: read
@@ -25,26 +29,61 @@ jobs:
       - run: python3 scripts/check-source.py
 
   plugin:
-    name: Standalone plugin (Node 22)
+    name: Standalone plugin (Node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # 22 is the supported floor (package.json engines); 24 and 26 are the
+        # current LTS and current release. All three must stay green.
+        node: ['22', '24', '26']
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '22'
+          node-version: ${{ matrix.node }}
           cache: npm
           cache-dependency-path: package-lock.json
       - run: npm ci --no-audit --no-fund
       - run: npm run check
       - run: npm test
       - run: npm pack --dry-run
-      # 打包产物才是用户真正拿到的东西：解开再跑一遍契约测试。
+      # 打包产物才是用户真正拿到的东西：解开再跑一遍契约测试。跑一次就够。
       - name: Contract test on the packed artifact
+        if: matrix.node == '22'
         run: |
           mkdir -p /tmp/pkgext
           npm pack --pack-destination /tmp
           tar -xzf /tmp/nexlos-os-*.tgz -C /tmp/pkgext
           NEXLOS_TEST_PACKAGE=/tmp/pkgext/package npm test
+
+  audit:
+    name: Dependency audit (production)
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm audit --omit=dev --audit-level=high
+
+  dependency-review:
+    name: Dependency review
+    # Private repositories need GitHub Advanced Security for this action; it
+    # activates on the first pull request after the repository goes public.
+    if: ${{ github.event_name == 'pull_request' && !github.event.repository.private }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/dependency-review-action@v4
+        with:
+          fail-on-severity: high
 
   python-tools:
     name: Optional companion Python source

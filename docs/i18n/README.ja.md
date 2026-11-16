@@ -83,7 +83,7 @@ Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メイ�
 | 項目 | 数字 |
 | --- | --- |
 | tarball | 7.94 MiB |
-| 展開後 | 12.6 MiB / 286 ファイル |
+| 展開後 | 12.6 MiB / 287 ファイル |
 | アプリ | 17 |
 | コマンド | 25 |
 | UI 言語 | 8 内蔵、7 の追加パック |
@@ -121,3 +121,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 本リポジトリのプラグインソースは Apache-2.0 です。ユニバーサル版の Release バイナリは別ライセンスで、対応表は [LICENSING.md](../legal/LICENSING.md)、条件は [LICENSE-BINARY.md](../LICENSE-BINARY.md) にあります。
 
 プラグインのソースとドキュメントは [Apache-2.0](../../LICENSE) です。商標は Apache-2.0 では付与されず、第三者素材はそれぞれのライセンスに従います。[NOTICE](../legal/NOTICE)、[TRADEMARK.md](../legal/TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md) を参照してください。
+
+## プロジェクト
+
+リリース履歴：[CHANGELOG.md](../../CHANGELOG.md)。コントリビューション規約と DCO：[CONTRIBUTING.md](../../.github/CONTRIBUTING.md)。セキュリティ報告：[SECURITY.md](../../.github/SECURITY.md)。ライセンス対応表：[LICENSING.md](../legal/LICENSING.md)。バージョンとサポート範囲：[docs/releasing.md](../releasing.md)。

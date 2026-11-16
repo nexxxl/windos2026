@@ -81,7 +81,7 @@ Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作�
 | 項目 | 數字 |
 | --- | --- |
 | 壓縮包 | 7.94 MiB |
-| 解包 | 12.6 MiB / 286 檔案 |
+| 解包 | 12.6 MiB / 287 檔案 |
 | 應用程式 | 17 |
 | 指令 | 25 |
 | 介面語言 | 8 種內建，7 種可選語言包 |
@@ -119,3 +119,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 本倉庫的外掛原始碼按 Apache-2.0 提供；通用版的 Release 二進位另按一套授權，對映見 [LICENSING.md](../legal/LICENSING.md)，條款見 [LICENSE-BINARY.md](../LICENSE-BINARY.md)。
 
 外掛原始碼與文件依 [Apache-2.0](../../LICENSE) 提供。商標不隨 Apache-2.0 授予，第三方素材依各自授權，見 [NOTICE](../legal/NOTICE)、[TRADEMARK.md](../legal/TRADEMARK.md)、[THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md)。
+
+## 專案
+
+發布歷史：[CHANGELOG.md](../../CHANGELOG.md)。貢獻規則與 DCO：[CONTRIBUTING.md](../../.github/CONTRIBUTING.md)。安全性問題回報：[SECURITY.md](../../.github/SECURITY.md)。授權對照：[LICENSING.md](../legal/LICENSING.md)。版本與支援窗口：[docs/releasing.md](../releasing.md)。

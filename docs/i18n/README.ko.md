@@ -83,7 +83,7 @@ Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공
 | 항목 | 숫자 |
 | --- | --- |
 | tarball | 7.94 MiB |
-| 압축 해제 | 12.6 MiB / 286 파일 |
+| 압축 해제 | 12.6 MiB / 287 파일 |
 | 앱 | 17 |
 | 명령 | 25 |
 | UI 언어 | 내장 8개, 선택 팩 7개 |
@@ -121,3 +121,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 이 저장소의 플러그인 소스는 Apache-2.0입니다. 유니버설판 Release 바이너리는 별도 라이선스를 따르며, 대응표는 [LICENSING.md](../legal/LICENSING.md), 조건은 [LICENSE-BINARY.md](../LICENSE-BINARY.md)에 있습니다.
 
 플러그인 소스와 문서는 [Apache-2.0](../../LICENSE)입니다. 상표는 Apache-2.0으로 부여되지 않으며, 제3자 자산은 각자의 라이선스를 따릅니다. [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md), [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md)를 참고하세요.
+
+## 프로젝트
+
+릴리스 이력: [CHANGELOG.md](../../CHANGELOG.md). 기여 규칙 및 DCO: [CONTRIBUTING.md](../../.github/CONTRIBUTING.md). 보안 신고: [SECURITY.md](../../.github/SECURITY.md). 라이선스 대응표: [LICENSING.md](../legal/LICENSING.md). 버전 및 지원 범위: [docs/releasing.md](../releasing.md).

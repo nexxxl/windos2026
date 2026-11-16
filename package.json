@@ -4,6 +4,23 @@
   "private": false,
   "license": "Apache-2.0",
   "description": "NexlOS lite desktop for DeepSeek Harness: English-first, optional language and art packs.",
+  "author": "NexlOS Authors",
+  "keywords": [
+    "ai-native",
+    "agent-native",
+    "agent-os",
+    "web-os",
+    "operating-system",
+    "local-first",
+    "byok",
+    "deepseek-harness",
+    "dsh",
+    "plugin",
+    "software-factory",
+    "app-generator",
+    "html-apps",
+    "single-file"
+  ],
   "repository": {
     "type": "git",
     "url": "git+https://github.com/nexxxl/windos2026.git"
@@ -36,6 +53,7 @@
     "docs/assets/icon.svg",
     "docs/legal",
     "README.md",
+    "CHANGELOG.md",
     "docs/artcraftport/ATTRIBUTION.md",
     "LICENSE",
     "!src/extras/fonts-cjk"
@@ -62,6 +80,9 @@
   },
   "engines": {
     "node": ">=22"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
     "test": "node --test test/*.test.mjs",

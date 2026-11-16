@@ -1,0 +1,28 @@
+version: 2
+# Monthly floor: keep the dependency surface (one runtime dependency) and the
+# actions used by CI current, with majors arriving as separate pull requests so
+# they get a human decision instead of a silent bump.
+updates:
+  - package-ecosystem: npm
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '03:00'
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 5
+    groups:
+      npm-minor-patch:
+        patterns: ['*']
+        update-types: ['minor', 'patch']
+  - package-ecosystem: github-actions
+    directory: '/'
+    schedule:
+      interval: weekly
+      day: monday
+      time: '03:00'
+      timezone: Asia/Shanghai
+    open-pull-requests-limit: 5
+    groups:
+      actions:
+        patterns: ['*']

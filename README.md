@@ -84,7 +84,7 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 | Item | Number |
 | --- | --- |
 | Tarball | 7.94 MiB (measured with `npm pack --dry-run --json`) |
-| Unpacked | 12.6 MiB / 286 files |
+| Unpacked | 12.6 MiB / 287 files |
 | Apps | 17 |
 | Commands | 25 |
 | Interface languages | 8 built in, 7 optional packs |
@@ -100,7 +100,7 @@ If you arrived from a search for an **AI-native operating system**, an **agent c
 - **Software factory**: one sentence, one app, checked in a real browser, repaired once.
 - **Verified, not just generated**: a temporary Chromium checks console errors and declared interactions; only a passing app gets a desktop icon.
 - **Browser-surface reconstruction**: behavior capture, spec, rebuild and comparison stop at the browser; binaries stay out of scope.
-- **Tiny and portable**: 7.94 MiB, 286 files, one runtime dependency.
+- **Tiny and portable**: 7.94 MiB, 287 files, one runtime dependency.
 - **Local-first**: no account, no telemetry, no default model provider.
 - **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
 - **3D author layer (universal edition)**: Three.js, glTF/GLB with KTX2, Draco and meshopt, on our own WebGL2/WebGPU surface. In progress, not in this tarball.
@@ -137,3 +137,7 @@ The plugin source in this repository is Apache-2.0. Release binaries of the univ
 Plugin source and documentation are [Apache-2.0](LICENSE). Trademarks are not granted by Apache-2.0; third-party assets keep their own licenses. Provenance, license texts and porting notes are in [THIRD_PARTY_NOTICES.md](docs/legal/THIRD_PARTY_NOTICES.md); trademark rules in [TRADEMARK.md](docs/legal/TRADEMARK.md); warranty and liability terms in [DISCLAIMER.md](docs/legal/DISCLAIMER.md).
 
 ArtCraft for NexlOS (ArtCraft 移植版) is the worked example shipped with the built-in app generator, and the one place where algorithms come from an upstream project. It installs upstream ArtCraft's editor structure and portable algorithms into NexlOS, then rebuilds them against this project's own contract: commands, a single serializable document state, and a mount/destroy panel. The porting approach and the file-by-file mapping are in [docs/artcraftport/ATTRIBUTION.md](docs/artcraftport/ATTRIBUTION.md): the upstream is storytold's ArtCraft (`github.com/storytold/artcraft`, MIT / Apache-2.0), rewritten here as zero-dependency ES modules under the MIT terms. The Rust renderer, Tauri host and AI calls are not included. This port is **unofficial** and has no affiliation with or endorsement from the upstream team; the name ArtCraft in the app title names the upstream project and is always qualified with "for NexlOS". The app id, route and directory are `artcraftport`.
+
+## Project
+
+Release history: [CHANGELOG.md](CHANGELOG.md). Contribution rules and the DCO: [CONTRIBUTING.md](.github/CONTRIBUTING.md). Security reports: [SECURITY.md](.github/SECURITY.md). License map: [LICENSING.md](docs/legal/LICENSING.md). Versioning and support window: [docs/releasing.md](docs/releasing.md).

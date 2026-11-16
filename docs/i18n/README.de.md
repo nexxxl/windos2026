@@ -83,7 +83,7 @@ In der Octop-Seitenleiste steht dann **NexlOS desktop**; der Desktop öffnet sic
 | Element | Zahl |
 | --- | --- |
 | Tarball | 7,94 MiB |
-| Entpackt | 12,6 MiB / 286 Dateien |
+| Entpackt | 12,6 MiB / 287 Dateien |
 | Apps | 17 |
 | Befehle | 25 |
 | Oberflächensprachen | 8 integriert, 7 optionale Pakete |
@@ -121,3 +121,7 @@ Größen-Gate:
 Der Plugin-Quellcode in diesem Repository steht unter Apache-2.0. Die Release-Binärdateien der Universal-Edition folgen einer eigenen Lizenz; die Zuordnung steht in [LICENSING.md](../legal/LICENSING.md), die Bedingungen in [LICENSE-BINARY.md](../LICENSE-BINARY.md).
 
 Plugin-Quellcode und Dokumentation stehen unter [Apache-2.0](../../LICENSE). Marken werden durch Apache-2.0 nicht gewährt; Fremdmaterial behält seine eigenen Lizenzen. Siehe [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md) und [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md).
+
+## Projekt
+
+Versionshistorie: [CHANGELOG.md](../../CHANGELOG.md). Beitragsregeln und DCO: [CONTRIBUTING.md](../../.github/CONTRIBUTING.md). Sicherheitsmeldungen: [SECURITY.md](../../.github/SECURITY.md). Lizenzzuordnung: [LICENSING.md](../legal/LICENSING.md). Versionen und Support: [docs/releasing.md](../releasing.md).

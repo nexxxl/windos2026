@@ -83,7 +83,7 @@ La barre latérale d'Octop affiche **NexlOS desktop** ; le bureau s'ouvre dans l
 | Élément | Nombre |
 | --- | --- |
 | Archive | 7,94 MiB |
-| Décompressé | 12,6 MiB / 286 fichiers |
+| Décompressé | 12,6 MiB / 287 fichiers |
 | Applications | 17 |
 | Commandes | 25 |
 | Langues d'interface | 8 intégrées, 7 paquets optionnels |
@@ -121,3 +121,7 @@ Contrôle de taille :
 Le code du plugin dans ce dépôt est sous Apache-2.0. Les binaires de l'édition universelle suivent une licence distincte ; voir [LICENSING.md](../legal/LICENSING.md) pour la carte et [LICENSE-BINARY.md](../LICENSE-BINARY.md) pour les conditions.
 
 Le code et la documentation du plugin sont sous [Apache-2.0](../../LICENSE). Les marques ne sont pas concédées par Apache-2.0 ; les ressources tierces conservent leurs propres licences. Voir [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md) et [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md).
+
+## Projet
+
+Historique des versions : [CHANGELOG.md](../../CHANGELOG.md). Règles de contribution et DCO : [CONTRIBUTING.md](../../.github/CONTRIBUTING.md). Signalement de sécurité : [SECURITY.md](../../.github/SECURITY.md). Correspondance des licences : [LICENSING.md](../legal/LICENSING.md). Versions et support : [docs/releasing.md](../releasing.md).

@@ -81,7 +81,7 @@ Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作�
 | 项目 | 数字 |
 | --- | --- |
 | 压缩包 | 7.94 MiB |
-| 解包 | 12.6 MiB / 286 文件 |
+| 解包 | 12.6 MiB / 287 文件 |
 | 应用 | 17 |
 | 命令 | 25 |
 | 界面语言 | 8 种内置，7 种可选语言包 |
@@ -97,7 +97,7 @@ Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作�
 - **软件工厂**：一句话、一个应用，在真实浏览器里验收，不过就修一次。
 - **验收过的成品**：临时 Chromium 检查控制台错误与声明的交互；通过的应用才会上桌面。
 - **浏览器表面重建**：行为采集、写规格、重建、比对，全部停在浏览器；二进制不在范围内。
-- **小且可带**：7.94 MiB、286 个文件、1 个运行时依赖。
+- **小且可带**：7.94 MiB、287 个文件、1 个运行时依赖。
 - **本地优先**：无账号、无遥测、不设默认模型。
 - **GPU 绘制的界面**：WebGL 关系图与 WebGL2 着色器伴侣，均带 Canvas2D 降级。
 - **3D 作者层（通用版）**：Three.js，glTF/GLB 配 KTX2、Draco、meshopt，跑在自有的 WebGL2/WebGPU 表面上。在研，不在本压缩包里。
@@ -134,3 +134,7 @@ npm pack --pack-destination /absolute/path/to/artifacts
 插件源代码与文档按 [Apache-2.0](../../LICENSE) 提供。商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文位置与移植说明见 [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md)，商标规则见 [TRADEMARK.md](../legal/TRADEMARK.md)，担保与责任条款见 [DISCLAIMER.md](../legal/DISCLAIMER.md)。
 
 ArtCraft 移植版（ArtCraft for NexlOS）是内置「应用生成」的示例案例，也是唯一从上游项目移植算法的模块：它把上游 ArtCraft 的编辑器结构与可独立移植的算法装进 NexlOS，再按本项目「命令 + 单一文档状态 + 面板挂载」的契约重新装配。移植思路与逐文件对应关系见 [docs/artcraftport/ATTRIBUTION.md](../artcraftport/ATTRIBUTION.md)：上游是 storytold 的 ArtCraft（`github.com/storytold/artcraft`，MIT / Apache-2.0），本项目按 MIT 重写为零依赖 ES Module，未带入上游的 Rust 渲染器、Tauri 宿主与 AI 调用。本移植版是**非官方**移植，与上游没有隶属或背书关系；应用名里的 ArtCraft 只用于指出来源，并始终带「移植版 / for NexlOS」限定。应用 id、路由与目录为 `artcraftport`。
+
+## 项目
+
+发布历史：[CHANGELOG.md](../../CHANGELOG.md)。贡献规则与 DCO：[CONTRIBUTING.md](../../.github/CONTRIBUTING.md)。安全问题报告：[SECURITY.md](../../.github/SECURITY.md)。许可对照：[LICENSING.md](../legal/LICENSING.md)。版本与支持窗口：[docs/releasing.md](../releasing.md)。

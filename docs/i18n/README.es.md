@@ -83,7 +83,7 @@ La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en e
 | Elemento | Número |
 | --- | --- |
 | Tarball | 7.94 MiB |
-| Descomprimido | 12.6 MiB / 286 archivos |
+| Descomprimido | 12.6 MiB / 287 archivos |
 | Apps | 17 |
 | Comandos | 25 |
 | Idiomas de interfaz | 8 integrados, 7 paquetes opcionales |
@@ -121,3 +121,7 @@ Control de tamaño:
 El código del plugin en este repositorio es Apache-2.0. Los binarios de la edición universal siguen una licencia aparte; consulta [LICENSING.md](../legal/LICENSING.md) para el mapa y [LICENSE-BINARY.md](../LICENSE-BINARY.md) para sus términos.
 
 El código y la documentación del plugin son [Apache-2.0](../../LICENSE). Las marcas no se conceden con Apache-2.0; los recursos de terceros mantienen sus propias licencias. Consulta [NOTICE](../legal/NOTICE), [TRADEMARK.md](../legal/TRADEMARK.md) y [THIRD_PARTY_NOTICES.md](../legal/THIRD_PARTY_NOTICES.md).
+
+## Proyecto
+
+Historial de versiones: [CHANGELOG.md](../../CHANGELOG.md). Reglas de contribución y DCO: [CONTRIBUTING.md](../../.github/CONTRIBUTING.md). Informes de seguridad: [SECURITY.md](../../.github/SECURITY.md). Mapa de licencias: [LICENSING.md](../legal/LICENSING.md). Versiones y soporte: [docs/releasing.md](../releasing.md).
