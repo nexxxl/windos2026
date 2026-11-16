@@ -2,6 +2,8 @@
 
 **English** · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · [Français](README.fr.md) · [Deutsch](README.de.md)
 
+<img width="880" alt="windos2026 demo: boot, desktop, reader, ArtCraft, multi-window" src="docs/images/hero-demo.gif">
+
 7.95 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
@@ -9,6 +11,7 @@ If a 2026 AI-native operating system had opened on your computer back in the mil
 windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.95 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
 
 Everyone remembers their first desktop. This is the one you get to own: you assemble it yourself, one sentence at a time, and every app leaves with you as a file. Linux gave every program a machine; NexlOS gives every agent a computer.
+
 
 ## Three things stay yours
 
