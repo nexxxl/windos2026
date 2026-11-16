@@ -24,7 +24,9 @@ You may read, run, modify and redistribute the Apache-2.0 parts under the terms 
   that runs inside a host such as DSH or Octop.
 - It generates applications as plain files under `apps/<id>/`.
 - It can import a repository that **you** point it at, locate that repository's
-  built entry point, and mount the result as an app.
+  built entry point, and mount the result as an app. When the repository declares a
+  `build` script, the import runs `npm install` and `npm run build`; treat every
+  imported repository as untrusted code.
 
 ## 3. What the Software does not do
 
@@ -114,7 +116,8 @@ Apache-2.0 部分可按 [LICENSE](../LICENSE) 阅读、运行、修改与再分�
 
 - 提供一层操作系统界面（外壳、应用、命令、存储、设置），运行在 DSH、Octop 等宿主里。
 - 把生成的应用写成 `apps/<id>/` 下的普通文件。
-- 可以导入**你指定**的代码仓库，定位其构建产物入口，并挂载为一个应用。
+- 可以导入**你指定**的代码仓库，定位其构建产物入口，并挂载为一个应用。仓库声明了 `build`
+  脚本时，导入会执行 `npm install` 与 `npm run build`；请把每个导入仓库都当作不可信代码。
 
 ## 3. 本软件不做什么
 
