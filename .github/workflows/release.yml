@@ -16,13 +16,13 @@ jobs:
     name: Plugin tarball (verification only)
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
         with:
           node-version-file: .nvmrc
           cache: npm
           cache-dependency-path: package-lock.json
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 
@@ -55,7 +55,7 @@ jobs:
 
       # 留档给维护者与 DSH/Octop 分发自检用；它不是 Release，也不会出现在下载页。
       - name: Upload the tarball as a workflow artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: nexlos-os-${{ github.ref_name }}
           path: dist/nexlos-os-*.tgz
