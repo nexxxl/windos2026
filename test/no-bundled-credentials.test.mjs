@@ -11,7 +11,7 @@ const ROOT = dirname(dirname(fileURLToPath(import.meta.url)))
 
 // 会被宿主加载、或浏览器可直接拉取的全部运行时文件。
 // 只扫入口几个文件是不够的：webos/a/byok.js 就是用户最容易粘贴真实 key 的地方。
-const RUNTIME_DIRS = ['webos', 'vendor', 'extension', 'locale', 'extras', 'lib']
+const RUNTIME_DIRS = ['src', 'webos', 'vendor', 'extension', 'locale', 'extras', 'lib']
 const TEXT_EXT = new Set(['.js', '.mjs', '.css', '.json', '.yml', '.yaml', '.md', '.html', '.txt'])
 
 function runtimeFiles() {

@@ -29,8 +29,8 @@ const REQUIRED = [
   'THIRD_PARTY_NOTICES.md',
   'TRADEMARK.md',
   'DISCLAIMER.md',
-  'CONTRIBUTING.md',
-  'DCO'
+  '.github/CONTRIBUTING.md',
+  '.github/DCO'
 ]
 
 test('仓库根目录的许可与声明文件齐全', () => {

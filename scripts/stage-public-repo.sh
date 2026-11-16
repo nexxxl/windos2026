@@ -22,7 +22,7 @@ if not root.is_dir():
     sys.exit(1)
 for name in ('universal','plugin','applications','tools','docs/project-history','docs/import-manifest.json','docs/baseline-manifest.json','extras/fonts-cjk'):
     if (root/name).exists(): errors.append('Excluded source boundary: '+name)
-for name in ('LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','docs/LICENSE-BINARY.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
+for name in ('LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','docs/LICENSE-BINARY.md','DISCLAIMER.md','.github/SECURITY.md','.github/CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
     if not (root/name).is_file(): errors.append('Missing runtime or notice: '+name)
 for p in root.rglob('*'):
     rel=p.relative_to(root).as_posix()
@@ -105,7 +105,7 @@ import shutil,sys
 src=Path(sys.argv[1]);out=Path(sys.argv[2]);out.mkdir(parents=True,exist_ok=False)
 
 def stage():
-  files={'package.json','package-lock.json','cordis.patch.yml','icon.svg','README.md','THIRD_PARTY_NOTICES.md','LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','DISCLAIMER.md','SECURITY.md','CONTRIBUTING.md','CODE_OF_CONDUCT.md','DCO','.gitignore','.editorconfig','.gitattributes','.prettierrc.json','.prettierignore','pyproject.toml','Makefile'}
+  files={'package.json','package-lock.json','cordis.patch.yml','icon.svg','README.md','THIRD_PARTY_NOTICES.md','LICENSE','NOTICE','TRADEMARK.md','LICENSING.md','DISCLAIMER.md','.gitignore','.editorconfig','.gitattributes','.prettierrc.json','.prettierignore','pyproject.toml','Makefile'}
   files.update(p.name for p in src.glob('*.js'))
   files.update(p.name for p in src.glob('*.css'))
   for name in sorted(files):
@@ -114,7 +114,7 @@ def stage():
   # fonts-cjk 不进公开候选：其中 LXGW 是 IPA 衍生字体（name 表要求接受 IPA 许可），
   # 目录里的许可文本也曾把它写成 OFL。字体本身仍在工作树里，只是不进包。
   ignore=shutil.ignore_patterns('node_modules','dist','.cache','coverage','test-results','__pycache__','.DS_Store','*.pyc','*.log','*.pid','*.tgz','fonts-cjk')
-  for name in ('webos','vendor','extension','locale','test','scripts','extras','lib','host','bin','.github'):
+  for name in ('webos','vendor','extension','locale','test','scripts','extras','lib','host','bin','src','.github'):
     shutil.copytree(src/name,out/name,ignore=ignore)
   (out/'docs').mkdir()
   for p in (src/'docs').iterdir():
