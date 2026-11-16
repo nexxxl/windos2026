@@ -91,6 +91,8 @@ Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メイ�
 | ランタイム依存 | 1（`jpeg-js`） |
 | ライセンス | Apache-2.0（商標と第三者素材を除く） |
 
+2026 年の位置づけと検索語の対応、および本プロジェクトが明確に主張しないこと：[docs/highlights.md](docs/highlights.md)。よくある検索への短い回答：[docs/faq.md](docs/faq.md)。利用と再配布の境界：[docs/research-use.md](docs/research-use.md)。AI クローラー向け要約：[llms.txt](llms.txt)。
+
 ## やらないこと
 
 - 第三者のアカウントも、ホストされたアプリストアも不要。アプリ、コード、データはあなたのマシンに残ります。

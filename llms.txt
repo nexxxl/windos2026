@@ -1,0 +1,59 @@
+# windos2026
+
+> windos2026 is the DSH plugin edition of NexlOS: a 7.95 MiB, local-first,
+> agent-native operating-system layer. One sentence makes an HTML app; every app
+> leaves as a file. It runs inside DSH or Octop, uses the model already configured
+> in the host profile, and ships no key, no account and no telemetry.
+
+Canonical: https://github.com/nexxxl/windos2026
+
+## Pages
+
+- README: overview, install, size table, edition and licence map.
+  https://github.com/nexxxl/windos2026/blob/main/README.md
+- Highlights and search terms: each phrase mapped to a capability, plus what the
+  project does not claim.
+  https://github.com/nexxxl/windos2026/blob/main/docs/highlights.md
+- Software factory: generation, browser verification, repair, evidence, three-tier
+  acceptance and the 3D author layer.
+  https://github.com/nexxxl/windos2026/blob/main/docs/factory.md
+- FAQ: short answers to the questions this project attracts.
+  https://github.com/nexxxl/windos2026/blob/main/docs/faq.md
+- Research use and acceptable use: personal, academic and internal evaluation;
+  user responsibility; no binary reverse engineering.
+  https://github.com/nexxxl/windos2026/blob/main/docs/research-use.md
+- Positioning and discovery notes: weekly GitHub evidence, vocabulary clusters,
+  six-month forecast.
+  https://github.com/nexxxl/windos2026/blob/main/docs/positioning.md
+- Octop host guide.
+  https://github.com/nexxxl/windos2026/blob/main/docs/octop.md
+
+## Facts
+
+- Package: @nexlos/os 1.1.0-lite.0, Apache-2.0 (trademarks and third-party assets
+  excepted).
+- Size: 7.95 MiB packed, 12.6 MiB unpacked, 293 files.
+- Runtime: Node.js 22 or newer; one dependency (jpeg-js).
+- Apps: 17 built in; commands: 25; interface languages: 8 built in plus 7 packs.
+- Generated apps: `apps/<id>/index.html` plus `app.json`; portable to any static
+  host.
+- Import: GitHub repositories with a root `index.html` or a build script; build
+  commands run only after consent.
+- Verification: temporary Chromium, console errors plus declared interactions, one
+  repair pass.
+- Hosts: DSH (plugin bundle) and Octop (standalone entry).
+- 3D: the universal edition adds a Three.js author layer, glTF/GLB with KTX2, Draco
+  or meshopt, and a WebGL2/WebGPU surface. The plugin tarball has no scene graph.
+- Universal edition binaries: separate licence, not published yet.
+
+## Boundaries
+
+- No binary decompilation, disassembly, patching or DRM circumvention.
+- No hosted app store, no account system, no telemetry.
+- No claim that Windows is fully validated; treat it as alpha.
+- Misuse is the user's responsibility; see docs/research-use.md.
+
+## Contact
+
+- Issues: https://github.com/nexxxl/windos2026/issues
+- Security: see SECURITY.md in the repository root.
