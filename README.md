@@ -26,7 +26,7 @@ Everyone remembers their first desktop. This is the one you get to own: you asse
 | Edition | What you get | License |
 | --- | --- | --- |
 | **Plugin** (source in this repository) | the 7.94 MiB package described below | [Apache-2.0](LICENSE) |
-| **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel and shell under [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
+| **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel, shell and updater under [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
 
 The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 
@@ -42,7 +42,7 @@ The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 | Size | 7.94 MiB | ~27 MB per platform |
 | Needs | DSH or Octop, Node 22+ | nothing else |
 | License | Apache-2.0 | [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md) |
-| Updates | pull and reinstall | built-in check against a signed manifest |
+| Updates | pull and reinstall | download and replace the binary |
 | Best for | trying it, generating apps, embedding it in your agent | daily desktop use on your own machine |
 
 Both forms read the model configuration you already have. Neither ships a key, an account or telemetry.

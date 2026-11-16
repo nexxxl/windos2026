@@ -15,8 +15,8 @@ The additional terms below cover only the components that are **not** present in
 the public source tree: the Go kernel, the native window shell and the updater
 (together, the "Closed Components").
 
-The file-by-file license map ships with this release as `LICENSING.md`; the
-Apache-2.0 text ships as `LICENSE`.
+The file-by-file license map is `docs/legal/LICENSING.md` in the public repository.
+In a release package, the Apache-2.0 text is at `licenses/APACHE-2.0.txt`.
 
 ## 1. Grant
 
@@ -40,7 +40,7 @@ creates an account relationship.
 Except where applicable law expressly permits and cannot be excluded, you may not:
 
 1. redistribute, sublicense, rent, lend, sell or publicly offer the Closed
-   Components, or a binary whose Closed Components you have modified;
+   Components, or a universal binary whose Closed Components you have modified;
 2. remove, obscure or alter any copyright, trademark, license or attribution
    notice;
 3. present a build of your own, or a modified binary, as an official NexlOS
@@ -62,9 +62,9 @@ Components requires written permission; open an issue titled `licensing`.
 Nothing in section 2 restricts the rights Apache-2.0 gives you in the open
 components, including the rights to reproduce, modify and redistribute those
 components, and to receive the corresponding source. If this license conflicts
-with Apache-2.0 for those components, Apache-2.0 governs them. You may build the
-universal edition's desktop layer from the public source and distribute your
-build under Apache-2.0; it will not be the official universal binary.
+with Apache-2.0 for those components, Apache-2.0 governs them. You may reuse and
+redistribute the desktop layer's published source under Apache-2.0; a build of
+that source is not the official universal binary.
 
 ## 4. Third-party components
 
@@ -77,8 +77,8 @@ conflicts with this license, that license governs the third-party component.
 NexlOS Authors may provide updates, patches or support at its discretion and has
 no obligation to continue doing so. Updates can change features, compatibility or
 system requirements. You may decline an update; older versions may stop receiving
-security fixes. Update manifests are signed; a manifest that fails verification
-is not an official release and must not be installed.
+security fixes. When an update manifest is published, it is signed; a manifest that fails
+verification is not an official release and must not be installed.
 
 ## 6. Termination
 
