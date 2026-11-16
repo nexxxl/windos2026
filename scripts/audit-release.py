@@ -23,6 +23,11 @@ from pathlib import Path
 
 STATUSES = ("PASS", "FAIL", "SKIP")
 
+# garble 会重写 Go 包路径，所以混淆批次里 `nexlos/` 应几乎不剩。
+# 少量留存来自 garble 不改名的位置（C/汇编引用、运行时拼接的字符串）；
+# 16 是这类噪声的实测上限，超过它说明包路径整体没被混淆，而不是零星残留。
+MAX_NEXLOS_PATH_HITS = 16
+
 # 门禁的检查清单。run_all 会核对「实际执行」与「登记」两端：
 # 新加一项检查却忘了登记，或登记了却从未执行，都会直接变红。
 # scripts/test-audit-release.py 另外保证每一项都有反例测试。
@@ -231,8 +236,14 @@ def check_workflow_hardening(repo: Path, report: Report) -> None:
     problems = []
     for path in sorted([*base.glob("*.yml"), *base.glob("*.yaml")]):
         raw = path.read_text(encoding="utf-8", errors="ignore")
-        if "permissions:" not in raw:
-            problems.append(f"{path.name} 没有声明 permissions")
+        # 顶层权限块必须存在：作业级 permissions 无法为整个工作流定默认权限。
+        if not re.search(r"^permissions:", raw, re.MULTILINE):
+            problems.append(f"{path.name} 没有顶层 permissions")
+        # 发布物只做校验与留档，任何写权限都是多余的攻击面。\s 覆盖多空格与制表符。
+        if re.search(r"\bwrite-all\b", raw):
+            problems.append(f"{path.name} 使用 write-all")
+        if re.search(r"^\s*contents:\s*write\b", raw, re.MULTILINE):
+            problems.append(f"{path.name} 授予 contents: write")
         # pull_request_target 在基分支上下文里跑，并可能拿到写令牌与密钥。
         if re.search(r"^on:.*\bpull_request_target\b", raw, re.MULTILINE) or \
                 re.search(r"^\s{2}pull_request_target\s*:", raw, re.MULTILINE):
@@ -481,8 +492,8 @@ def check_binary(binary: Path, report: Report, obfuscated: bool = True) -> None:
         report.add("binary-symbols", "SKIP", "本批次未混淆：函数名可读是预期结果")
     elif leaked:
         report.add("binary-symbols", "FAIL", "残留: " + ", ".join(leaked))
-    elif path_hits > 16:
-        report.add("binary-symbols", "FAIL", f"nexlos/ 路径残留 {path_hits} 处")
+    elif path_hits > MAX_NEXLOS_PATH_HITS:
+        report.add("binary-symbols", "FAIL", f"nexlos/ 路径残留 {path_hits} 处（上限 {MAX_NEXLOS_PATH_HITS}）")
     else:
         report.add("binary-symbols", "PASS", f"nexlos/ 残留 {path_hits} 处")
 
