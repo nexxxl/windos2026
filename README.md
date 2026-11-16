@@ -97,12 +97,15 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 7.95 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
 
 - **Agent-native**: the desktop is the surface; generated apps are the artifacts.
-- **Software factory**: one sentence, one app, opened in a browser, checked, repaired once.
+- **Software factory**: one sentence, one app, checked in a real browser, repaired once.
+- **Verified, not just generated**: a temporary Chromium checks console errors and declared interactions; only a passing app gets a desktop icon.
+- **Browser-surface reconstruction**: behavior capture, spec, rebuild and comparison stop at the browser; binaries stay out of scope.
 - **Tiny and portable**: 7.95 MiB, 293 files, one runtime dependency.
 - **Local-first**: no account, no telemetry, no default model provider.
 - **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
+- **3D author layer (universal edition)**: Three.js, glTF/GLB with KTX2, Draco and meshopt, on our own WebGL2/WebGPU surface. In progress, not in this tarball.
 
-Each search phrase mapped to what actually exists, plus what this project deliberately does **not** claim: [docs/highlights.md](docs/highlights.md). Use and redistribution boundaries: [docs/research-use.md](docs/research-use.md).
+Each search phrase mapped to what actually exists, plus what this project deliberately does **not** claim: [docs/highlights.md](docs/highlights.md). How the production line records evidence: [docs/factory.md](docs/factory.md). Use and redistribution boundaries: [docs/research-use.md](docs/research-use.md).
 
 ## What it refuses to do
 

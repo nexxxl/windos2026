@@ -66,12 +66,21 @@ Search results for the same period, grouped by phrase:
 | Local-first / BYOK | Strong | No key, no default provider, no telemetry, no account |
 | Single-file artifacts | Strong | `apps/<id>/index.html` plus `app.json` |
 | Agent skills/packages | Medium | Ships as a DSH bundle; no skills registry yet |
-| Browser 3D | Weak | WebGL graph and WebGL2 companion only; no scene graph |
-| Reverse engineering | None | No decompilation or patching; import path only mounts repositories |
+| Browser 3D | Medium in the universal edition | Three.js author layer, glTF/GLB with KTX2/Draco/meshopt, WebGL2/WebGPU host; not in the plugin tarball |
+| Browser-surface reconstruction | Medium | Capture behavior, write a spec, rebuild, compare in a browser; no binaries |
+| Binary reverse engineering | None | Out of scope by design |
 | Supply-chain security | Weak | Boundary and licence tests exist; no signing or audit trail |
 
 The weak rows are the ones to leave alone in public copy. Claiming them would win
 a click and lose the reader.
+
+One phrase needs care. The factory is sometimes described internally as "AI
+reverse-engineers every app". Its own acceptance rules say the opposite: no
+decompilation, no Rust reverse-engineering engine, no copying third-party code,
+and differential comparison only against targets you have the right to run. The
+defensible phrase is **browser-surface reconstruction**: capture behavior, write a
+spec, rebuild, verify. It keeps the REA-adjacent search intent and filters out the
+reader who wanted a decompiler.
 
 ## Six-month forecast
 
