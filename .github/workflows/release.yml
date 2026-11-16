@@ -42,7 +42,10 @@ jobs:
       - run: bash scripts/stage-public-repo.sh --check-repo .
 
       - name: Pack
-        run: npm pack --pack-destination dist
+        # dist/ 被 .gitignore 忽略，干净 runner 上并不存在；先建目录再打包。
+        run: |
+          mkdir -p dist
+          npm pack --pack-destination dist
 
       - name: Contract test on the packed artifact
         run: |
