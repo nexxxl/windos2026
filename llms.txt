@@ -17,7 +17,8 @@ Canonical: https://github.com/nexxxl/windos2026
 - Software factory: generation, browser verification, repair, evidence, three-tier
   acceptance and the 3D author layer.
   https://github.com/nexxxl/windos2026/blob/main/docs/factory.md
-- FAQ: short answers to the questions this project attracts.
+- Value page: what the architecture makes possible, with Today / Next / Boundary
+  labels, plus the questions this project attracts.
   https://github.com/nexxxl/windos2026/blob/main/docs/faq.md
 - Research use and acceptable use: personal, academic and internal evaluation;
   user responsibility; no binary reverse engineering.

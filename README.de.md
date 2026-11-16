@@ -91,7 +91,7 @@ In der Octop-Seitenleiste steht dann **NexlOS desktop**; der Desktop öffnet sic
 | Laufzeitabhängigkeiten | 1 (`jpeg-js`) |
 | Lizenz | Apache-2.0 (Marken und Fremdmaterial ausgenommen) |
 
-Einordnung für 2026, Zuordnung der Suchbegriffe und was dieses Projekt ausdrücklich nicht behauptet: [docs/highlights.md](docs/highlights.md). Kurze Antworten auf häufige Suchen: [docs/faq.md](docs/faq.md). Nutzungs- und Weitergabegrenzen: [docs/research-use.md](docs/research-use.md). Zusammenfassung für KI-Crawler: [llms.txt](llms.txt).
+Einordnung für 2026, Zuordnung der Suchbegriffe und was dieses Projekt ausdrücklich nicht behauptet: [docs/highlights.md](docs/highlights.md). Wertseite und häufige Suchen: [docs/faq.md](docs/faq.md). Nutzungs- und Weitergabegrenzen: [docs/research-use.md](docs/research-use.md). Zusammenfassung für KI-Crawler: [llms.txt](llms.txt).
 
 ## Was es nicht tut
 

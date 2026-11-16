@@ -105,7 +105,7 @@ If you arrived from a search for an **AI-native operating system**, an **agent c
 - **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
 - **3D author layer (universal edition)**: Three.js, glTF/GLB with KTX2, Draco and meshopt, on our own WebGL2/WebGPU surface. In progress, not in this tarball.
 
-Each search phrase mapped to what actually exists, plus what this project deliberately does **not** claim: [docs/highlights.md](docs/highlights.md). How the production line records evidence: [docs/factory.md](docs/factory.md). Short answers to common searches: [docs/faq.md](docs/faq.md). Use and redistribution boundaries: [docs/research-use.md](docs/research-use.md). Machine-readable summary for AI crawlers: [llms.txt](llms.txt).
+Each search phrase mapped to what actually exists, plus what this project deliberately does **not** claim: [docs/highlights.md](docs/highlights.md). How the production line records evidence: [docs/factory.md](docs/factory.md). Value page and common searches: [docs/faq.md](docs/faq.md). Use and redistribution boundaries: [docs/research-use.md](docs/research-use.md). Machine-readable summary for AI crawlers: [llms.txt](llms.txt).
 
 ## What it refuses to do
 

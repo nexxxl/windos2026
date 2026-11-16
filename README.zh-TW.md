@@ -89,7 +89,7 @@ Octop 左側會多出常駐的 **NexlOS 桌面**，點開佔滿右側主工作�
 | 執行階段相依 | 1（`jpeg-js`） |
 | 授權 | Apache-2.0（商標與第三方素材除外） |
 
-2026 年定位與搜尋詞對照，以及本專案明確不宣稱的能力：見 [docs/highlights.md](docs/highlights.md)。常見搜尋的短答：見 [docs/faq.md](docs/faq.md)。使用與再分發邊界：見 [docs/research-use.md](docs/research-use.md)。給 AI 抓取器的摘要：[llms.txt](llms.txt)。
+2026 年定位與搜尋詞對照，以及本專案明確不宣稱的能力：見 [docs/highlights.md](docs/highlights.md)。價值頁與常見搜尋：見 [docs/faq.md](docs/faq.md)。使用與再分發邊界：見 [docs/research-use.md](docs/research-use.md)。給 AI 抓取器的摘要：[llms.txt](llms.txt)。
 
 ## 它不做什麼
 

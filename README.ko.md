@@ -91,7 +91,7 @@ Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공
 | 런타임 의존성 | 1 (`jpeg-js`) |
 | 라이선스 | Apache-2.0 (상표와 제3자 자산 제외) |
 
-2026년 위치와 검색어 대응, 그리고 이 프로젝트가 명확히 주장하지 않는 것: [docs/highlights.md](docs/highlights.md). 자주 검색되는 질문의 짧은 답: [docs/faq.md](docs/faq.md). 사용과 재배포 경계: [docs/research-use.md](docs/research-use.md). AI 크롤러용 요약: [llms.txt](llms.txt).
+2026년 위치와 검색어 대응, 그리고 이 프로젝트가 명확히 주장하지 않는 것: [docs/highlights.md](docs/highlights.md). 가치 페이지와 자주 검색되는 질문: [docs/faq.md](docs/faq.md). 사용과 재배포 경계: [docs/research-use.md](docs/research-use.md). AI 크롤러용 요약: [llms.txt](llms.txt).
 
 ## 하지 않는 것
 

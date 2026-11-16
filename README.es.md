@@ -91,7 +91,7 @@ La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en e
 | Dependencias de ejecución | 1 (`jpeg-js`) |
 | Licencia | Apache-2.0 (salvo marcas y recursos de terceros) |
 
-Dónde encaja en 2026, término de búsqueda por término, y lo que este proyecto no afirma: [docs/highlights.md](docs/highlights.md). Respuestas breves a búsquedas comunes: [docs/faq.md](docs/faq.md). Límites de uso y redistribución: [docs/research-use.md](docs/research-use.md). Resumen para rastreadores de IA: [llms.txt](llms.txt).
+Dónde encaja en 2026, término de búsqueda por término, y lo que este proyecto no afirma: [docs/highlights.md](docs/highlights.md). Página de valor y búsquedas comunes: [docs/faq.md](docs/faq.md). Límites de uso y redistribución: [docs/research-use.md](docs/research-use.md). Resumen para rastreadores de IA: [llms.txt](llms.txt).
 
 ## Lo que no hace
 

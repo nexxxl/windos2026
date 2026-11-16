@@ -102,7 +102,7 @@ Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作�
 - **GPU 绘制的界面**：WebGL 关系图与 WebGL2 着色器伴侣，均带 Canvas2D 降级。
 - **3D 作者层（通用版）**：Three.js，glTF/GLB 配 KTX2、Draco、meshopt，跑在自有的 WebGL2/WebGPU 表面上。在研，不在本压缩包里。
 
-每个搜索词到底对应什么、以及本项目明确**不**宣称什么：见 [docs/highlights.md](docs/highlights.md)。产线如何留证据：见 [docs/factory.md](docs/factory.md)。常见搜索的短答案：见 [docs/faq.md](docs/faq.md)。使用与再分发边界：见 [docs/research-use.md](docs/research-use.md)。给 AI 抓取器的机器可读摘要：[llms.txt](llms.txt)。
+每个搜索词到底对应什么、以及本项目明确**不**宣称什么：见 [docs/highlights.md](docs/highlights.md)。产线如何留证据：见 [docs/factory.md](docs/factory.md)。价值页与常见搜索：见 [docs/faq.md](docs/faq.md)。使用与再分发边界：见 [docs/research-use.md](docs/research-use.md)。给 AI 抓取器的机器可读摘要：[llms.txt](llms.txt)。
 
 ## 它不做什么
 
