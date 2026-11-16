@@ -32,11 +32,11 @@ const REQUIRED = [
   'index.js',
   'client.js',
   'src/cordis.patch.yml',
-  'webos/index.html',
-  'webos/a/os.js',
-  'vendor/readability.js',
-  'vendor/nexl-l1.js',
-  'lib/capabilities.js'
+  'src/webos/index.html',
+  'src/webos/a/os.js',
+  'src/vendor/readability.js',
+  'src/vendor/nexl-l1.js',
+  'src/capabilities.js'
 ]
 const LANGS = [
   'README.md',
@@ -113,11 +113,11 @@ expectRejected(
 )
 
 expectRejected(
-  'extras/fonts-cjk 不许进候选',
+  'src/extras/fonts-cjk 不许进候选',
   (root) => {
-    mkdirSync(join(root, 'extras', 'fonts-cjk'), { recursive: true })
+    mkdirSync(join(root, 'src', 'extras', 'fonts-cjk'), { recursive: true })
   },
-  /Excluded source boundary: extras\/fonts-cjk/
+  /Excluded source boundary: src\/extras\/fonts-cjk/
 )
 
 // 负例样本在运行时拼出来：源码里留明文私钥头会被 check-source 自己拦下。
@@ -188,12 +188,12 @@ for (const [name, build, marker] of [
     /Repository contains excluded path: applications\/reader\/main\.go/
   ],
   [
-    '仓库里提交了 extras/fonts-cjk/',
+    '仓库里提交了 src/extras/fonts-cjk/',
     (root) => {
-      mkdirSync(join(root, 'extras', 'fonts-cjk'), { recursive: true })
-      writeFileSync(join(root, 'extras', 'fonts-cjk', 'a.woff2'), 'x\n')
+      mkdirSync(join(root, 'src', 'extras', 'fonts-cjk'), { recursive: true })
+      writeFileSync(join(root, 'src', 'extras', 'fonts-cjk', 'a.woff2'), 'x\n')
     },
-    /Repository contains excluded path: extras\/fonts-cjk\/a\.woff2/
+    /Repository contains excluded path: src\/extras\/fonts-cjk\/a\.woff2/
   ],
   [
     '仓库里提交了 .env',

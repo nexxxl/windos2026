@@ -11,16 +11,16 @@ the project will not pretend otherwise.
 
 | You searched for | What this repository gives you | Where to verify |
 | --- | --- | --- |
-| AI-native operating system, agent OS, web OS | An operating-system layer for agents: a shell, 17 built-in apps, 25 commands, settings, storage and a window manager. It runs inside a host (DSH or Octop) instead of replacing your kernel. | `webos/`, `index.js`, [octop.md](octop.md) |
+| AI-native operating system, agent OS, web OS | An operating-system layer for agents: a shell, 17 built-in apps, 25 commands, settings, storage and a window manager. It runs inside a host (DSH or Octop) instead of replacing your kernel. | `src/webos/`, `index.js`, [octop.md](octop.md) |
 | Agent computer, computer use | Each agent session can own a live workspace. The desktop is the surface; generated apps are the artifacts that outlive the session. | `importGithubApp` and `apps/<id>/` handling in `index.js` |
 | Software factory | One sentence becomes `apps/<id>/index.html` plus `app.json`; a temporary Chromium loads the page, checks console errors and declared interactions, repairs once if the check fails, then puts the icon on the desktop. | `appgen.js`, `app-verifier.js`, [factory.md](factory.md) |
 | App reconstruction, behavior capture | The factory works at the browser surface: capture behavior, write a spec, rebuild, compare against a target you have the right to run. It does not touch binaries. | [factory.md](factory.md) |
 | Tiny, deployable anywhere | 7.94 MiB tarball, 12.6 MiB unpacked, 286 files, one runtime dependency (`jpeg-js`), no account and no telemetry. | `npm pack --dry-run --json`, `scripts/verify-lite.sh` |
-| BYOK, bring your own model, local-first | The bundle ships no key and sets no default provider. It reads the model already configured in your DSH profile, and reports `501` with a reason when it cannot see one. | `lib/capabilities.js` |
+| BYOK, bring your own model, local-first | The bundle ships no key and sets no default provider. It reads the model already configured in your DSH profile, and reports `501` with a reason when it cannot see one. | `src/lib/capabilities.js` |
 | Single-file HTML app, portable app format | Generated apps are plain files. Copy `apps/<id>/` to any static server and it still runs; hand the desktop a GitHub URL and it clones the repository, finds the built entry point, and mounts it as an app. | `apps/<id>/index.html`, `app.json` |
-| Agent plugin, skill packaging, DSH bundle | One bundle installed with `plugin_manager install_bundle`; the same `webos/` tree also runs as a standalone host under Octop. | `src/cordis.patch.yml`, `bin/octop-install`, [octop.md](octop.md) |
-| WebGL, GPU interface | The relationship graph batches its points through WebGL, and the desktop companion renders through a WebGL2 shader with a Canvas2D fallback. | `webos/a/graph.js`, `webos/a/companion-render.js` |
-| Multilingual interface | 8 interface languages built in, 7 optional language packs. | `locale/`, `extras/` |
+| Agent plugin, skill packaging, DSH bundle | One bundle installed with `plugin_manager install_bundle`; the same `src/webos/` tree also runs as a standalone host under Octop. | `src/cordis.patch.yml`, `src/./scripts/octop-install`, [octop.md](octop.md) |
+| WebGL, GPU interface | The relationship graph batches its points through WebGL, and the desktop companion renders through a WebGL2 shader with a Canvas2D fallback. | `src/webos/a/graph.js`, `src/webos/a/companion-render.js` |
+| Multilingual interface | 8 interface languages built in, 7 optional language packs. | `src/locale/`, `src/extras/` |
 | Clean-room friendly, bring any repository | Repositories you already have the rights to can be imported and mounted. The import path reads project structure and build output; it does not disassemble binaries. | `importGithubApp` in `index.js` |
 | Three.js, WebGPU, three-live | The universal edition adopts Three.js as its only 3D author layer, with glTF/GLB plus KTX2, Draco and meshopt assets, on our own WebGL2/WebGPU surface. This tarball ships the app layer only. | [factory.md](factory.md) |
 

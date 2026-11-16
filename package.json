@@ -25,25 +25,20 @@
   "exports": {
     ".": "./index.js",
     "./client": "./client.js",
-    "./locale/*.json": "./locale/*.json",
+    "./locale/*.json": "./src/locale/*.json",
     "./icon": "./docs/assets/icon.svg"
   },
   "files": [
     "index.js",
     "client.js",
     "src",
-    "lib",
-    "locale",
+    "!src/host",
     "docs/assets/icon.svg",
     "docs/legal",
     "README.md",
     "docs/artcraftport/ATTRIBUTION.md",
-    "webos",
-    "vendor",
-    "extension",
     "LICENSE",
-    "extras",
-    "!extras/fonts-cjk"
+    "!src/extras/fonts-cjk"
   ],
   "dsh": {
     "bundle": {

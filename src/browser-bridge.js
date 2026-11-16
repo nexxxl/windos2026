@@ -21,8 +21,8 @@ import { promisify } from 'node:util'
 import { createRequire } from 'node:module'
 
 const require = createRequire(import.meta.url)
-const readabilitySource = readFileSync(new URL('../vendor/readability.js', import.meta.url), 'utf8')
-const nexlL1Source = readFileSync(new URL('../vendor/nexl-l1.js', import.meta.url), 'utf8')
+const readabilitySource = readFileSync(new URL('./vendor/readability.js', import.meta.url), 'utf8')
+const nexlL1Source = readFileSync(new URL('./vendor/nexl-l1.js', import.meta.url), 'utf8')
 let jpegDecoder = null
 try { jpegDecoder = require('jpeg-js') } catch (_error) { jpegDecoder = null }
 

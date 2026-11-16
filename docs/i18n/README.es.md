@@ -6,7 +6,7 @@
 
 Si un sistema operativo AI-native de 2026 se hubiera abierto en tu computadora en el milenio, ¿para qué lo habrías usado?
 
-windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.94 MiB y una sola dependencia en tiempo de ejecución. Las apps generadas son archivos bajo `apps/<id>/`; las 17 apps integradas vienen como código en `webos/`.
+windos2026 es la edición como plugin de DSH de NexlOS. Mete un escritorio completo dentro de DSH: 17 apps, 25 comandos, 8 idiomas de interfaz integrados, un tarball de 7.94 MiB y una sola dependencia en tiempo de ejecución. Las apps generadas son archivos bajo `apps/<id>/`; las 17 apps integradas vienen como código en `src/webos/`.
 
 *Traducción. La versión canónica es el README en inglés.*
 
@@ -59,15 +59,15 @@ Requiere Node.js 22+ y una versión de DSH que pueda cargar bundles locales. No 
 
 ### Octop (banco de trabajo)
 
-El escritorio no necesita DSH. El mismo `webos/` e `index.js` se ejecutan como host independiente, y un comando añade una entrada permanente a Octop:
+El escritorio no necesita DSH. El mismo `src/webos/` e `index.js` se ejecutan como host independiente, y un comando añade una entrada permanente a Octop:
 
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
-La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en el espacio de trabajo principal y la barra de comandos responde con tu propio agente de Octop. `./bin/octop-install status|up|down|uninstall` lo gestiona. Requiere Node.js 22+ y Octop instalado en `~/.octop`. Diferencias por host, límites y vuelta atrás: [docs/octop.md](../octop.md).
+La barra lateral de Octop muestra **NexlOS desktop**; el escritorio se abre en el espacio de trabajo principal y la barra de comandos responde con tu propio agente de Octop. `./scripts/octop-install status|up|down|uninstall` lo gestiona. Requiere Node.js 22+ y Octop instalado en `~/.octop`. Diferencias por host, límites y vuelta atrás: [docs/octop.md](../octop.md).
 
 ![NexlOS dentro de Octop](../images/host-octop.jpg)
 

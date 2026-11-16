@@ -6,7 +6,7 @@
 
 もしミレニアムに戻ったとき、あなたのコンピューターが突然 2026年の AI ネイティブ OS を開いたら、何に使いますか？
 
-windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.94 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `webos/` のコードとして同梱します。
+windos2026 は NexlOS の DSH プラグイン版です。DSH の中に一台のデスクトップを収めます。17 のアプリ、25 のコマンド、8 つの内蔵 UI 言語、tarball は 7.94 MiB、ランタイム依存は 1 つだけ。生成したアプリは `apps/<id>/index.html` と `app.json` だけのファイルです。内蔵の 17 アプリは `src/webos/` のコードとして同梱します。
 
 *翻訳版です。正式な内容は英語版を参照してください。*
 
@@ -59,15 +59,15 @@ Node.js 22+ と、ローカル bundle を読み込める DSH が必要です。n
 
 ### Octop（ワークベンチ）
 
-デスクトップは DSH を必要としません。同じ `webos/` と `index.js` が単体のホストとして動き、1 つのコマンドで Octop に常駐エントリを追加できます。
+デスクトップは DSH を必要としません。同じ `src/webos/` と `index.js` が単体のホストとして動き、1 つのコマンドで Octop に常駐エントリを追加できます。
 
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
-Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メインワークスペースに開きます。コマンドバーはあなた自身の Octop agent が答えます。`./bin/octop-install status|up|down|uninstall` で管理します。Node.js 22+ と `~/.octop` にインストールされた Octop が必要です。ホストごとの違い、制限、ロールバックは [docs/octop.md](../octop.md) を参照してください。
+Octop のサイドバーに **NexlOS デスクトップ** が常駐し、メインワークスペースに開きます。コマンドバーはあなた自身の Octop agent が答えます。`./scripts/octop-install status|up|down|uninstall` で管理します。Node.js 22+ と `~/.octop` にインストールされた Octop が必要です。ホストごとの違い、制限、ロールバックは [docs/octop.md](../octop.md) を参照してください。
 
 ![Octop 上の NexlOS](../images/host-octop.jpg)
 

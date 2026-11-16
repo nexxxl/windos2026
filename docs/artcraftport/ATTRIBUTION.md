@@ -39,18 +39,18 @@ ArtCraft 移植版是 NexlOS 内置「应用生成」的一个示例案例（入
 
 ## 4. 逐文件对应
 
-本树路径：加载器是 `webos/a/artcraftport.js`；工作区模块作为可选包随仓库分发，源在 `extras/artcraftport/`，安装到 `webos/extras/artcraftport/` 后由 `/extras/` 路径加载。
+本树路径：加载器是 `src/webos/a/artcraftport.js`；工作区模块作为可选包随仓库分发，源在 `src/extras/artcraftport/`，安装到 `src/webos/extras/artcraftport/` 后由 `/extras/` 路径加载。
 
 | 本项目文件 | 上游出处（完整路径） | 性质 |
 |---|---|---|
-| `extras/artcraftport/engine/keyframe.js` | `frontend/libs/components/video-editor/src/lib/animation/interpolation.ts`、`bezier.ts`、`keyframes.ts` | 公式移植：三次贝塞尔求值与反解、de Casteljau 分割、通道求值与外插 |
-| `extras/artcraftport/engine/blur.js` | `frontend/libs/components/video-editor/src/lib/effects/definitions/blur.ts` | 公式移植：多 pass 规划与可分离卷积参数 |
-| `extras/artcraftport/engine/gradient.js` | `frontend/libs/components/video-editor/src/lib/gradients/parser.ts`、`canvas.ts` | 公式移植：CSS 渐变语法解析与 stop 归一化 |
-| `extras/artcraftport/engine/audio.js` | `frontend/libs/components/video-editor/src/lib/media/audio-mastering.ts`、`waveform-summary.ts` | 公式移植：峰值/RMS 分桶、母线限幅参数（阈值 −1 dB、ratio 20、attack 1 ms、release 120 ms、headroom 0.98） |
-| `extras/artcraftport/engine/doc.js`、`extras/artcraftport/export.js` | `frontend/libs/components/video-editor/src/lib/services/storage/serialization.ts` | 结构转译：文档外壳字段与导出 MIME/编码的接口形态 |
-| `extras/artcraftport/engine/curve.js` | 无直接对应 | 本项目新增：Catmull-Rom → 三次贝塞尔 |
-| `extras/artcraftport/engine/timeline.js`、`paginate.js` | 无直接对应 | 本项目新增：时间轴刻度与分页 |
-| `extras/artcraftport/kernel.js`、`image.js`、`vector.js`、`time.js`、`docs.js` | `frontend/apps/artcraft/app/src/` 的应用清单、顶层菜单与面板组织 | 结构转译：交互结构与命令命名，代码按本项目契约重写 |
+| `src/extras/artcraftport/engine/keyframe.js` | `frontend/libs/components/video-editor/src/lib/animation/interpolation.ts`、`bezier.ts`、`keyframes.ts` | 公式移植：三次贝塞尔求值与反解、de Casteljau 分割、通道求值与外插 |
+| `src/extras/artcraftport/engine/blur.js` | `frontend/libs/components/video-editor/src/lib/effects/definitions/blur.ts` | 公式移植：多 pass 规划与可分离卷积参数 |
+| `src/extras/artcraftport/engine/gradient.js` | `frontend/libs/components/video-editor/src/lib/gradients/parser.ts`、`canvas.ts` | 公式移植：CSS 渐变语法解析与 stop 归一化 |
+| `src/extras/artcraftport/engine/audio.js` | `frontend/libs/components/video-editor/src/lib/media/audio-mastering.ts`、`waveform-summary.ts` | 公式移植：峰值/RMS 分桶、母线限幅参数（阈值 −1 dB、ratio 20、attack 1 ms、release 120 ms、headroom 0.98） |
+| `src/extras/artcraftport/engine/doc.js`、`src/extras/artcraftport/export.js` | `frontend/libs/components/video-editor/src/lib/services/storage/serialization.ts` | 结构转译：文档外壳字段与导出 MIME/编码的接口形态 |
+| `src/extras/artcraftport/engine/curve.js` | 无直接对应 | 本项目新增：Catmull-Rom → 三次贝塞尔 |
+| `src/extras/artcraftport/engine/timeline.js`、`paginate.js` | 无直接对应 | 本项目新增：时间轴刻度与分页 |
+| `src/extras/artcraftport/kernel.js`、`image.js`、`vector.js`、`time.js`、`docs.js` | `frontend/apps/artcraft/app/src/` 的应用清单、顶层菜单与面板组织 | 结构转译：交互结构与命令命名，代码按本项目契约重写 |
 
 ## 5. 未移植的部分
 

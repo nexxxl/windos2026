@@ -1,7 +1,7 @@
 /**
  * NexlOS Host half — the DSH-native replacement for the Go kernel.
  *
- * The browser half serves NexlOS WebOS from the bundled `webos/` tree and
+ * The browser half serves NexlOS WebOS from the bundled `src/webos/` tree and
  * implements the kernel contract that UI already speaks:
  *   - `/a/*`     static WebOS assets (the real app.css / os.js / app.js graph)
  *   - `/c/*`     four-part command envelope, backed by this Host
@@ -27,7 +27,7 @@ import { inflateRawSync } from 'node:zlib'
 import { createBrowserBridge } from './src/browser-bridge.js'
 import { compileAppSpec, renderAppTemplate, validateGeneratedHtml } from './src/app-templates.js'
 import { verifyAppHtml } from './src/app-verifier.js'
-import { capabilityList, capabilityOf, unsupportedCapability } from './lib/capabilities.js'
+import { capabilityList, capabilityOf, unsupportedCapability } from './src/capabilities.js'
 
 /** Plugin name; the Loader row, the bundle and the client entry share it. */
 export const name = 'nexlos-os'
@@ -36,7 +36,7 @@ export const name = 'nexlos-os'
 export const inject = ['webServer']
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
-const WEBOS_ROOT = path.join(HERE, 'webos')
+const WEBOS_ROOT = path.join(HERE, 'src', 'webos')
 const ASSET_ROOT = path.join(WEBOS_ROOT, 'a')
 const INDEX_FILE = path.join(WEBOS_ROOT, 'index.html')
 // 健康检查报告安装包自己的版本；写死会和 package.json 漂移。
@@ -1719,8 +1719,8 @@ export function apply(ctx, config = {}) {
     ].filter(Boolean)
     for (const dir of candidates) {
       if (existsSync(path.join(dir, 'index.html')) && (existsSync(path.join(dir, 'app.js')) || existsSync(path.join(dir, 'a', 'app.js')))) {
-        // The bundled webos/ layout is index.html + a/app.js: /a/* maps into
-        // webos/a. The live ui/ layout is flat and maps into ui/.
+        // The bundled src/webos/ layout is index.html + a/app.js: /a/* maps into
+        // src/webos/a. The live ui/ layout is flat and maps into ui/.
         const assets = existsSync(path.join(dir, 'app.js')) ? dir : path.join(dir, 'a')
         uiRootsCache = { index: path.join(dir, 'index.html'), assets }
         return uiRootsCache
@@ -2305,7 +2305,7 @@ export function apply(ctx, config = {}) {
   async function officeRequest(req, res, url) {
     const rest = url.pathname.replace(/^\/a\/office/u, '') || '/'
     if (rest.startsWith('/api/')) return officeApi(req, res, url, rest)
-    const officeDir = path.join(HERE, 'webos', 'a', 'office')
+    const officeDir = path.join(HERE, 'src', 'webos', 'a', 'office')
     if (rest === '/editors.js') {
       // The plugin window is narrower than the native NexlOS window, but it is
       // still a desktop. Keep A4 pagination instead of the mobile continuous
@@ -5321,12 +5321,12 @@ window.SongBoard.importSvg = function (svgText) {
       }
       void serveFile(req, res, uiRoots().assets, url.pathname.slice(2))
     })
-    // 可选包（ArtCraft、CJK 字体、扩展语言）只在 extras/ 里；没有这条路由时
+    // 可选包（ArtCraft、CJK 字体、扩展语言）只在 src/extras/ 里；没有这条路由时
     // /extras/artcraftport/kernel.js 会 404，画板只剩错误页。
     register('prefix', '/extras', (req, res) => {
       if (!authorized(req, res)) return
       const url = new URL(req.url || '/', 'http://x')
-      return void serveFile(req, res, path.join(HERE, 'extras'), url.pathname.slice('/extras'.length), { pluginTransforms: false })
+      return void serveFile(req, res, path.join(HERE, 'src', 'extras'), url.pathname.slice('/extras'.length), { pluginTransforms: false })
     })
     register('exact', '/nexlos', (req, res) => {
       if (!authorized(req, res)) return

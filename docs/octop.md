@@ -1,7 +1,7 @@
 # Running NexlOS on Octop
 
 NexlOS needs a host. DSH is the default one; Octop is the other. Both run the same
-`webos/` tree and the same `index.js`, so a release is aligned by construction rather
+`src/webos/` tree and the same `index.js`, so a release is aligned by construction rather
 than by copying a snapshot.
 
 Octop cannot load a DSH bundle: it has no Cordis runtime, and its plugin API
@@ -20,16 +20,16 @@ the Octop dashboard.
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
 `install` does four things:
 
-1. copies `host/octop/entry.js` to `<octop>/dashboard/nexlos-entry.js`;
+1. copies `src/host/octop/entry.js` to `<octop>/dashboard/nexlos-entry.js`;
 2. adds one `<script>` tag to `<octop>/dashboard/index.html`, after saving
    `index.html.nexlos-backup`;
 3. writes and starts a per-user service (`com.nexlos.octop-desktop` on macOS,
-   `nexlos-octop.service` on Linux) that runs `host/octop/server.mjs`;
+   `nexlos-octop.service` on Linux) that runs `src/host/octop/server.mjs`;
 4. opens Octop.
 
 The sidebar then shows a persistent **NexlOS desktop** item. Clicking it opens the
@@ -40,12 +40,12 @@ model indicator shows `octop · <model>`.
 
 | Command | Effect |
 | --- | --- |
-| `./bin/octop-install install` | inject the entry, register and start the service |
-| `./bin/octop-install status` | service health, launchd state, Octop, injection, backup |
-| `./bin/octop-install up` | make sure the service runs, then open Octop |
-| `./bin/octop-install down` | stop the desktop service, keep the entry |
-| `./bin/octop-install uninstall` | restore `index.html`, remove the entry and the service |
-| `./bin/octop-install doctor` | Node version, dependencies, `webos/`, Octop venv, port |
+| `./scripts/octop-install install` | inject the entry, register and start the service |
+| `./scripts/octop-install status` | service health, launchd state, Octop, injection, backup |
+| `./scripts/octop-install up` | make sure the service runs, then open Octop |
+| `./scripts/octop-install down` | stop the desktop service, keep the entry |
+| `./scripts/octop-install uninstall` | restore `index.html`, remove the entry and the service |
+| `./scripts/octop-install doctor` | Node version, dependencies, `src/webos/`, Octop venv, port |
 
 Environment: `NEXLOS_PORT` (default `8090`), `NEXLOS_HOME` (default
 `~/Library/Application Support/NexlOS`, shared with the DSH edition), `OCTOP_URL`
@@ -92,7 +92,7 @@ is chosen because it keeps upgrade and support responsibility with the host.
 - **The entry is a DOM injection, not an official navigation slot.** If an Octop upgrade
   changes the sidebar markup, the anchor in `entry.js` may stop matching. Re-running the
   installer does not fix that; the anchor has to be re-checked.
-- **Octop upgrades reset `index.html`.** Re-run `./bin/octop-install install`.
+- **Octop upgrades reset `index.html`.** Re-run `./scripts/octop-install install`.
 - **One account.** The bridge reads `~/.octop/credential.txt` (the admin account) and uses
   it for every desktop session. Multi-user deployments need per-user tokens first; do not
   treat this as multi-tenant.
@@ -105,7 +105,7 @@ is chosen because it keeps upgrade and support responsibility with the host.
 ## Verify
 
 ```bash
-./bin/octop-install status
+./scripts/octop-install status
 curl -s http://127.0.0.1:8090/agent/status
 ```
 
@@ -116,7 +116,7 @@ the taskbar model chip shows the Octop agent.
 ## Rollback
 
 ```bash
-./bin/octop-install uninstall
+./scripts/octop-install uninstall
 ```
 
 This restores `index.html`, removes `nexlos-entry.js` and the service. The desktop data in

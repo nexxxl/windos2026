@@ -20,9 +20,9 @@ errors=[]
 if not root.is_dir():
     print('Missing candidate directory',file=sys.stderr)
     sys.exit(1)
-for name in ('universal','plugin','applications','tools','docs/project-history','docs/import-manifest.json','docs/baseline-manifest.json','extras/fonts-cjk'):
+for name in ('universal','plugin','applications','tools','docs/project-history','docs/import-manifest.json','docs/baseline-manifest.json','src/extras/fonts-cjk'):
     if (root/name).exists(): errors.append('Excluded source boundary: '+name)
-for name in ('LICENSE','docs/legal/NOTICE','docs/legal/TRADEMARK.md','docs/legal/LICENSING.md','docs/LICENSE-BINARY.md','docs/legal/DISCLAIMER.md','docs/legal/THIRD_PARTY_NOTICES.md','docs/assets/icon.svg','docs/i18n/README.zh-CN.md','.github/SECURITY.md','.github/CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','src/cordis.patch.yml','webos/index.html','webos/a/os.js','vendor/readability.js','vendor/nexl-l1.js','lib/capabilities.js'):
+for name in ('LICENSE','docs/legal/NOTICE','docs/legal/TRADEMARK.md','docs/legal/LICENSING.md','docs/LICENSE-BINARY.md','docs/legal/DISCLAIMER.md','docs/legal/THIRD_PARTY_NOTICES.md','docs/assets/icon.svg','docs/i18n/README.zh-CN.md','.github/SECURITY.md','.github/CONTRIBUTING.md','package.json','package-lock.json','index.js','client.js','src/cordis.patch.yml','src/webos/index.html','src/webos/a/os.js','src/vendor/readability.js','src/vendor/nexl-l1.js','src/capabilities.js'):
     if not (root/name).is_file(): errors.append('Missing runtime or notice: '+name)
 for p in root.rglob('*'):
     rel=p.relative_to(root).as_posix()
@@ -59,7 +59,7 @@ if [[ "$MODE" == check-repo ]]; then
 from pathlib import Path
 import re,subprocess,sys
 root=Path(sys.argv[1]).resolve()
-excluded=['applications','tools','universal','plugin','extras/fonts-cjk',
+excluded=['applications','tools','universal','plugin','src/extras/fonts-cjk',
           'docs/project-history','docs/baseline-manifest.json','docs/import-manifest.json',
           'docs/validation.md','docs/windows-validation.md','docs/split-validation.md',
           'docs/directory-split.md','docs/edition-layout.json','docs/naming-migration.md']
@@ -114,7 +114,7 @@ def stage():
   # fonts-cjk 不进公开候选：其中 LXGW 是 IPA 衍生字体（name 表要求接受 IPA 许可），
   # 目录里的许可文本也曾把它写成 OFL。字体本身仍在工作树里，只是不进包。
   ignore=shutil.ignore_patterns('node_modules','dist','.cache','coverage','test-results','__pycache__','.DS_Store','*.pyc','*.log','*.pid','*.tgz','fonts-cjk')
-  for name in ('webos','vendor','extension','locale','test','scripts','extras','lib','host','bin','src','.github'):
+  for name in ('src','test','scripts','.github'):
     shutil.copytree(src/name,out/name,ignore=ignore)
   (out/'docs').mkdir()
   for p in (src/'docs').iterdir():

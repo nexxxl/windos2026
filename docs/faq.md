@@ -21,7 +21,7 @@ three things:
 | A software factory with evidence | Generation is cheap; verification is the scarce part | Headless Chromium check, one repair pass, check record | Reconstruction of web software at the browser surface, with proof it runs |
 | A 3D content line | Three.js and WebGPU made browser 3A cheap to produce | Universal edition: Three.js author layer, glTF/GLB with KTX2/Draco/meshopt, WebGL2/WebGPU | Interactive scenes shipped as apps, checked frame by frame |
 | Agent-readable surfaces | Computer use is stuck on screenshots and pixel guessing | Pad surface API reads the foreground window as an action list | Agents operate apps by reference, at a fraction of the tokens |
-| A host-agnostic OS layer | Agents run in many harnesses, each with its own UI | The same `webos/` tree under DSH, Octop and a native shell | One desktop that follows the agent across hosts |
+| A host-agnostic OS layer | Agents run in many harnesses, each with its own UI | The same `src/webos/` tree under DSH, Octop and a native shell | One desktop that follows the agent across hosts |
 | A local-first personal cloud | Buyers ask for BYOK, no telemetry and no vendor lock-in | No key, no account, no telemetry; model comes from the host profile | A private workspace that travels by file, not by account |
 | A verified app exchange | Supply-chain risk moved from packages to skills and apps | Signed manifests and trust in the universal edition | Remix lineage and attribution without a central store |
 
@@ -172,7 +172,7 @@ the file it cites.
 | 带证据的软件工厂 | 生成很便宜，验收才是稀缺 | 无头 Chromium 验收、一次修复、检查记录 | 在浏览器表面重建 Web 软件，并留下它能跑的证明 |
 | 3D 内容产线 | Three.js 与 WebGPU 让浏览器 3A 变便宜 | 通用版：Three.js 作者层、glTF/GLB 配 KTX2/Draco/meshopt、WebGL2/WebGPU | 互动场景以应用形式交付，逐帧验收 |
 | Agent 可读的界面 | 电脑操作还卡在截图与猜像素 | pad 表面 API 把前台窗口读成可操作清单 | agent 按引用操作应用，token 成本降一个量级 |
-| 宿主无关的操作系统层 | agent 跑在多种宿主里，各有各的界面 | 同一份 `webos/` 跑在 DSH、Octop 与原生壳 | 桌面跟着 agent 跨宿主走 |
+| 宿主无关的操作系统层 | agent 跑在多种宿主里，各有各的界面 | 同一份 `src/webos/` 跑在 DSH、Octop 与原生壳 | 桌面跟着 agent 跨宿主走 |
 | 本地优先的个人云 | 买家要 BYOK、无遥测、无锁定 | 不带 key、无账号、无遥测；模型来自宿主档案 | 靠文件迁移的私有工作区，不靠账号 |
 | 可验证的应用交换 | 供应链风险从包转到了 skill 与应用 | 通用版的签名清单与信任 | 没有中心商店的 remix 谱系与署名 |
 

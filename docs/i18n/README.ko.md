@@ -6,7 +6,7 @@
 
 밀레니엄으로 돌아갔을 때 컴퓨터가 갑자기 2026년의 AI 네이티브 OS를 열었다면, 무엇에 쓰시겠습니까?
 
-windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전한 데스크톱을 넣습니다. 앱 17개, 명령 25개, 내장 UI 언어 8개, tarball 7.94 MiB, 런타임 의존성 1개. 생성한 앱은 `apps/<id>/index.html`과 `app.json`뿐인 파일입니다. 내장 17개 앱은 `webos/`의 코드로 함께 배포합니다.
+windos2026은 NexlOS의 DSH 플러그인 에디션입니다. DSH 안에 완전한 데스크톱을 넣습니다. 앱 17개, 명령 25개, 내장 UI 언어 8개, tarball 7.94 MiB, 런타임 의존성 1개. 생성한 앱은 `apps/<id>/index.html`과 `app.json`뿐인 파일입니다. 내장 17개 앱은 `src/webos/`의 코드로 함께 배포합니다.
 
 *번역본입니다. 기준 문서는 영어판입니다.*
 
@@ -59,15 +59,15 @@ Node.js 22+와 로컬 bundle을 로드할 수 있는 DSH가 필요합니다. npm
 
 ### Octop(워크벤치)
 
-데스크톱은 DSH가 필요하지 않습니다. 같은 `webos/`와 `index.js`가 독립 호스트로 실행되며, 명령 하나로 Octop에 상주 항목을 추가합니다.
+데스크톱은 DSH가 필요하지 않습니다. 같은 `src/webos/`와 `index.js`가 독립 호스트로 실행되며, 명령 하나로 Octop에 상주 항목을 추가합니다.
 
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
-Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공간에 열립니다. 명령 바는 당신의 Octop agent가 답합니다. `./bin/octop-install status|up|down|uninstall`로 관리합니다. Node.js 22+와 `~/.octop`에 설치된 Octop이 필요합니다. 호스트별 차이, 제한, 롤백은 [docs/octop.md](../octop.md)를 참고하세요.
+Octop 사이드바에 **NexlOS 데스크톱**이 상주하고, 메인 작업 공간에 열립니다. 명령 바는 당신의 Octop agent가 답합니다. `./scripts/octop-install status|up|down|uninstall`로 관리합니다. Node.js 22+와 `~/.octop`에 설치된 Octop이 필요합니다. 호스트별 차이, 제한, 롤백은 [docs/octop.md](../octop.md)를 참고하세요.
 
 ![Octop 안의 NexlOS](../images/host-octop.jpg)
 

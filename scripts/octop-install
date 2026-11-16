@@ -8,12 +8,12 @@
 #   octop-install uninstall 还原 Dashboard、卸载服务
 #   octop-install doctor    环境自检
 #
-# 桌面就是本仓库的 index.js + webos/：不复制快照，发版即对齐 DSH 版。
+# 桌面就是本仓库的 index.js + src/webos/：不复制快照，发版即对齐 DSH 版。
 set -euo pipefail
 
 SELF_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 APP_DIR="$SELF_DIR"
-HOST_DIR="$SELF_DIR/host/octop"
+HOST_DIR="$SELF_DIR/src/host/octop"
 STATE_DIR="${NEXLOS_STATE_DIR:-$HOME/.nexlos-octop}"
 CONFIG="$STATE_DIR/config.json"
 PORT="${NEXLOS_PORT:-8090}"
@@ -151,12 +151,12 @@ start_service() {
         systemctl --user restart nexlox-octop.service >/dev/null 2>&1 || true
       else
         warn "没有 systemd，前台启动：node $HOST_DIR/server.mjs"
-        (cd "$SELF_DIR" && nohup node host/octop/server.mjs >> "$LOG" 2>&1 &)
+        (cd "$SELF_DIR" && nohup node src/host/octop/server.mjs >> "$LOG" 2>&1 &)
       fi
       ;;
     *)
       warn "未识别的平台 $(uname -s)：前台启动（关闭终端即退出）"
-      (cd "$SELF_DIR" && nohup node host/octop/server.mjs >> "$LOG" 2>&1 &)
+      (cd "$SELF_DIR" && nohup node src/host/octop/server.mjs >> "$LOG" 2>&1 &)
       ;;
   esac
   local i
@@ -173,7 +173,7 @@ stop_service() {
   case "$(uname -s)" in
     Darwin) launchctl bootout "gui/$(id -u)/$LABEL" >/dev/null 2>&1 || true ;;
     Linux) command -v systemctl >/dev/null 2>&1 && systemctl --user disable --now nexlox-octop.service >/dev/null 2>&1 || true ;;
-    *) pkill -f "host/octop/server.mjs" >/dev/null 2>&1 || true ;;
+    *) pkill -f "src/host/octop/server.mjs" >/dev/null 2>&1 || true ;;
   esac
   info "桌面服务已停止"
 }
@@ -245,7 +245,7 @@ open_octop() {
 
 cmd_install() {
   node_ok
-  [ -f "$APP_DIR/webos/index.html" ] || die "缺少 webos/index.html，仓库目录不完整"
+  [ -f "$APP_DIR/src/webos/index.html" ] || die "缺少 src/webos/index.html，仓库目录不完整"
   if [ ! -d "$SELF_DIR/node_modules/jpeg-js" ]; then
     info "安装 Node 依赖…"
     (cd "$SELF_DIR" && npm install --no-audit --no-fund >/dev/null)
@@ -293,7 +293,7 @@ cmd_doctor() {
   echo "self      : $SELF_DIR"
   echo "node      : $(node -v 2>/dev/null || echo missing)"
   echo "deps      : $([ -d "$SELF_DIR/node_modules/jpeg-js" ] && echo ok || echo "missing (octop-install)")"
-  echo "webos     : $([ -f "$APP_DIR/webos/index.html" ] && echo ok || echo missing)"
+  echo "webos     : $([ -f "$APP_DIR/src/webos/index.html" ] && echo ok || echo missing)"
   echo "octop venv: $([ -x "$HOME/.octop/venv/bin/python" ] && echo ok || echo missing)"
   echo "port $PORT : $(lsof -nP -iTCP:"$PORT" -sTCP:LISTEN >/dev/null 2>&1 && echo busy || echo free)"
   echo "service   : $(service_up && echo up || echo down)"

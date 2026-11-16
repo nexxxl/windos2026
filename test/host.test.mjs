@@ -115,7 +115,7 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async (t) => {
     })
 
     await t.test('serves optional packs from /extras', async () => {
-      // ArtCraft and the overlay language packs live outside webos/; without this
+      // ArtCraft and the overlay language packs live outside src/webos/; without this
       // route the drawing app only renders its "failed to fetch kernel.js" page.
       const kernel = await request('/extras/artcraftport/kernel.js')
       assert.equal(kernel.status, 200)

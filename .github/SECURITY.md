@@ -25,7 +25,7 @@ We aim to acknowledge reports within 72 hours and to provide a remediation plan 
 
 In scope:
 
-- The plugin source at this directory root and its bundled `webos/`.
+- The plugin source at this directory root and its bundled `src/webos/`.
 - The build, packaging, and update paths in this repository.
 
 Out of scope:

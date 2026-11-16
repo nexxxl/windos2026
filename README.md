@@ -8,7 +8,7 @@
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `webos/`.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `src/webos/`.
 
 Everyone remembers their first desktop. This is the one you get to own: you assemble it yourself, one sentence at a time, and every app leaves with you as a file. Linux gave every program a machine; NexlOS gives every agent a computer.
 
@@ -60,15 +60,15 @@ Requires Node.js 22+ and a DSH build that can load local bundles. There is no np
 
 ### Octop (workbench)
 
-The desktop does not need DSH. The same `webos/` and `index.js` run as a standalone host, and one command adds a persistent entry to Octop:
+The desktop does not need DSH. The same `src/webos/` and `index.js` run as a standalone host, and one command adds a persistent entry to Octop:
 
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
-Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main workspace and the command bar answers with your own Octop agent. `./bin/octop-install status|up|down|uninstall` manages it. Requires Node.js 22+ and an Octop install under `~/.octop`. Host differences, limits and rollback: [docs/octop.md](docs/octop.md).
+Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main workspace and the command bar answers with your own Octop agent. `./scripts/octop-install status|up|down|uninstall` manages it. Requires Node.js 22+ and an Octop install under `~/.octop`. Host differences, limits and rollback: [docs/octop.md](docs/octop.md).
 
 ![NexlOS inside Octop](docs/images/host-octop.jpg)
 

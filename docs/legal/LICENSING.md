@@ -15,8 +15,8 @@ directory and release artifact in this repository.
 ## 1. Source code: Apache-2.0
 
 Everything committed to this repository is Apache-2.0 unless a file or directory
-says otherwise. That includes `webos/`, `vendor/`, `extension/`, `locale/`,
-`extras/`, `lib/`, `test/`, `scripts/`, `.github/` and `docs/`.
+says otherwise. That includes `src/webos/`, `src/vendor/`, `extension/`, `src/locale/`,
+`src/extras/`, `src/lib/`, `test/`, `scripts/`, `.github/` and `docs/`.
 
 Apache-2.0 lets you use, modify, redistribute and sell this source, including in
 proprietary products, as long as you keep the copyright and notice requirements.
@@ -29,11 +29,11 @@ the map that explains what sits outside that grant. The binary license lives in
 
 Path-level exceptions, each with its own terms:
 
-- `webos/a/vendor/` and `vendor/` — upstream code and fonts, retained under their
+- `src/webos/a/vendor/` and `src/vendor/` — upstream code and fonts, retained under their
   own licenses; the Apache-2.0 grant above does not relicense them.
-- `webos/a/office/fonts/` — CJK fonts are not distributed in this repository;
+- `src/webos/a/office/fonts/` — CJK fonts are not distributed in this repository;
   their license texts ship with the optional font pack.
-- `webos/a/wallpapers/`, `webos/a/media/` — see the `NOTICE.md` beside each asset.
+- `src/webos/a/wallpapers/`, `src/webos/a/media/` — see the `NOTICE.md` beside each asset.
 - `docs/artcraftport/` — port notes for the ArtCraft port; the ported code is
   Apache-2.0 here, the upstream project keeps its own MIT / Apache-2.0 terms.
 
@@ -68,11 +68,11 @@ component.
 
 Notable cases:
 
-- The retro pixel font under `webos/a/vendor/retro-font/` is CC BY-SA 3.0; the
+- The retro pixel font under `src/webos/a/vendor/retro-font/` is CC BY-SA 3.0; the
   attribution and ShareAlike terms are in that directory's `README.md`.
 - Wallpaper photographs are Pexels-licensed and are excluded from the Apache-2.0
-  grant; see `webos/a/wallpapers/NOTICE.md`.
-- Example audio in `webos/a/media/` is original work by NexlOS Authors; see that
+  grant; see `src/webos/a/wallpapers/NOTICE.md`.
+- Example audio in `src/webos/a/media/` is original work by NexlOS Authors; see that
   directory's `NOTICE.md`.
 
 ## 4. Trademarks

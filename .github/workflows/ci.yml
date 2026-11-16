@@ -64,7 +64,7 @@ jobs:
           fi
 
   format:
-    # 只检查维护中的模块（lib/、test/、scripts/ 的 .mjs）。webos/ 与既有文档
+    # 只检查维护中的模块（src/capabilities.js、test/、scripts/ 的 .mjs）。src/webos/ 与既有文档
     # 保持项目原有排版，不在这里批量重排；范围写明，避免长期一条永远红的假信号。
     name: Formatting (lib, test, scripts)
     runs-on: ubuntu-latest
@@ -73,7 +73,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: npx --yes prettier@3 --check "lib/**/*.js" "test/**/*.mjs" "scripts/*.mjs"
+      - run: npx --yes prettier@3 --check "src/capabilities.js" "test/**/*.mjs" "scripts/*.mjs"
 
   public-scope:
     # fail-closed：不再按目录嗅探决定跑不跑。漏进一个 applications/ 或 tools/
@@ -94,6 +94,6 @@ jobs:
           bash scripts/stage-public-repo.sh /tmp/public-candidate
           bash scripts/stage-public-repo.sh --check /tmp/public-candidate
       - name: Boundary negative cases
-        # 反向证明：applications/、tools/、extras/fonts-cjk、私钥、开发者路径、
+        # 反向证明：applications/、tools/、src/extras/fonts-cjk、私钥、开发者路径、
         # 被提交的 .env 都必须被拒，干净树必须通过。
         run: node --test test/public-boundary.test.mjs

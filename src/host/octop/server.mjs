@@ -5,7 +5,7 @@
  * 提供 index.js 实际用到的键（get / logger / effect / inject），缺的服务返回 undefined，
  * index.js 里的守卫会把这些能力降级成 501，而不是崩溃。
  *
- * 与 DSH 版共用同一份 `webos/` 和同一个 `index.js`：发版即对齐，不存在第二份快照。
+ * 与 DSH 版共用同一份 `src/webos/` 和同一个 `index.js`：发版即对齐，不存在第二份快照。
  *
  * 只监听回环地址：`/c/fs.*` 没有二次鉴权，绑定公网等于把工作区交给局域网。
  */
@@ -18,8 +18,8 @@ import * as bridge from './octop-bridge.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
 // 仓库根：宿主就在插件包里面，APP_ROOT 即插件根。
-const APP_ROOT = path.join(HERE, '..', '..')
-const WEBOS_INDEX = path.join(APP_ROOT, 'webos', 'index.html')
+const APP_ROOT = path.join(HERE, '..', '..', '..')
+const WEBOS_INDEX = path.join(APP_ROOT, 'src', 'webos', 'index.html')
 
 /** 默认 home：优先 NexlOS 原生目录，与 DSH 版共用同一批应用与文稿。 */
 export function defaultHome() {

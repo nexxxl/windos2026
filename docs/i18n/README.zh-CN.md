@@ -6,7 +6,7 @@
 
 如果回到千禧年，你的电脑意外打开一个2026年的AI原生操作系统，你会用来干嘛？
 
-windos2026 是 NexlOS 的 DSH 插件版。它把一台完整的桌面装进 DSH：17 个应用、25 条命令、8 种内置界面语言，压缩包 7.94 MiB，只有一个运行时依赖。生成的应用就是 `apps/<id>/index.html` 加一份 `app.json`；17 个内置应用以代码形式放在 `webos/`。
+windos2026 是 NexlOS 的 DSH 插件版。它把一台完整的桌面装进 DSH：17 个应用、25 条命令、8 种内置界面语言，压缩包 7.94 MiB，只有一个运行时依赖。生成的应用就是 `apps/<id>/index.html` 加一份 `app.json`；17 个内置应用以代码形式放在 `src/webos/`。
 
 你还记得你用过的第一台电脑桌面长什么样吗？这一台可以完全是你自己的：一句话生一个应用，每个应用都以文件的形式跟你走。Linux 给了每个程序一台机器；NexlOS 给了每个 agent 一台电脑。
 
@@ -57,15 +57,15 @@ powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
 
 ### Octop（工作台）
 
-桌面不依赖 DSH。同一份 `webos/` 和 `index.js` 也能作为独立宿主运行，一条命令把它挂进 Octop：
+桌面不依赖 DSH。同一份 `src/webos/` 和 `index.js` 也能作为独立宿主运行，一条命令把它挂进 Octop：
 
 ```bash
 git clone https://github.com/nexxxl/windos2026.git
 cd windos2026
-./bin/octop-install install
+./scripts/octop-install install
 ```
 
-Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作区；命令栏回答用的是你自己的 Octop agent。`./bin/octop-install status|up|down|uninstall` 负责管理。需要 Node.js 22+ 和装在 `~/.octop` 的 Octop。宿主差异、边界与回滚见 [docs/octop.md](../octop.md)。
+Octop 左侧会多出常驻的 **NexlOS 桌面**，点开占满右侧主工作区；命令栏回答用的是你自己的 Octop agent。`./scripts/octop-install status|up|down|uninstall` 负责管理。需要 Node.js 22+ 和装在 `~/.octop` 的 Octop。宿主差异、边界与回滚见 [docs/octop.md](../octop.md)。
 
 ![NexlOS 在 Octop 里](../images/host-octop.jpg)
 
