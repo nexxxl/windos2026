@@ -177,6 +177,10 @@ jobs:
 
         cases = {
             "缺 permissions": self.GOOD_WORKFLOW.replace("permissions:\n  contents: read\n", ""),
+            "作业级 permissions 冒充顶层": self.GOOD_WORKFLOW.replace(
+                "permissions:\n  contents: read\n", "jobs:\n  build:\n    permissions:\n      contents: read\n"),
+            "写权限（双空格）": self.GOOD_WORKFLOW.replace("contents: read", "contents:  write"),
+            "write-all": self.GOOD_WORKFLOW.replace("contents: read", "write-all"),
             "pull_request_target": "on:\n  pull_request_target:\npermissions:\n  contents: read\n",
             "分支漂移": self.GOOD_WORKFLOW.replace("actions/checkout@v4", "actions/checkout@main"),
             "未固定版本": self.GOOD_WORKFLOW.replace("actions/checkout@v4", "actions/checkout"),
@@ -244,7 +248,8 @@ jobs:
         # 有产物时以清单为准：公钥走 ldflags，源码默认值永远是空的。
         key = "S9SJ0tLuxrBKVkKoYgBJxxE08N9s5T07Eb2wlQrRUIE="
         closed = manifest({"configured": False, "publicKey": "", "fingerprint": ""})
-        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, closed, []), name), "SKIP")
+        # 清单在、公钥空 —— 这是「本次构建没有自动更新」，必须红，不能靠 SKIP 过关。
+        self.assertEqual(self.status(self.call(g.check_update_channel, self.root, closed, []), name), "FAIL")
 
         opened = manifest({"configured": True, "publicKey": key, "fingerprint": "ed25519:x"})
         with_key = self.fake_binary(f"prefix\0{key}\0".encode())
@@ -357,6 +362,21 @@ jobs:
         row = {r["check"]: r for r in report.rows}["check-registry"]
         self.assertEqual(row["status"], "FAIL")
         self.assertIn("未执行", row["detail"])
+
+    def test_strict_turns_skip_into_failure(self):
+        report = g.Report()
+        report.add("license-copies", "PASS")
+        report.add("package-layout", "SKIP", "未提供 --package")
+        self.assertEqual(g.exit_code(report, strict=False), 0)  # 默认容忍 SKIP
+        self.assertEqual(g.exit_code(report, strict=True), 1)   # 发布前不允许跳过
+        # 已声明原因的 SKIP 可以放过，未声明的仍然失败。
+        self.assertEqual(g.exit_code(report, strict=True, allowed=["package-layout"]), 0)
+
+        report.add("binary-symbols", "SKIP", "本批次未混淆")
+        self.assertEqual(g.exit_code(report, strict=True, allowed=["package-layout"]), 1)
+
+        report.add("manifest-obfuscation", "FAIL")
+        self.assertEqual(g.exit_code(report, strict=False), 1)
 
     def test_run_all_declares_every_check(self):
         report = g.run_all(self.root, self.public, None, [])

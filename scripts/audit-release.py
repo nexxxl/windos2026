@@ -126,29 +126,43 @@ class Report:
 
 # ---------- 检查 ----------
 
+# 同一份声明分散在多棵树里时，任何一处手改都会让不同读者读到不同内容。
+COPIED_DOCUMENTS = (
+    "docs/LICENSE-BINARY.md",
+    "THIRD_PARTY_NOTICES.md",
+    "licenses/assets/NOTICE",
+)
+
+
 def check_license_copies(root: Path, public: Path | None, report: Report) -> None:
-    """每份二进制许可必须逐字节相同：任何一处手改都会让下载者读到不同条款。"""
-    candidates = [
-        root / "docs" / "LICENSE-BINARY.md",
-        root / "public-repo" / "docs" / "LICENSE-BINARY.md",
-        root / "GitHub公开目录" / "docs" / "LICENSE-BINARY.md",
-    ]
+    """许可与第三方声明必须逐字节相同：副本漂移会让下载者读到不同条款。"""
+    trees = [root, root / "public-repo", root / "GitHub公开目录"]
     if public and public != root:
-        candidates.append(public / "docs" / "LICENSE-BINARY.md")
-    present = [p for p in candidates if p.is_file()]
-    if len(present) < 2:
-        # 源码树本来就该有源码副本与公开副本；只剩一份说明有人删了东西。
-        if (root / "go.mod").is_file():
-            report.add("license-copies", "FAIL", "源码树只找到一份 LICENSE-BINARY.md，副本被删了")
+        trees.append(public)
+
+    problems, checked = [], 0
+    for name in COPIED_DOCUMENTS:
+        present = [base / name for base in trees if (base / name).is_file()]
+        if len(present) < 2:
+            continue
+        digests = {p: sha256(p) for p in present}
+        if len(set(digests.values())) != 1:
+            problems.append("; ".join(f"{p.relative_to(root)}={d[:12]}" for p, d in digests.items()))
         else:
-            report.add("license-copies", "SKIP", "这棵树只有一份二进制许可（插件版）")
-        return
-    digests = {p: sha256(p) for p in present}
-    unique = set(digests.values())
-    if len(unique) == 1:
-        report.add("license-copies", "PASS", f"{len(present)} 份，sha256 {next(iter(unique))[:12]}")
+            checked += 1
+
+    license_copies = [base / "docs" / "LICENSE-BINARY.md" for base in trees
+                      if (base / "docs" / "LICENSE-BINARY.md").is_file()]
+    if len(license_copies) < 2 and (root / "go.mod").is_file():
+        # 源码树本来就该有源码副本与公开副本；只剩一份说明有人删了东西。
+        problems.append("源码树只找到一份 LICENSE-BINARY.md，副本被删了")
+
+    if problems:
+        report.add("license-copies", "FAIL", " | ".join(problems))
+    elif checked:
+        report.add("license-copies", "PASS", f"{checked} 组文档一致")
     else:
-        report.add("license-copies", "FAIL", "; ".join(f"{p.relative_to(root)}={d[:12]}" for p, d in digests.items()))
+        report.add("license-copies", "SKIP", "这棵树只有一份二进制许可（插件版）")
 
 
 def shipped_docs(root: Path):
@@ -160,15 +174,20 @@ def shipped_docs(root: Path):
         path = root / name
         if path.is_file():
             yield path
-    for dirname in ("docs", "public-repo", "GitHub公开目录", ".github"):
+    for dirname in ("docs", "licenses", "public-repo", "GitHub公开目录", ".github"):
         base = root / dirname
         if not base.is_dir():
             continue
         for path in base.rglob("*"):
-            if path.is_file() and path.suffix.lower() in (".md", ".txt", ".yml", ".yaml"):
-                if "node_modules" in path.parts or "baseline-manifest.json" == path.name:
-                    continue
-                yield path
+            # 许可声明常是无扩展名的 NOTICE/COPYING，按文件名一并收进来。
+            if not path.is_file():
+                continue
+            if path.suffix.lower() not in (".md", ".txt", ".yml", ".yaml") and \
+                    path.name not in ("NOTICE", "COPYING", "LEGAL", "LICENSE"):
+                continue
+            if "node_modules" in path.parts or "baseline-manifest.json" == path.name:
+                continue
+            yield path
 
 
 def check_no_eula(root: Path, report: Report) -> None:
@@ -191,7 +210,15 @@ def check_license_link(repo: Path, report: Report) -> None:
     if not notice.is_file():
         notice = repo / "docs" / "legal" / "NOTICE"
     if not license_file.is_file():
-        report.add("binary-license-entry", "SKIP", "这棵树没有 docs/LICENSE-BINARY.md（插件版以 Apache-2.0 发布）")
+        # 分发树（build.py 导出的 public-repo）按设计没有这份文档副本；但如果它的
+        # NOTICE 已经把读者指向 LICENSE-BINARY.md，缺文件就是断链，不能记 SKIP 放行。
+        referring = [p for p in (notice, repo / "README.md")
+                     if p.is_file() and "LICENSE-BINARY.md" in p.read_text(encoding="utf-8", errors="ignore")]
+        if referring:
+            report.add("binary-license-entry", "FAIL",
+                       f"{referring[0].name} 指向 docs/LICENSE-BINARY.md，但这份文件不存在")
+        else:
+            report.add("binary-license-entry", "SKIP", "这棵树没有 docs/LICENSE-BINARY.md（插件版以 Apache-2.0 发布）")
         return
     if not notice.is_file():
         report.add("binary-license-entry", "FAIL", "有二进制许可却没有 NOTICE")
@@ -543,11 +570,17 @@ def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]
     return report
 
 
-def exit_code(report: Report, strict: bool) -> int:
-    """FAIL 一律非零；strict 模式下 SKIP 也算失败（发布前用，防止检查被跳过）。"""
+def unexpected_skips(report: Report, allowed=()) -> list[dict]:
+    """strict 模式只容忍显式声明过的 SKIP：默认没有，发布批次要逐条说明原因。"""
+    kept = set(allowed)
+    return [row for row in report.skipped() if row["check"] not in kept]
+
+
+def exit_code(report: Report, strict: bool, allowed=()) -> int:
+    """FAIL 一律非零；strict 模式下未被允许的 SKIP 也算失败。"""
     if report.failed():
         return 1
-    if strict and report.skipped():
+    if strict and unexpected_skips(report, allowed):
         return 1
     return 0
 
@@ -560,7 +593,9 @@ def main() -> int:
     parser.add_argument("--binary", type=Path, action="append", default=[], help="待检二进制，可重复")
     parser.add_argument("--json", action="store_true", help="机器可读输出")
     parser.add_argument("--strict", action="store_true",
-                        help="任何 SKIP 也算失败：发布前用它，确保没有检查被跳过")
+                        help="任何未声明的 SKIP 也算失败：发布前用它，确保没有检查被静默跳过")
+    parser.add_argument("--allow-skip", action="append", default=[], metavar="CHECK",
+                        help="strict 下允许跳过的检查名，需逐条说明原因，可重复")
     args = parser.parse_args()
 
     root = (args.root or find_root(Path(__file__).resolve().parent)).resolve()
@@ -577,10 +612,11 @@ def main() -> int:
     report = run_all(root, public, package, binaries)
     report.print(args.json)
 
-    if args.strict and report.skipped():
-        names = ", ".join(row["check"] for row in report.skipped())
-        print(f"\n--strict: {len(report.skipped())} 项检查被跳过: {names}", file=sys.stderr)
-    return exit_code(report, args.strict)
+    skipped = unexpected_skips(report, args.allow_skip)
+    if args.strict and skipped:
+        names = ", ".join(row["check"] for row in skipped)
+        print(f"\n--strict: {len(skipped)} 项检查被跳过且未声明: {names}", file=sys.stderr)
+    return exit_code(report, args.strict, args.allow_skip)
 
 
 if __name__ == "__main__":
