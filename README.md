@@ -1,5 +1,10 @@
 # windos2026
 
+[![Release](https://img.shields.io/github/v/release/nexxxl/windos2026?label=release&color=blue)](https://github.com/nexxxl/windos2026/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS-lightgrey)](https://github.com/nexxxl/windos2026/releases)
+[![License](https://img.shields.io/badge/license-Apache--2.0%20%2B%20binary-yellow)](docs/legal/LICENSING.md)
+[![Downloads](https://img.shields.io/github/downloads/nexxxl/windos2026/total)](https://github.com/nexxxl/windos2026/releases)
+
 **English** · [简体中文](docs/i18n/README.zh-CN.md) · [繁體中文](docs/i18n/README.zh-TW.md) · [日本語](docs/i18n/README.ja.md) · [한국어](docs/i18n/README.ko.md) · [Español](docs/i18n/README.es.md) · [Français](docs/i18n/README.fr.md) · [Deutsch](docs/i18n/README.de.md)
 
 <img width="880" alt="windos2026 demo: boot, desktop, reader, ArtCraft, multi-window" src="docs/images/hero-demo.gif">
@@ -52,6 +57,11 @@ unsigned: Apple notarization and Windows code signing are on the roadmap, so
 install them from a terminal or clear the browser's quarantine attribute. The
 steps, and the reason the warning appears, are under *Install the release build*.
 
+This repository and its [Releases](https://github.com/nexxxl/windos2026/releases)
+page are the only official source. A mirror, a repackaging site or a "download
+portal" offering NexlOS binaries is not us; every official asset is listed here
+with a `SHA256SUMS` file.
+
 ## Install
 
 Send the repository URL to DSH, then say:
@@ -93,6 +103,17 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 ![NexlOS inside Octop](docs/images/host-octop.jpg)
 
 ## Install the release build
+
+### System requirements
+
+| Platform | Requirement | Asset |
+| --- | --- | --- |
+| macOS 12 Monterey or newer, Apple Silicon | native arm64 build | `NexlOS-<version>-darwin-arm64-candidate.zip` |
+| macOS 12 Monterey or newer, Intel | native x86-64 build | `NexlOS-<version>-darwin-amd64-candidate.zip` |
+| Windows 10 / 11, x64 | WebView2 runtime, present on Windows 11 and most Windows 10 installs | `NexlOS-<version>-windows-amd64-candidate.zip` |
+
+The download is 27–28 MB and unpacks to 38–39 MB. Windows on ARM is not built yet;
+the release runs x64 under emulation there, untested.
 
 The release binary carries no Developer ID and no Authenticode signature, so a
 browser download is flagged by Gatekeeper or SmartScreen. `gh` and `curl` write
@@ -223,4 +244,4 @@ ArtCraft for NexlOS (ArtCraft 移植版) is the worked example shipped with the 
 
 ## Project
 
-Release history: [CHANGELOG.md](CHANGELOG.md). Contribution rules and the DCO: [CONTRIBUTING.md](.github/CONTRIBUTING.md). Security reports: [SECURITY.md](.github/SECURITY.md). License map: [LICENSING.md](docs/legal/LICENSING.md). Versioning and support window: [docs/releasing.md](docs/releasing.md). How release builds detect a newer version: [docs/UPDATES.md](docs/UPDATES.md).
+Release history: [CHANGELOG.md](CHANGELOG.md). Release notes per version: [docs/release-notes/](docs/release-notes/README.md). Contribution rules and the DCO: [CONTRIBUTING.md](.github/CONTRIBUTING.md). Security reports: [SECURITY.md](.github/SECURITY.md). License map: [LICENSING.md](docs/legal/LICENSING.md). Versioning and support window: [docs/releasing.md](docs/releasing.md). How release builds detect a newer version: [docs/UPDATES.md](docs/UPDATES.md).
