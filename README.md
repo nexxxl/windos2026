@@ -30,7 +30,24 @@ Everyone remembers their first desktop. This is the one you get to own: you asse
 
 The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 
-The universal edition is not published yet: Releases stays empty until that edition clears its asset-rights review.
+## Two ways to run it
+
+**Plugin — the minimal distribution.** One `install_bundle` into DSH or Octop, 7.94 MiB, no second control plane. It runs inside the harness you already use, and it is the form whose source is published here. Use it to feel what the system is and to build apps from a sentence.
+
+**Release — the full build.** A self-contained binary with its own native window shell, for Windows and macOS. No Node, no DSH, no harness. It is the complete system: the same desktop layer, plus the closed kernel and shell that turn it into a standalone machine on your own disk.
+
+| | Plugin | Release |
+| --- | --- | --- |
+| Get it from | this repository, `install_bundle` | [Releases](https://github.com/nexxxl/windos2026/releases) |
+| Size | 7.94 MiB | ~27 MB per platform |
+| Needs | DSH or Octop, Node 22+ | nothing else |
+| License | Apache-2.0 | [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md) |
+| Updates | pull and reinstall | built-in check against a signed manifest |
+| Best for | trying it, generating apps, embedding it in your agent | daily desktop use on your own machine |
+
+Both forms read the model configuration you already have. Neither ships a key, an account or telemetry.
+
+**Status:** the plugin edition is installable today. The universal edition is still in release review, so Releases stays empty until signing, notarization and the rights review are done.
 
 ## Install
 

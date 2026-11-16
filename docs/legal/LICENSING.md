@@ -50,8 +50,9 @@ The split matters:
   exists in this repository, the Apache-2.0 grant in [LICENSE](../../LICENSE) applies
   to the copy you receive in the binary. The binary license adds no restriction
   on those components and cannot revoke rights you already have.
-- **The additional terms cover only the closed components** — the kernel and the
-  native window shell — plus the official build, branding and update channel.
+- **The additional terms cover only the closed components** — the Go kernel, the
+  native window shell and the updater — plus the official build, branding and
+  update channel.
 - **A build of this repository's source is not the universal edition.** You may
   build, modify, redistribute and even sell what you build from this source. You
   may not present it as the official universal binary or as a NexlOS release.
