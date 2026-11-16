@@ -135,10 +135,13 @@ attached to a release:
    *Install the release build* section. Do not describe an unsigned build as
    verified or notarized.
 7. Publish or refresh the signed update manifest on the fixed `update-feed`
-   pre-release: `latest.json` and `latest.json.sig`. Its `sha256` and `size`
-   values must describe the assets attached in step 4 **after** signing and
-   notarization, because those change the bytes. The plugin track never writes
-   this tag.
+   pre-release: `latest.json` and `latest.json.sig`. The manifest's download
+   URLs point at `releases/download/update-feed/`, so the same ZIPs must also be
+   attached to that pre-release — a manifest whose assets live only on the
+   version tag resolves to 404. Its `sha256` and `size` values must describe the
+   assets **after** signing and notarization, because those change the bytes;
+   regenerating the manifest after any byte change is mandatory, since the
+   signature covers the digests. The plugin track never writes this tag.
 
 ## What not to do
 
