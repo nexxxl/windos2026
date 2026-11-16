@@ -109,13 +109,17 @@ attached to a release:
    manifest and forces a fresh build.
 4. Attach, for every release:
 
-   - the binaries;
-   - `LICENSE` (Apache-2.0, for the embedded open components);
-   - `NOTICE`;
-   - `LICENSE-BINARY.md` (the closed kernel and window shell, copied from `docs/LICENSE-BINARY.md`);
-   - `docs/legal/THIRD_PARTY_NOTICES.md`;
+   - the three `NexlOS-<version>-<os>-<arch>-candidate.zip` assets;
    - `SHA256SUMS`;
-   - `BUILD-MANIFEST.txt`.
+   - `release-manifest.json` — the build manifest (version, per-platform
+     digests, signing state, update-channel key fingerprint).
+
+   License texts travel inside each ZIP: `LICENSE` (the NexlOS Binary License
+   1.0, which also covers the closed kernel and window shell), `NOTICE`,
+   `THIRD_PARTY_NOTICES.md`, `licenses/APACHE-2.0.txt` (Apache-2.0 for the
+   embedded desktop layer) and `docs/LICENSE-BINARY.md`. Keep one copy of each
+   text; a second copy attached at release level drifts from the one inside the
+   ZIP that the user actually receives.
 
 5. State on the release page: which components are open, which are closed, and
    which license text governs each. Never describe a release binary as

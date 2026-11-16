@@ -17,8 +17,9 @@ here. This page is the standalone build.
 | macOS, Intel | `NexlOS-<version>-darwin-amd64-candidate.zip` | macOS 12 or newer |
 | Windows x64 | `NexlOS-<version>-windows-amd64-candidate.zip` | Windows 10/11, WebView2 runtime |
 
-Also attached: `SHA256SUMS`, `LICENSE`, `NOTICE`, `LICENSE-BINARY.md`,
-`THIRD_PARTY_NOTICES.md`, `BUILD-MANIFEST.txt`.
+Also attached: `SHA256SUMS` and `release-manifest.json`. The license texts travel
+inside each ZIP — `LICENSE`, `NOTICE`, `THIRD_PARTY_NOTICES.md`,
+`docs/LICENSE-BINARY.md` and `licenses/APACHE-2.0.txt`.
 
 ## Install from a terminal (recommended)
 
@@ -70,8 +71,9 @@ Unblock-File -Path .\nexlos.exe
 
 **Why the warning appears.** No Apple Developer ID and no Windows Authenticode
 certificate are in place; both are paid annual programs and both are on the
-roadmap. The binary is built from this repository's tagged source by
-`scripts/release/build.py`. On Apple Silicon it is signed ad-hoc because the
+roadmap. The universal binaries are built from a private source tree by
+`scripts/release/build.py`; this repository carries the docs, the plugin
+edition and the release audit that reviews the artifacts. On Apple Silicon it is signed ad-hoc because the
 kernel requires a signature to execute the process at all; ad-hoc signing is not
 a trust statement.
 
@@ -82,7 +84,7 @@ shasum -a 256 -c SHA256SUMS          # macOS
 certutil -hashfile nexlos.exe SHA256 # Windows
 ```
 
-The published digests are in `SHA256SUMS` and in `BUILD-MANIFEST.txt`.
+The published digests are in `SHA256SUMS` and `release-manifest.json`.
 
 ## Updates
 
