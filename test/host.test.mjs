@@ -173,6 +173,25 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async (t) => {
       assert.match(page.headers.get('content-security-policy') || '', /sandbox/)
     })
 
+    await t.test('novel.update keeps the outline heading in sync with the title', async () => {
+      const created = await request('/c/novel.create', { fields: { name: 'retitle-book', title: 'Before' } })
+      const space = created.body.detail.created
+      const prefix = '/s/' + encodeURIComponent(space) + '/c/'
+      const outlineFile = path.join(home, space, 'outline.md')
+      assert.match(await fs.readFile(outlineFile, 'utf8'), /^# Before · 总纲\n/)
+
+      const renamed = await request(prefix + 'novel.update', { fields: { title: 'After' } })
+      assert.equal(renamed.body.fields.book.title, 'After')
+      const outline = await fs.readFile(outlineFile, 'utf8')
+      assert.match(outline, /^# After · 总纲\n/)
+      assert.doesNotMatch(outline, /Before/)
+
+      // 用户自己写过大纲标题时，改书名不该覆盖它。
+      await fs.writeFile(outlineFile, '# 我自己的大纲\n\n正文\n')
+      await request(prefix + 'novel.update', { fields: { title: 'Third' } })
+      assert.equal(await fs.readFile(outlineFile, 'utf8'), '# 我自己的大纲\n\n正文\n')
+    })
+
     await t.test('rejects workspace traversal and cross-origin mutation', async () => {
       await fs.writeFile(path.join(temporary, 'outside.txt'), 'outside fixture')
       const escape = await request('/c/fs.read?path=' + encodeURIComponent('../outside.txt'))

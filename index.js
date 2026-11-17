@@ -4912,6 +4912,15 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         for (const key of ['title', 'author', 'premise', 'tags']) if (key in fields) next[key] = fields[key]
         next.updatedAt = isoNow()
         await writeJson(path.join(bookDir(root, id), 'book.json'), next)
+        // 导出会把 book.title 与 outline.md 的首行都写成一级标题；书名改了不跟着改，
+        // 同一个文件里就会出现两个互相矛盾的书名。用户自己改过的标题保持原样。
+        if (typeof current.title === 'string' && next.title !== current.title) {
+          const head = '# ' + current.title + ' · 总纲'
+          const outline = await outlineText(root, id)
+          if (outline.startsWith(head)) {
+            await writeAtomic(path.join(bookDir(root, id), 'outline.md'), '# ' + next.title + ' · 总纲' + outline.slice(head.length))
+          }
+        }
         return { fields: { book: next } }
       }
       case 'chapter.list': {
