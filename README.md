@@ -115,6 +115,10 @@ Octop's sidebar then carries **NexlOS desktop**; the desktop opens in the main w
 The download is 27–28 MB and unpacks to 38–39 MB. Windows on ARM is not built yet;
 the release runs x64 under emulation there, untested.
 
+The repository is still private. The release assets exist, and the commands below
+work for collaborators; anonymous access returns 404 until the repository is made
+public.
+
 The release binary carries no Developer ID and no Authenticode signature, so a
 browser download is flagged by Gatekeeper or SmartScreen. `gh` and `curl` write
 the file without the browser's quarantine / Mark-of-the-Web attribute, so
@@ -173,9 +177,10 @@ shasum -a 256 -c SHA256SUMS
 ```
 
 Updates are checked against a manifest signed with an Ed25519 key compiled into
-the binary; see [docs/UPDATES.md](docs/UPDATES.md). On Apple Silicon the bundle
-is signed ad-hoc, which the kernel requires before it will run the process at
-all. Ad-hoc signing is not a trust statement.
+the binary; see [docs/UPDATES.md](docs/UPDATES.md). The check is an anonymous
+`GET`, so it fails while this repository is private; that is expected. On Apple
+Silicon the bundle is signed ad-hoc, which the kernel requires before it will run
+the process at all. Ad-hoc signing is not a trust statement.
 
 ## Use
 

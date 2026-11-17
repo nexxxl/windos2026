@@ -10,6 +10,7 @@ CHECK_NAMES 里没有任何一项漏掉反例。
 """
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import shutil
 import sys
@@ -127,6 +128,9 @@ class GateCounterexampleTests(unittest.TestCase):
 
     # ---------- 工作流 ----------
 
+    # 工作流里的动作必须钉在 commit SHA 上：tag 可被上游重新指向。
+    CHECKOUT_SHA = "11d5960a326750d5838078e36cf38b85af677262"
+
     GOOD_WORKFLOW = """name: release
 on:
   push:
@@ -137,7 +141,7 @@ jobs:
   pack:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262  # v4
       - run: npm test
 """
 
@@ -182,8 +186,13 @@ jobs:
             "写权限（双空格）": self.GOOD_WORKFLOW.replace("contents: read", "contents:  write"),
             "write-all": self.GOOD_WORKFLOW.replace("contents: read", "write-all"),
             "pull_request_target": "on:\n  pull_request_target:\npermissions:\n  contents: read\n",
-            "分支漂移": self.GOOD_WORKFLOW.replace("actions/checkout@v4", "actions/checkout@main"),
-            "未固定版本": self.GOOD_WORKFLOW.replace("actions/checkout@v4", "actions/checkout"),
+            "分支漂移": self.GOOD_WORKFLOW.replace("actions/checkout@" + self.CHECKOUT_SHA,
+                                                "actions/checkout@main"),
+            "未固定版本": self.GOOD_WORKFLOW.replace("actions/checkout@" + self.CHECKOUT_SHA,
+                                                "actions/checkout"),
+            # 只钉 tag 仍然可以被上游重新指向；这是最容易漏的一档。
+            "只钉 tag": self.GOOD_WORKFLOW.replace("actions/checkout@" + self.CHECKOUT_SHA,
+                                                "actions/checkout@v4"),
         }
         for label, text in cases.items():
             with self.subTest(case=label):
@@ -260,9 +269,9 @@ jobs:
         self.assertEqual(
             self.status(self.call(g.check_update_channel, self.root, opened, [without_key]), name), "FAIL")
 
-        # 没给 --binary 时不能假装核对过。
+        # 没给 --binary 时不能假装核对过：这一项记 SKIP，让 strict 逼着补输入。
         row = self.call(g.check_update_channel, self.root, opened, [])[name]
-        self.assertEqual(row["status"], "PASS")
+        self.assertEqual(row["status"], "SKIP")
         self.assertIn("未核对二进制", row["detail"])
 
     # ---------- 包与清单 ----------
@@ -294,6 +303,13 @@ jobs:
         self.write(tree / "NexlOS-1.0.0-darwin-amd64/LEGAL/EULA.txt", "old\n")
         self.assertEqual(self.status(self.call(g.check_package, self.root, tree), name), "FAIL")
 
+        # 条款正文缺失时包根 LICENSE 无从比对：必须红，不能静默跳过。
+        tree = self.package()
+        (tree / "docs" / "LICENSE-BINARY.md").unlink()
+        rows = self.call(g.check_package, self.root, tree)
+        self.assertEqual(self.status(rows, name), "FAIL")
+        self.assertIn("LICENSE-BINARY", rows[name]["detail"])
+
     def test_manifest_obfuscation(self):
         name = "manifest-obfuscation"
         self.assertEqual(self.status(self.call(g.check_manifest, self.tmp), name), "SKIP")
@@ -321,6 +337,47 @@ jobs:
             self.status(self.call(g.check_manifest, manifest(
                 packages=[{"platform": "darwin/amd64", "buildInfo": {"mode": "READABLE"}}])), name), "FAIL")
 
+    def test_manifest_integrity(self):
+        name = "manifest-integrity"
+        self.assertEqual(self.status(self.call(g.check_manifest_integrity, self.tmp), name), "SKIP")
+
+        archive = self.tmp / "NexlOS-1.0.0-darwin-amd64-candidate.zip"
+        archive.write_bytes(b"zipbytes")
+        digest = hashlib.sha256(b"zipbytes").hexdigest()
+
+        def manifest(**overrides):
+            entry = {
+                "archive": archive.name,
+                "bytes": len(b"zipbytes"),
+                "sha256": digest,
+                "platform": "darwin/amd64",
+                "buildInfo": {"GOOS": "darwin", "GOARCH": "amd64",
+                              "-tags": "release,shell", "-trimpath": "true"},
+            }
+            entry.update(overrides)
+            path = self.tmp / "release-manifest.json"
+            path.write_text(__import__("json").dumps({"packages": [entry]}), encoding="utf-8")
+            return self.tmp
+
+        self.assertEqual(self.status(self.call(g.check_manifest_integrity, manifest()), name), "PASS")
+        # 平台与 buildInfo 对不上：发布说明会写错平台。
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(platform="darwin/arm64")), name), "FAIL")
+        # 字节数或摘要漂移：说明归档被换过。
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(bytes=1)), name), "FAIL")
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(sha256="0" * 64)), name), "FAIL")
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(sha256="not-hex")), name), "FAIL")
+        # 清单里的 archive 不许带路径：绝对路径与 .. 都能逃出构建目录。
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(archive="/etc/passwd")), name), "FAIL")
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(archive="../x.zip")), name), "FAIL")
+        self.assertEqual(
+            self.status(self.call(g.check_manifest_integrity, manifest(archive="missing.zip")), name), "FAIL")
+
     # ---------- 二进制 ----------
 
     def test_binary_command_set_and_symbols(self):
@@ -341,6 +398,13 @@ jobs:
         rows = self.call(g.check_binary, self.fake_binary(b"nexlos/" * 17))
         self.assertEqual(self.status(rows, "binary-symbols"), "FAIL")
 
+        # 不是可执行文件时，缺那几个函数名不代表混淆生效：必须红，不能 PASS。
+        text = self.tmp / "not-a-binary"
+        text.write_bytes(b"hello world\0nexlos/\0")
+        rows = self.call(g.check_binary, text)
+        self.assertEqual(self.status(rows, "binary-symbols"), "FAIL")
+        self.assertIn("文件头", rows["binary-symbols"]["detail"])
+
     def test_binary_self_report(self):
         name = "binary-self-report"
         self.assertEqual(
@@ -351,6 +415,14 @@ jobs:
             "SKIP")
         self.assertEqual(
             self.status(self.call(g.check_binary, self.fake_runner("hello world")), name), "FAIL")
+
+        # 能执行却非零退出说明它跑起来了：崩溃或报错都必须红，不能被当成「跑不了」。
+        broken = self.tmp / "broken-runner"
+        broken.write_text("#!/bin/sh\nexit 3\n", encoding="utf-8")
+        broken.chmod(0o755)
+        rows = self.call(g.check_binary, broken)
+        self.assertEqual(self.status(rows, name), "FAIL")
+        self.assertIn("退出码", rows[name]["detail"])
 
     # ---------- 登记表 ----------
 
@@ -377,6 +449,13 @@ jobs:
 
         report.add("manifest-obfuscation", "FAIL")
         self.assertEqual(g.exit_code(report, strict=False), 1)
+
+    def test_forbidden_skips(self):
+        """发布结论本身不能被 --allow-skip 豁免，否则空跑也能打印全绿。"""
+        self.assertEqual(g.forbidden_skips(["binary-symbols", "manifest-obfuscation"]), [])
+        self.assertEqual(g.forbidden_skips(["package-layout"]), ["package-layout"])
+        self.assertEqual(g.forbidden_skips(["manifest-integrity", "binary-symbols"]), ["manifest-integrity"])
+        self.assertEqual(g.forbidden_skips(["update-channel"]), ["update-channel"])
 
     def test_run_all_declares_every_check(self):
         report = g.run_all(self.root, self.public, None, [])

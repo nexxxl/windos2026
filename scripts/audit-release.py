@@ -14,6 +14,7 @@
 from __future__ import annotations
 
 import argparse
+import errno
 import hashlib
 import json
 import re
@@ -43,10 +44,34 @@ CHECK_NAMES = (
     "update-channel",
     "package-layout",
     "manifest-obfuscation",
+    "manifest-integrity",
     "binary-buildinfo",
     "binary-command-set",
     "binary-symbols",
     "binary-self-report",
+)
+
+# 这几项是「发布结论」本身：允许声明跳过它们，等于允许一次什么都没看的运行打印全绿。
+# 其余检查的 SKIP 都有正当理由（本批次未混淆、导出目录没有 .github），可以逐条声明。
+NON_SKIPPABLE = (
+    "check-registry",
+    "package-layout",
+    "manifest-integrity",
+    "binary-command-set",
+    "update-channel",
+)
+
+# 只有这几种文件头才谈得上「符号是否被混淆」。文本文件、截断文件、别的程序
+# 天然不含那几个函数名，不先认格式就会给出假的 PASS。
+EXECUTABLE_MAGICS = (
+    b"MZ",                  # PE
+    b"\x7fELF",             # ELF
+    b"\xcf\xfa\xed\xfe",    # Mach-O 64 小端
+    b"\xce\xfa\xed\xfe",    # Mach-O 32 小端
+    b"\xfe\xed\xfa\xcf",    # Mach-O 64 大端
+    b"\xfe\xed\xfa\xce",    # Mach-O 32 大端
+    b"\xca\xfe\xba\xbe",    # Mach-O 通用二进制
+    b"\xbe\xba\xfe\xca",    # 通用二进制，字节序反过来
 )
 
 
@@ -74,6 +99,22 @@ def run(cmd: list[str], cwd: Path | None = None) -> tuple[int, str]:
         return proc.returncode, (proc.stdout + proc.stderr).strip()
     except (OSError, subprocess.TimeoutExpired) as exc:
         return 127, str(exc)
+
+
+def run_exec(cmd: list[str]) -> tuple[int, str, int | None]:
+    """比 run 多带一个 errno：要区分「本机执行不了这个架构」与「执行了但崩溃」。
+
+    只按退出码判断会把段错误、被信号杀死、架构不匹配混成一类，于是任何坏掉的
+    产物都能以「交叉编译产物无法在本机执行」的名义拿到 SKIP。
+    """
+    try:
+        proc = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        return proc.returncode, (proc.stdout + proc.stderr).strip(), None
+    except OSError as exc:
+        return 127, str(exc), exc.errno
+    except subprocess.TimeoutExpired as exc:
+        # 超时说明它在这台机器上确实能跑，只是没跑完；不能算「执行不了」。
+        return 124, str(exc), None
 
 
 def text_files(root: Path, suffixes: tuple[str, ...], limit: int = 4000):
@@ -280,9 +321,13 @@ def check_workflow_hardening(repo: Path, report: Report) -> None:
             if "@" not in ref:
                 problems.append(f"{path.name} 的 {ref} 没有固定版本")
                 continue
-            tag = ref.rsplit("@", 1)[1]
-            if tag in ("main", "master", "HEAD") or tag.startswith("refs/"):
+            ref_part = ref.rsplit("@", 1)[1]
+            if ref_part in ("main", "master", "HEAD") or ref_part.startswith("refs/"):
                 problems.append(f"{path.name} 的 {ref} 跟着分支走")
+            elif not re.fullmatch(r"[0-9a-f]{40}", ref_part):
+                # v4 这类 tag 能被上游重新指向，只钉 tag 等于把发布权交给对方的标签管理。
+                # 只有 40 位 commit SHA 不可变；版本号留在同行的注释里给人看。
+                problems.append(f"{path.name} 的 {ref} 没有钉在 commit SHA 上")
     if problems:
         report.add("workflow-hardening", "FAIL", "; ".join(problems[:6]))
     else:
@@ -388,7 +433,8 @@ def check_update_channel(root: Path, package: Path | None, binaries: list[Path],
             report.add("update-channel", "FAIL", "清单存在但 updateChannel 没有公钥：本次构建没有应用内更新通道")
             return
         if not binaries:
-            report.add("update-channel", "PASS", f"清单已配置公钥 · {note}（未提供 --binary，未核对二进制）")
+            # 没有二进制就无法核对公钥是否真的编进去了；说成 PASS 会把「没看」记成「看过」。
+            report.add("update-channel", "SKIP", f"清单已配置公钥 · {note}，但未提供 --binary，未核对二进制")
             return
         absent = [b.name for b in binaries if key.encode() not in b.read_bytes()]
         if absent:
@@ -427,6 +473,11 @@ def check_package(root: Path, package: Path, report: Report) -> None:
     license_binary = root / "public-repo" / "docs" / "LICENSE-BINARY.md"
     if not license_binary.is_file():
         license_binary = root / "docs" / "LICENSE-BINARY.md"
+    if not license_binary.is_file():
+        # 条款正文缺失时，包根 LICENSE 可以是任意内容而检查仍然安静通过。
+        # 只给导出目录做审计时会发生这种情况，必须红，不能降级成跳过。
+        report.add("package-layout", "FAIL", "找不到 docs/LICENSE-BINARY.md，包根条款无法核对")
+        return
 
     problems = []
     for pkg in pkgs:
@@ -493,6 +544,52 @@ def check_manifest(package: Path, report: Report) -> None:
         report.add("manifest-obfuscation", "PASS")
 
 
+def check_manifest_integrity(package: Path, report: Report) -> None:
+    """清单是这批产物的唯一 provenance 记录，必须与磁盘对得上。
+
+    只核对混淆块时，写错 platform、换掉归档、字节数漂移都不会变红；
+    而发布说明里的摘要正是从这份清单抄出去的。
+    """
+    data = load_manifest(package)
+    if data is None:
+        report.add("manifest-integrity", "SKIP", "没有 release-manifest.json")
+        return
+    problems = []
+    packages = data.get("packages") or []
+    if not packages:
+        problems.append("清单没有任何 packages")
+    for pkg in packages:
+        platform = pkg.get("platform") or ""
+        info = pkg.get("buildInfo") or {}
+        expected = f"{info.get('GOOS')}/{info.get('GOARCH')}"
+        if platform != expected:
+            problems.append(f"{platform or '(空)'} 与 buildInfo {expected} 不一致")
+        for field, want in (("-tags", "release,shell"), ("-trimpath", "true")):
+            if info.get(field) != want:
+                problems.append(f"{platform} 的 buildInfo {field} 是 {info.get(field)!r}，应为 {want!r}")
+        digest = pkg.get("sha256") or ""
+        if not re.fullmatch(r"[0-9a-f]{64}", digest):
+            problems.append(f"{platform} 的 sha256 不是 64 位小写十六进制")
+        archive = pkg.get("archive") or ""
+        # 归档必须是构建目录里的扁平文件名：清单里的相对路径不许逃出这个目录。
+        if not archive or Path(archive).name != archive:
+            problems.append(f"{platform} 的 archive 不是扁平文件名: {archive!r}")
+            continue
+        path = package / archive
+        if not path.is_file():
+            problems.append(f"找不到归档: {archive}")
+            continue
+        size = path.stat().st_size
+        if size != pkg.get("bytes"):
+            problems.append(f"{archive} 字节数 {size} 与清单 {pkg.get('bytes')} 不一致")
+        if sha256(path) != digest:
+            problems.append(f"{archive} 的 sha256 与清单不一致")
+    if problems:
+        report.add("manifest-integrity", "FAIL", "; ".join(problems[:6]))
+    else:
+        report.add("manifest-integrity", "PASS", f"{len(packages)} 个包与归档一致")
+
+
 def check_binary(binary: Path, report: Report, obfuscated: bool = True) -> None:
     code, out = run(["go", "version", "-m", str(binary)])
     first = out.splitlines()[0] if out else "(no output)"
@@ -515,8 +612,12 @@ def check_binary(binary: Path, report: Report, obfuscated: bool = True) -> None:
 
     leaked = [name for name in ("registerStarCommands", "newUpdateManager", "nexloffice.") if name.encode() in data]
     path_hits = data.count(b"nexlos/")
+    looks_executable = any(data.startswith(magic) for magic in EXECUTABLE_MAGICS)
     if not obfuscated:
         report.add("binary-symbols", "SKIP", "本批次未混淆：函数名可读是预期结果")
+    elif not looks_executable:
+        # 截断、替换、放错平台的文件都不含这些函数名，直接 PASS 会把坏产物说成已混淆。
+        report.add("binary-symbols", "FAIL", f"文件头不是 Mach-O/PE/ELF（{data[:4]!r}）")
     elif leaked:
         report.add("binary-symbols", "FAIL", "残留: " + ", ".join(leaked))
     elif path_hits > MAX_NEXLOS_PATH_HITS:
@@ -524,11 +625,18 @@ def check_binary(binary: Path, report: Report, obfuscated: bool = True) -> None:
     else:
         report.add("binary-symbols", "PASS", f"nexlos/ 残留 {path_hits} 处")
 
-    code, out = run([str(binary), "-version"])
+    code, out, exec_errno = run_exec([str(binary), "-version"])
     stripped = out.strip()
     mt = re.match(r"^NexlOS (\S+) (\S+)/(\S+) (release|dev)$", stripped)
-    if code != 0:
+    # 架构不符时内核回 ENOEXEC(8)；macOS 还会给 EBADARCH / EBADMACHO。
+    # 只有这几种算「跑不了」，崩溃、被信号杀死、非零退出都说明它跑起来了，必须按失败报。
+    unrunnable = {errno.ENOEXEC,
+                  getattr(errno, "EBADARCH", errno.ENOEXEC),
+                  getattr(errno, "EBADMACHO", errno.ENOEXEC)}
+    if code != 0 and exec_errno in unrunnable:
         report.add("binary-self-report", "SKIP", "交叉编译产物无法在本机执行")
+    elif code != 0:
+        report.add("binary-self-report", "FAIL", f"自报失败（退出码 {code}）: {stripped[:120]}")
     elif not mt:
         report.add("binary-self-report", "FAIL", f"自报格式不对: {stripped[:120]}")
     elif mt.group(4) == "dev":
@@ -554,9 +662,11 @@ def run_all(root: Path, public: Path, package: Path | None, binaries: list[Path]
     if package:
         check_package(root, package, report)
         check_manifest(package, report)
+        check_manifest_integrity(package, report)
     else:
         report.add("package-layout", "SKIP", "未提供 --package")
         report.add("manifest-obfuscation", "SKIP", "未提供 --package")
+        report.add("manifest-integrity", "SKIP", "未提供 --package")
 
     if binaries:
         obfuscated = manifest_is_obfuscated(package)
@@ -574,6 +684,11 @@ def unexpected_skips(report: Report, allowed=()) -> list[dict]:
     """strict 模式只容忍显式声明过的 SKIP：默认没有，发布批次要逐条说明原因。"""
     kept = set(allowed)
     return [row for row in report.skipped() if row["check"] not in kept]
+
+
+def forbidden_skips(allowed) -> list[str]:
+    """--allow-skip 不能用来豁免「发布结论」：那几项跳过就等于这批没验。"""
+    return [name for name in allowed if name in NON_SKIPPABLE]
 
 
 def exit_code(report: Report, strict: bool, allowed=()) -> int:
@@ -607,6 +722,11 @@ def main() -> int:
     missing = [str(b) for b in binaries if not b.is_file()]
     if missing:
         print("--binary 路径不存在: " + ", ".join(missing), file=sys.stderr)
+        return 2
+
+    forbidden = forbidden_skips(args.allow_skip)
+    if forbidden:
+        print("--allow-skip 不接受这些检查（它们是发布结论本身）: " + ", ".join(forbidden), file=sys.stderr)
         return 2
 
     report = run_all(root, public, package, binaries)
