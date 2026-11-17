@@ -79,6 +79,9 @@ const MIME = {
 
 const HIDDEN_DIRS = new Set(['.git', 'node_modules', '.cache', '.DS_Store', '.nexlos'])
 const HIDDEN_FILES = new Set(['settings.json', 'workspace.json', 'cluster.json'])
+// home 顶层的这些文件保存设备私钥、账号凭据与宿主设置；文件命令、/d、/p 都不能直接发出去。
+// 读写一起挡：能改名或复制出去，等于把私钥交出去。
+const PRIVATE_FILES = new Set([...HIDDEN_FILES, 'byok.json'])
 const TEXT_EXT = new Set([
   '.md', '.txt', '.json', '.js', '.mjs', '.css', '.html', '.go', '.log',
   '.csv', '.yml', '.yaml', '.sh', '.toml', '.ini', '.reg',
@@ -190,6 +193,7 @@ function resolveVirtual(home, virtualPath) {
   if (!clean.startsWith('/')) clean = '/' + clean
   const parts = clean.split('/').filter(Boolean)
   if (parts.some(part => part === '..' || part === '.')) throw new Error('路径不合法')
+  if (parts.length === 1 && PRIVATE_FILES.has(parts[0])) throw new Error('该文件由宿主管理，文件命令不可直接读写')
   const absolute = path.join(home, ...parts)
   if (!inside(home, absolute)) throw new Error('路径越界')
   return { vpath: '/' + parts.join('/'), absolute }
@@ -1454,6 +1458,10 @@ async function serveFile(req, res, root, relative, options) {
     'x-content-type-options': 'nosniff',
     ...((options && options.headers) || {}),
   }
+  if (ext === '.html' && options && options.sandboxHtml) {
+    // 用户 HTML 在宿主 origin 上回放；去掉 allow-same-origin 后它拿不到 /c/* 的同源凭据。
+    headers['content-security-policy'] = 'sandbox allow-scripts allow-forms allow-popups allow-modals allow-downloads'
+  }
   if (status === 206) {
     headers['content-range'] = 'bytes ' + start + '-' + end + '/' + info.size
     headers['content-length'] = String(end - start + 1)
@@ -2658,7 +2666,9 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         const pkg = JSON.parse(await fsp.readFile(path.join(dir, 'package.json'), 'utf8'))
         if (!pkg.scripts || typeof pkg.scripts.build !== 'string') throw new Error('仓库有 package.json 但没有 build 脚本；只能导入含根 index.html 的静态项目')
         const npm = process.platform === 'win32' ? 'npm.cmd' : 'npm'
-        await execFile(npm, ['install', '--no-audit', '--no-fund'], { cwd: dir, timeout: 300000, maxBuffer: 32 * 1024 * 1024 })
+        // 依赖的安装脚本不跑：导入只承诺「装依赖 + 跑项目自己的 build」，
+        // 不该顺带执行任意传递依赖的 postinstall。
+        await execFile(npm, ['install', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, timeout: 300000, maxBuffer: 32 * 1024 * 1024 })
         await execFile(npm, ['run', 'build'], { cwd: dir, timeout: 300000, maxBuffer: 32 * 1024 * 1024 })
         for (const candidate of ['dist/index.html', 'build/index.html', 'out/index.html']) {
           if (existsSync(path.join(dir, candidate))) { entry = candidate; break }
@@ -4723,8 +4733,8 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
         for (const entry of entries) {
           const name = entry.name
           if (HIDDEN_DIRS.has(name)) continue
-          if (!showHidden && (name.startsWith('.') || HIDDEN_FILES.has(name))) continue
-          if (showHidden && HIDDEN_FILES.has(name)) continue
+          if (!showHidden && (name.startsWith('.') || PRIVATE_FILES.has(name))) continue
+          if (showHidden && PRIVATE_FILES.has(name)) continue
           const child = path.join(absolute, name)
           const info = await pathStat(child)
           if (info === undefined) continue
@@ -5498,7 +5508,7 @@ window.SongBoard.importSvg = function (svgText) {
       let resolved
       try { resolved = resolveVirtual(home(), requested) } catch (error) { return sendText(res, 400, error.message) }
       const relative = path.relative(home(), resolved.absolute).split(path.sep).join('/')
-      return void serveFile(req, res, home(), relative, { pluginTransforms: false })
+      return void serveFile(req, res, home(), relative, { pluginTransforms: false, sandboxHtml: true })
     })
     register('prefix', '/u', (req, res) => {
       if (!authorized(req, res)) return
@@ -5566,8 +5576,11 @@ window.SongBoard.importSvg = function (svgText) {
     register('prefix', '/p', (req, res) => {
       if (!authorized(req, res)) return
       const url = new URL(req.url || '/', 'http://x')
-      const relative = decodeURIComponent(url.pathname.replace(/^\/p/u, ''))
-      void serveFile(req, res, home(), relative)
+      const requested = decodeURIComponent(url.pathname.replace(/^\/p/u, ''))
+      let resolved
+      try { resolved = resolveVirtual(home(), requested) } catch (error) { return sendText(res, 400, error.message) }
+      const relative = path.relative(home(), resolved.absolute).split(path.sep).join('/')
+      void serveFile(req, res, home(), relative, { sandboxHtml: true })
     })
     return () => {
       for (const dispose of disposers.reverse()) {

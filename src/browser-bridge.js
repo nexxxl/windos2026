@@ -500,7 +500,8 @@ export function createBrowserBridge({ home, logger, getConfig } = {}) {
       '--headless=new',
       '--remote-debugging-address=127.0.0.1',
       '--remote-debugging-port=0',
-      '--remote-allow-origins=*',
+      // 不给 --remote-allow-origins=*：CDP 客户端是 Node 的 WebSocket，不发 Origin，
+      // 放开通配只会让本机任意网页在猜到端口后接管这个浏览器。
       '--user-data-dir=' + profile,
       '--no-first-run',
       '--no-default-browser-check',
