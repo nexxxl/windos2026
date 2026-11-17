@@ -52,6 +52,10 @@ Environment: `NEXLOS_PORT` (default `8090`), `NEXLOS_HOME` (default
 (default `http://127.0.0.1:8088`), `NEXLOS_BIND` (default `127.0.0.1`), `NEXLOS_STATE_DIR`
 (default `~/.nexlos-octop`).
 
+`NEXLOS_BIND` outside loopback (`127.0.0.1`, `::1`, `localhost`) is refused at startup;
+`NEXLOS_ALLOW_LAN=1` opts in and prints the exposure warning. The host's own `/agent/*`
+routes reject cross-origin requests with 403, matching the kernel routes in `index.js`.
+
 ## What the two hosts share
 
 The desktop shell, the 17 built-in apps, `apps/<id>/` generation, the file commands,
@@ -100,7 +104,8 @@ is chosen because it keeps upgrade and support responsibility with the host.
   origins: same-origin iframes share the host's renderer process, and Octop's long tasks
   then stall the desktop's frame loop.
 - **Loopback only.** `NEXLOS_BIND` defaults to `127.0.0.1`; the file commands have no second
-  authentication layer, so do not expose the port.
+  authentication layer, so do not expose the port. A non-loopback value stops the host
+  unless `NEXLOS_ALLOW_LAN=1` is set explicitly.
 
 ## Verify
 

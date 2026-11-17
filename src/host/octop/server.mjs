@@ -99,9 +99,33 @@ const MIME = {
   '.wasm': 'application/wasm',
 }
 
+/* 与 index.js 的 sameOrigin 同形（index.js:1023）。src/host 不进 npm 包，
+ * 没法共享同一份实现；宿主自有的 /agent/* 路由不经过 index.js 的路由表，
+ * 不在这里自查，浏览器里任意网页就能用免预检的 no-cors POST 驱动本机 agent。 */
+function sameOrigin(req) {
+  const site = req.headers['sec-fetch-site']
+  if (typeof site === 'string' && site !== 'same-origin' && site !== 'none') return false
+  const origin = req.headers.origin
+  const host = req.headers.host
+  if (typeof origin === 'string' && typeof host === 'string') {
+    try {
+      if (new URL(origin).host !== host) return false
+    } catch (_error) {
+      return false
+    }
+  }
+  return true
+}
+
 async function dispatch(req, res) {
   const url = new URL(req.url || '/', 'http://127.0.0.1')
   const pathname = url.pathname
+
+  // 宿主自己的 /agent/* 先于内核路由匹配，把 index.js 里带 sameOrigin 的同名路由遮蔽了。
+  if (pathname.startsWith('/agent/') && !sameOrigin(req)) {
+    res.writeHead(403, { 'content-type': 'application/json; charset=utf-8' })
+    return res.end(JSON.stringify({ ok: false, error: 'cross-origin request rejected' }))
+  }
 
   // 命令栏：直接走 Octop 自己的 agent 引擎（模型由 Octop 配置决定，与 DSH 无关）
   if (pathname === '/agent/status') {
@@ -228,7 +252,21 @@ async function dispatch(req, res) {
   res.end(JSON.stringify({ ok: false, error: 'not found', path: pathname }))
 }
 
+/** 只有显式回环地址算安全默认；其余绑定会把无鉴权的 /c/fs.* 交给局域网。 */
+const LOOPBACK_BINDS = new Set(['127.0.0.1', '::1', 'localhost'])
+
+function guardBind() {
+  if (LOOPBACK_BINDS.has(BIND)) return
+  if (process.env.NEXLOS_ALLOW_LAN !== '1') {
+    console.error(`[nexlos] 拒绝启动：NEXLOS_BIND=${BIND} 会把无鉴权的 /c/fs.* 暴露给局域网。`)
+    console.error('[nexlos] 确需局域网访问时设 NEXLOS_ALLOW_LAN=1 重试，并自行承担暴露风险。')
+    process.exit(1)
+  }
+  console.warn(`[nexlos] 警告：NEXLOS_BIND=${BIND} 且 NEXLOS_ALLOW_LAN=1；/c/fs.* 无二次鉴权，工作区对局域网可读写。`)
+}
+
 async function main() {
+  guardBind()
   const mod = await import(path.join(APP_ROOT, 'index.js'))
   if (typeof mod.apply !== 'function') throw new Error('index.js 没有导出 apply(ctx, config)')
   await mod.apply(ctx, { home: HOME })
