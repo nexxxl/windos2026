@@ -51,7 +51,9 @@ python3 -m http.server 8100
 - 项目仓库：`https://<owner>.github.io/<repo>/`
 - 用户仓库（仓库名 `<owner>.github.io`）：`https://<owner>.github.io/`
 
-当前线上版本位于 <https://nexxxl.github.io/windos2026/>。`nexxxl/windos2026` 目前是私有仓库：私有仓库开 Pages 需要账号支持私有 Pages，站点本身一旦发布就是公开可读的。线上返回 404 时先查这一点，再看 Pages 的部署记录。
+当前线上版本位于 <https://nexxxl.github.io/windos2026/>，由主仓 `nexxxl/windos2026` 的 `.github/workflows/site.yml` 发布：只在 `site/` 变更时触发，只上传 `site/`，源码与构建脚本不进站点。
+
+Pages 的 Source 是 **GitHub Actions**（不是分支）。私有仓库在当前套餐下无法开启 Pages，所以主仓是公开的；站点内容本身也是公开的，两者不冲突。
 
 ## 多语言
 

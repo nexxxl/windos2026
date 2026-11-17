@@ -2,9 +2,10 @@
 
 NexlOS release builds can tell you when a newer build exists. The check reads a signed manifest from this repository and makes no other network request.
 
-The request is anonymous. While this repository is private, the check returns 404
-and **Settings → Update and security** reports the failure; the channel starts
-working when the repository is public.
+The request is anonymous, and this repository is public, so the check needs no
+credentials and no token. If the manifest is missing or the network is blocked,
+**Settings → Update and security** reports the failure and the current version
+stays.
 
 ## How it works
 
