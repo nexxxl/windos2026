@@ -488,6 +488,8 @@ export function bindTitleGestures(title, win, opts) {
 // suspend  外壳要回收 iframe，应用先自行释放摄像头/音频，随后被卸载
 export function onLifecycle(fn) {
   function onMessage(e) {
+    // 只有父窗口能改生命周期；应用内嵌的 iframe 不能替外壳发指令。
+    if (e.source !== window.parent) return;
     const d = e.data;
     if (!d || d.type !== 'nexlos.lifecycle') return;
     if (typeof d.state === 'string') fn(d.state, d);

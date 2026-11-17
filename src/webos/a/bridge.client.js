@@ -37,6 +37,8 @@
   }
 
   window.addEventListener('message', function (ev) {
+    // 应用运行在不透明源里，origin 不可比；身份只能靠父窗口引用判定。
+    if (ev.source !== window.parent) return;
     var d = ev.data;
     if (!d || d.v !== 1) return;
     if (d.type === 'nexlos.bridge.hello') {

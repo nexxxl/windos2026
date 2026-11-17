@@ -152,7 +152,19 @@ export function mountVideo(host) {
     }
   }
 
+  // 媒体源只接受 blob:、video/audio 的 data:、http(s) 与站内绝对路径。
+  // 其余 scheme（javascript:、file: 等）直接丢弃，避免把未知串交给 <video src>。
+  function mediaSrc(url) {
+    const s = String(url === null || url === undefined ? '' : url);
+    if (/^blob:/i.test(s)) return s;
+    if (/^data:/i.test(s)) return /^data:(?:video|audio)\//i.test(s) ? s : '';
+    if (/^https?:\/\//i.test(s) || s.charAt(0) === '/') return s;
+    return '';
+  }
+
   function setSource(src, name, persist, filePath) {
+    const safe = mediaSrc(src);
+    if (!safe) return;
     // 从嵌入播放器切回直链时，先把 iframe 卸掉，避免它在后台继续加载。
     if (!frame.hidden) { frame.hidden = true; frame.removeAttribute('src'); }
     video.hidden = false;
@@ -161,13 +173,13 @@ export function mountVideo(host) {
     state.embedTitle = '';
     revoke(objectURL);
     objectURL = '';
-    if (src && src.indexOf('blob:') === 0) objectURL = src;
-    video.src = src;
+    if (safe.indexOf('blob:') === 0) objectURL = safe;
+    video.src = safe;
     video.load();
     state.time = 0;
     state.name = name || '';
     state.path = filePath || '';
-    if (persist && src.indexOf('blob:') !== 0) state.src = src;
+    if (persist && safe.indexOf('blob:') !== 0) state.src = safe;
     empty.hidden = true;
     badge.hidden = false;
     badge.textContent = name || '';

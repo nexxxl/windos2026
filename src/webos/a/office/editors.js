@@ -23,6 +23,13 @@
 
   function escAttr(s) { return escapeHTML(s).replace(/'/g, '&#39;'); }
 
+  // 文档地址只可能是同源的 .../api/raw/<encoded-id>（可带 ?nav=… 与 #page=…）。
+  // 显式校验后再赋给 src / href，未知 scheme 一律丢掉。
+  function rawDocUrl(url) {
+    var s = String(url === null || url === undefined ? '' : url);
+    return /^(?:https?:\/\/[^\/]+)?(?:\/[A-Za-z0-9._~-]+)*\/api\/raw\/[^\/?#]+(?:[?#].*)?$/.test(s) ? s : '';
+  }
+
   /* ==================== 文档 ==================== */
 
   function runsHTML(runs) {
@@ -2528,7 +2535,7 @@
     }
     if (count) count.textContent = '/ ' + (pages || '?');
     if (zoom) zoom.value = pdfState.zoom;
-    if (open) open.href = API.rawUrl(doc.id);
+    if (open) { var rawHref = rawDocUrl(API.rawUrl(doc.id)); if (rawHref) open.href = rawHref; }
     if (thumbs) {
       thumbs.innerHTML = '';
       var limit = Math.min(pages, 400);
@@ -2541,8 +2548,8 @@
         thumbs.appendChild(b);
       }
     }
-    var next = ED.pdfUrl(doc);
-    if (frame && frame.getAttribute('src') !== next) frame.src = next;
+    var next = rawDocUrl(ED.pdfUrl(doc));
+    if (frame && next && frame.getAttribute('src') !== next) frame.src = next;
   }
 
   ED.renderPDF = function (doc) { paintPdf(doc, true); };
