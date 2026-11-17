@@ -55,6 +55,17 @@ python3 -m http.server 8100
 
 Pages 的 Source 是 **GitHub Actions**（不是分支）。私有仓库在当前套餐下无法开启 Pages，所以主仓是公开的；站点内容本身也是公开的，两者不冲突。
 
+## 发布副本
+
+线上读的是主仓里的 `site/`。本目录是源，改完同步过去再推：
+
+```sh
+rsync -a --delete --exclude '.github' \
+  /Users/macbookpro/Desktop/nexlos-windos2026/nexlos-githubsite/ \
+  /Users/macbookpro/nexl/windos2026/site/
+cd /Users/macbookpro/nexl/windos2026 && git add site && git commit -m "site: …" && git push
+```
+
 ## 多语言
 
 站点与 NexlOS 的界面语言表一致，支持 8 种：
@@ -62,10 +73,11 @@ Pages 的 Source 是 **GitHub Actions**（不是分支）。私有仓库在当�
 `zh-CN` · `zh-TW` · `en` · `es` · `fr` · `de` · `ja` · `ko`
 
 - `assets/i18n-data.js`：语言表 `langs`、页面标题与描述 `meta`、词条 `dict`、整段标题 `html`。中文原文是 key。
-- `assets/i18n.js`：注入右上角语言切换器，按词条替换文本节点与 `placeholder` / `aria-label` / `title` / `alt`；监听 DOM 变化，博物馆和演示里动态渲染的文案也会跟着翻译。
+- `assets/i18n.js`：注入右上角语言切换器，按词条替换文本节点与 `placeholder` / `aria-label` / `title` / `alt`；监听 DOM 变化，博物馆和演示里动态渲染的文案也会跟着翻译。源文与两侧空白记在 `WeakMap` 里，任何两种语言之间来回切都从源文重译，切回中文能逐字还原。
 - 选择结果存在 `localStorage` 的 `nexlos.site.lang`，同时写入 `?lang=`，可直接分享某个语言的链接。
 - 行内拼接（例如标题被 `<span>` 拆开）会自动补空格；分行排版不同的标题用 `data-i18n-html` 整段覆盖。
 - 新增词条：把中文原文作为 key 加进 `dict[语言]`；新增整段标题：给元素加 `data-i18n-html="键名"`，在 `html[语言][键名]` 写 HTML。
+- 注意空白：HTML 里一个句子断成两行时，运行时 key 会带一个空格。词条 key 要和 `textContent` 归一化后的结果完全一致，否则该句不会被翻译。
 
 ## 素材
 
