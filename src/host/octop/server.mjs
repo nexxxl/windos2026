@@ -13,7 +13,7 @@ import http from 'node:http'
 import { readFile, stat } from 'node:fs/promises'
 import path from 'node:path'
 import os from 'node:os'
-import { fileURLToPath } from 'node:url'
+import { fileURLToPath, pathToFileURL } from 'node:url'
 import * as bridge from './octop-bridge.mjs'
 
 const HERE = path.dirname(fileURLToPath(import.meta.url))
@@ -267,7 +267,8 @@ function guardBind() {
 
 async function main() {
   guardBind()
-  const mod = await import(path.join(APP_ROOT, 'index.js'))
+  // Windows 的盘符会被 import() 当成 URL 协议（ERR_UNSUPPORTED_ESM_URL_SCHEME），必须转成 file: URL
+  const mod = await import(pathToFileURL(path.join(APP_ROOT, 'index.js')).href)
   if (typeof mod.apply !== 'function') throw new Error('index.js 没有导出 apply(ctx, config)')
   await mod.apply(ctx, { home: HOME })
   if (routes.length === 0) throw new Error('apply() 没有注册任何路由，Host 契约可能已变化')
