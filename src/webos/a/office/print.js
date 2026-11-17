@@ -107,6 +107,22 @@
   // 打印只需要结构与样式，脚本一律不执行。
   var DROP_IN_PRINT = 'script,iframe,object,embed,base,link[rel="import"],meta[http-equiv]';
 
+  // 会触发导航或加载的属性，值按 scheme 白名单放行；事件属性一律丢掉。
+  var URL_ATTRS = { href: 1, src: 1, action: 1, formaction: 1, poster: 1, background: 1 };
+
+  function attrAllowed(name, value) {
+    if (name.indexOf('on') === 0) return false;
+    if (!URL_ATTRS[name]) return true;
+    var colon = value.indexOf(':');
+    // 没有 scheme 的相对地址、锚点与站内路径都安全。
+    if (colon < 0) return true;
+    var scheme = value.slice(0, colon);
+    if (scheme === 'http' || scheme === 'https' || scheme === 'mailto' || scheme === 'tel' || scheme === 'blob') return true;
+    // 文档里的图片/音视频常用 data: 内嵌；只放行媒体类型。
+    if (scheme === 'data') return /^data:(?:image|video|audio)\//.test(value);
+    return false;
+  }
+
   function scrubTree(root) {
     var drop = root.querySelectorAll(DROP_IN_PRINT);
     for (var i = drop.length - 1; i >= 0; i -= 1) {
@@ -117,9 +133,9 @@
       var attrs = all[j].attributes;
       for (var k = attrs.length - 1; k >= 0; k -= 1) {
         var name = String(attrs[k].name || '').toLowerCase();
-        // 去掉空白后再比前缀，防 "java\tscript:" 这类绕过。
+        // 去掉空白后再看 scheme，防 "java\tscript:" 这类绕过。
         var value = String(attrs[k].value || '').replace(/[\u0000-\u0020]/g, '').toLowerCase();
-        if (name.indexOf('on') === 0 || value.indexOf('javascript:') === 0) all[j].removeAttribute(attrs[k].name);
+        if (!attrAllowed(name, value)) all[j].removeAttribute(attrs[k].name);
       }
     }
     return root;
