@@ -2642,6 +2642,11 @@ header{display:flex;align-items:center;justify-content:space-between;gap:12px;bo
     if (!/^https?:$/u.test(parsed.protocol) || parsed.hostname !== 'github.com') throw new Error('只接受 github.com 仓库地址')
     const parts = parsed.pathname.replace(/^\/+/u, '').replace(/\.git$/u, '').split('/').filter(Boolean)
     if (parts.length < 2) throw new Error('GitHub 地址需要 owner/repo')
+    // owner/repo 只允许 GitHub 实际支持的字符；路径段一旦被拼进 git 参数，
+    // 这里就是唯一能把 ".."、空格和 shell 元字符挡在外面的地方。
+    if (!/^[A-Za-z0-9._-]+$/u.test(parts[0]) || !/^[A-Za-z0-9._-]+$/u.test(parts[1])) {
+      throw new Error('仓库路径只允许字母、数字、点、下划线和连字符')
+    }
     const id = 'gh-' + new Date().toISOString().slice(0, 10).replace(/-/gu, '') + '-' + randomUUID().slice(0, 6)
     const dir = path.join(home(), 'apps', id)
     await fsp.mkdir(dir, { recursive: true })

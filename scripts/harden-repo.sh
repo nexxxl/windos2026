@@ -143,8 +143,11 @@ if [[ $VERIFY -eq 1 ]]; then
   if pro_only "$RULESET_ERR"; then
     skip "tag ruleset" "私有仓需 GitHub Pro（公开后重跑）"
   elif api "repos/$REPO/rulesets" --jq '.[].name' | grep -qx "protect release tags"; then
-    RUNNER_TAGS="$(api "repos/$REPO/rulesets" \
-      --jq '[.[] | select(.name=="protect release tags") | .conditions.ref_name.include[]] | sort | join(",")' | tr -d '\n')"
+    # 列表端点不返回 conditions，必须按 id 取详情，否则读到的 include 永远是空。
+    RULESET_ID="$(api "repos/$REPO/rulesets" \
+      --jq '.[] | select(.name=="protect release tags") | .id' | tr -d '\n')"
+    RUNNER_TAGS="$(api "repos/$REPO/rulesets/$RULESET_ID" \
+      --jq '[.conditions.ref_name.include[]] | sort | join(",")' | tr -d '\n')"
     check "tag ruleset covers release tags" "refs/tags/plugin-v*,refs/tags/update-feed,refs/tags/v*" "$RUNNER_TAGS"
   else
     check "tag ruleset exists" present missing
