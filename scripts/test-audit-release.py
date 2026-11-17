@@ -12,6 +12,7 @@ from __future__ import annotations
 
 import hashlib
 import importlib.util
+import os
 import shutil
 import sys
 import tempfile
@@ -405,6 +406,8 @@ jobs:
         self.assertEqual(self.status(rows, "binary-symbols"), "FAIL")
         self.assertIn("文件头", rows["binary-symbols"]["detail"])
 
+    @unittest.skipIf(os.name == "nt",
+                     "fake runner 依赖 POSIX shebang；Windows 不能直接执行无扩展名脚本，同一分支由 CI 的 Linux 覆盖")
     def test_binary_self_report(self):
         name = "binary-self-report"
         self.assertEqual(

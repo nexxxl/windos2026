@@ -4,7 +4,7 @@
 
 ## 开发与验证
 
-需要 Node.js 22+。从本目录执行：
+需要 Node.js 22+、Python 3.12 与 bash。从本目录执行：
 
 ```sh
 npm ci
@@ -12,6 +12,8 @@ npm run check
 npm test
 python3 scripts/check-source.py
 ```
+
+**Windows**：`npm test` 内部会调 `bash scripts/stage-public-repo.sh`，只用 PowerShell 时这批用例会以 `python3: command not found` 失败，看起来像代码坏了。把 Git Bash 的 `bash.exe` 与 Python 3 加进 `PATH`（或在 WSL 里执行）即可。三个门禁脚本 `check-source.py`、`audit-release.py`、`test-audit-release.py` 可以直接用原生 Python 跑；`test-audit-release.py` 里依赖 POSIX shebang 的假 runner 用例在 Windows 上跳过，同一分支由 CI 的 Linux 覆盖。
 
 配套 Python 工具各自有 README 和可选依赖，不属于插件运行依赖。不要提交 `node_modules/`、产物、日志、密钥或个人工作区。`docs/project-history/` 是历史快照，其旧路径不是当前运行入口。
 
