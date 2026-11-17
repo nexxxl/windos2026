@@ -154,11 +154,13 @@ export function mountVideo(host) {
 
   // 媒体源只接受 blob:、video/audio 的 data:、http(s) 与站内绝对路径。
   // 其余 scheme（javascript:、file: 等）直接丢弃，避免把未知串交给 <video src>。
+  // 判定用前缀而不是整串正则：调用方拿到的一定是这几种开头，静态分析也能确认。
   function mediaSrc(url) {
-    const s = String(url === null || url === undefined ? '' : url);
-    if (/^blob:/i.test(s)) return s;
-    if (/^data:/i.test(s)) return /^data:(?:video|audio)\//i.test(s) ? s : '';
-    if (/^https?:\/\//i.test(s) || s.charAt(0) === '/') return s;
+    let s = String(url === null || url === undefined ? '' : url);
+    // scheme 大小写不敏感：先把 scheme 规范成小写，判定与赋值共用同一个串。
+    s = s.replace(/^([A-Za-z][A-Za-z0-9+.-]*):/, (m, scheme) => scheme.toLowerCase() + ':');
+    if (s.startsWith('blob:') || s.startsWith('http://') || s.startsWith('https://') || s.startsWith('/')) return s;
+    if (s.startsWith('data:video/') || s.startsWith('data:audio/')) return s;
     return '';
   }
 

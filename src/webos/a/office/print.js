@@ -103,32 +103,43 @@
     }
   }
 
-  // 打印内容来自文档模型，可能夹带脚本或事件属性；写进同源 iframe 前先剥掉。
+  // 打印内容来自文档模型，可能夹带脚本或事件属性；导入同源 iframe 前先剥掉。
   // 打印只需要结构与样式，脚本一律不执行。
-  function sanitizeHTML(html) {
-    try {
-      var parsed = new DOMParser().parseFromString(String(html === null || html === undefined ? '' : html), 'text/html');
-      var drop = parsed.querySelectorAll('script, iframe, object, embed, link[rel="import"]');
-      for (var i = 0; i < drop.length; i += 1) drop[i].parentNode.removeChild(drop[i]);
-      var all = parsed.querySelectorAll('*');
-      for (var j = 0; j < all.length; j += 1) {
-        var attrs = all[j].attributes;
-        for (var k = attrs.length - 1; k >= 0; k -= 1) {
-          if (/^on/i.test(attrs[k].name)) all[j].removeAttribute(attrs[k].name);
-        }
-      }
-      return '<!doctype html>' + parsed.documentElement.outerHTML;
-    } catch (e) {
-      return '';
+  var DROP_IN_PRINT = 'script,iframe,object,embed,base,link[rel="import"],meta[http-equiv]';
+
+  function scrubTree(root) {
+    var drop = root.querySelectorAll(DROP_IN_PRINT);
+    for (var i = drop.length - 1; i >= 0; i -= 1) {
+      if (drop[i].parentNode) drop[i].parentNode.removeChild(drop[i]);
     }
+    var all = root.querySelectorAll('*');
+    for (var j = 0; j < all.length; j += 1) {
+      var attrs = all[j].attributes;
+      for (var k = attrs.length - 1; k >= 0; k -= 1) {
+        var name = String(attrs[k].name || '').toLowerCase();
+        // 去掉空白后再比前缀，防 "java\tscript:" 这类绕过。
+        var value = String(attrs[k].value || '').replace(/[\u0000-\u0020]/g, '').toLowerCase();
+        if (name.indexOf('on') === 0 || value.indexOf('javascript:') === 0) all[j].removeAttribute(attrs[k].name);
+      }
+    }
+    return root;
+  }
+
+  // 解析成 DOM 后整体导入目标文档：不把字符串再交给 document.write 求值。
+  function importHTML(doc, html) {
+    var parsed = new DOMParser().parseFromString(
+      String(html === null || html === undefined ? '' : html),
+      'text/html'
+    );
+    var root = doc.importNode(scrubTree(parsed.documentElement), true);
+    if (doc.documentElement) doc.removeChild(doc.documentElement);
+    doc.appendChild(root);
+    return doc;
   }
 
   function printHTML(html, done) {
     var f = makeFrame();
-    var doc = f.contentWindow.document;
-    doc.open();
-    doc.write(sanitizeHTML(html));
-    doc.close();
+    var doc = importHTML(f.contentWindow.document, html);
     var fired = false;
     function fire() {
       if (fired) return;
@@ -144,7 +155,11 @@
       if (fired) return;
       var ready = false;
       try {
-        ready = doc.readyState === 'complete' && doc.body && doc.body.childNodes.length > 0;
+        // 导入节点后文档不算「加载中」，样式表要单独等，否则会打出无版式的纸。
+        var styled = true;
+        var links = doc.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i += 1) if (!links[i].sheet) styled = false;
+        ready = doc.readyState === 'complete' && doc.body && doc.body.childNodes.length > 0 && styled;
       } catch (e) {
         ready = true;
       }
