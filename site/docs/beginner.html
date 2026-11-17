@@ -1,0 +1,398 @@
+<!doctype html>
+<html lang="zh-Hans" data-page="beginner">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>新手教程：从 hello 到第一个应用 | NexlOS</title>
+<meta name="description" content="windos2026 新手教程：五个概念、第一次开机、17 个应用、用一句话生成第一个应用、导入 GitHub 仓库、把应用带走、25 条命令与子代理可见性。">
+<meta name="theme-color" content="#003475">
+<meta property="og:type" content="article">
+<meta property="og:title" content="新手教程：从 hello 到第一个应用">
+<meta property="og:url" content="https://nexxxl.github.io/windos2026/docs/beginner.html">
+<meta property="og:image" content="https://nexxxl.github.io/windos2026/assets/img/desktop.jpg">
+<link rel="canonical" href="https://nexxxl.github.io/windos2026/docs/beginner.html">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../index.html" aria-label="NexlOS 首页">
+      <img src="../assets/icon.svg" alt="" width="30" height="30">
+      <span><span class="brand-word">NEXLOS</span><span class="brand-sub">AI-NATIVE OS · WINDOS2026</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="siteNav" aria-label="主导航">
+      <a href="../system.html">系统</a>
+      <a href="../editions.html">版本</a>
+      <a href="../workflows.html">工作方式</a>
+      <a href="../build.html">开发</a>
+      <a href="../museum.html">博物馆</a>
+      <a href="install.html">安装</a>
+      <a href="beginner.html">教程</a>
+    </nav>
+    <div class="top-actions">
+      <span class="version-chip">0.6.15 · 七种装法</span>
+      <a class="btn btn--primary btn--sm" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="doc-hero">
+    <div class="shell">
+      <div class="breadcrumb">
+        <a href="../index.html">首页</a><span class="sep">/</span><span>文档</span><span class="sep">/</span><span>新手教程</span>
+      </div>
+      <h1>从 hello 引导，<br>到第一个应用。</h1>
+      <p class="doc-lead">
+        这一页按第一次使用的顺序写：先分清五个概念，再开机、认桌面、生成第一个应用、导入一个仓库、把应用带走。
+        命令、终端、蜂群与浏览器放在后面，需要时再看。
+      </p>
+      <div class="doc-meta">
+        <span class="tag tag--lime">约 12 分钟</span>
+        <span class="tag">DSH / Octop</span>
+        <span class="tag">17 个应用</span>
+        <span class="tag">25 条命令</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="shell doc-shell">
+    <aside class="doc-side">
+      <p class="doc-side-title">文档</p>
+      <nav aria-label="文档导航">
+        <a href="beginner.html" aria-current="page">新手教程</a>
+        <a href="install.html">安装指南</a>
+        <a href="../museum.html">操作系统博物馆</a>
+        <a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南 ↗</a>
+      </nav>
+      <div class="doc-side-meta">
+        <b>阅读顺序</b>
+        安装 → 开机 → 生成<br>
+        导入 → 带走 → 开发
+      </div>
+    </aside>
+
+    <article class="doc-body">
+      <div class="toc">
+        <p>本页内容</p>
+        <ol>
+          <li><a href="#concepts">五个概念</a></li>
+          <li><a href="#install">先安装</a></li>
+          <li><a href="#boot">第一次开机</a></li>
+          <li><a href="#tour">认识桌面</a></li>
+          <li><a href="#first-app">第一句话造应用</a></li>
+          <li><a href="#import">导入 GitHub 仓库</a></li>
+          <li><a href="#take">带走一个应用</a></li>
+          <li><a href="#app">最小应用结构</a></li>
+          <li><a href="#commands">25 条命令</a></li>
+          <li><a href="#terminal">终端多开</a></li>
+          <li><a href="#swarm">子代理与蜂群</a></li>
+          <li><a href="#browser">Agent 浏览器</a></li>
+        </ol>
+      </div>
+
+      <h2 id="concepts">0. 先分清五个概念</h2>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>名称</th><th>是什么</th><th>你要管的事</th></tr></thead>
+          <tbody>
+            <tr><td><b>DSH</b></td><td>DeepSeek Harness，宿主。会话、模型连接、凭据、文件与命令权限都由它负责</td><td>装好并保持版本可用</td></tr>
+            <tr><td><b>windos2026</b></td><td>NexlOS 的 DSH 插件版；也可以作为 Octop 的桌面服务运行</td><td>安装、升级、卸载</td></tr>
+            <tr><td><b>profile / 档案</b></td><td>一份插件组装。不同档案的插件与设置互不影响</td><td>起名字，别和别的用途重名</td></tr>
+            <tr><td><b>home / 工作区</b></td><td>NexlOS 读写应用与设置的数据目录</td><td>知道它在哪，定期备份</td></tr>
+            <tr><td><b>应用</b></td><td>一个目录：<code>index.html</code> 加 <code>app.json</code></td><td>复制、备份、删除</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>模型由宿主提供。插件不带你自己的 key，也没有默认 provider；它读你当前档案里已经配置的模型。看不到模型时，它会直说 <code>unavailable</code> 或返回 <code>501</code>，不假装就绪。</p>
+
+      <h2 id="install">1. 先安装</h2>
+      <p>最短路径：把仓库地址发给 DSH，再说一句「安装 windos2026」。</p>
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>DSH</span><button class="copy-btn" type="button" data-copy="beginner-install">复制</button></div>
+        <div class="code-body" id="beginner-install">https://github.com/nexxxl/windos2026
+<span class="lime">安装 windos2026</span></div>
+      </div>
+      <p>安装 bundle 会加载插件代码，需要 Full access 或当次批准。装好后重新进入 Web 桌面。</p>
+      <p>Octop 的装法不同：克隆仓库后运行 <code>./bin/octop-install install</code>。要求 Node.js 22+ 和 <code>~/.octop</code> 下的现有安装。完整步骤、参数与卸载见 <a href="install.html">安装指南</a>。</p>
+
+      <h2 id="boot">2. 第一次开机</h2>
+      <p>首次进入会先显示 hello 引导：黑底大字招呼语、语言选择，然后进系统。默认预选 English；可选简体中文、繁體中文、日文、韩文、Español、Français、Deutsch。选择结果写入 <code>settings.json</code> → <code>language</code>。</p>
+
+      <figure class="shot" style="margin-top:18px">
+        <img src="../assets/img/hello.jpg" alt="NexlOS hello 引导的语言选择界面" width="1440" height="900" loading="lazy">
+        <figcaption><b>hello 引导</b><span>只在第一次出现；之后在「设置 → 时间和语言」修改。想重看，在地址后加 <code>?hello=1</code>。</span></figcaption>
+      </figure>
+
+      <p>进系统后先认识三样东西：</p>
+      <ul>
+        <li><b>开始菜单</b>：左下角。应用、设置与关机都在这里。</li>
+        <li><b>任务栏</b>：窗口按钮、托盘、时钟。Win98 主题固定 44 px，不继承现代主题的 78 px 高度。</li>
+        <li><b>子午流注钟</b>：右上角的桌面组件。它是中医文化件，始终中文，不随界面语言翻译。</li>
+      </ul>
+
+      <h2 id="tour">3. 认识桌面</h2>
+      <p>17 个内置应用按用途分成四组。桌面图标、开始菜单、搜索与应用清单指向同一批入口；「系统」不出现在桌面与 Dock。</p>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>类别</th><th>应用</th><th>做什么</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="5">系统</td><td>此电脑</td><td>浏览 NexlOS 目录：空间、应用、库与日志</td></tr>
+            <tr><td>终端</td><td>在宿主电脑上跑 shell：git、npm、构建脚本（Octop 无 PTY，不可用）</td></tr>
+            <tr><td>设置</td><td>主题、壁纸、颜色、应用与更新</td></tr>
+            <tr><td>应用生成</td><td>用一句话生成应用，或从 GitHub 导入</td></tr>
+            <tr><td>系统</td><td>内核版本、命令目录与运行状态</td></tr>
+            <tr><td rowspan="5">创作</td><td>记忆</td><td>宿主工作区的记忆树：主题、观察与项目</td></tr>
+            <tr><td>书房</td><td>书目、正文、总纲、人物、任务与导出</td></tr>
+            <tr><td>画板</td><td>毛笔、水彩、蜡笔、画框、套索与拍立得；导出 PNG（可选包）</td></tr>
+            <tr><td>ArtCraft 移植版</td><td>图像、矢量、时间线、文档与净室工作台（非官方移植）</td></tr>
+            <tr><td>关系图谱</td><td>把 Markdown 连成关系网：双链、标签与反向链接</td></tr>
+            <tr><td rowspan="4">办公与工具</td><td>便捷办公</td><td>Word、Excel、PPT、Markdown、HTML 与 PDF；文件统一存进「文稿」</td></tr>
+            <tr><td>便利贴</td><td>Markdown / HTML 直接贴在桌面上，双击折叠</td></tr>
+            <tr><td>Agent 浏览器</td><td>结构优先读取网页语义、正文、链接、表格与代码；人类视图在独立 Chrome</td></tr>
+            <tr><td>扫一扫</td><td>摄像头扫码：二维码、网址与应用链接</td></tr>
+            <tr><td rowspan="3">媒体与游戏</td><td>视频</td><td>本地或网络视频：拖入即播，画中画与全屏</td></tr>
+            <tr><td>音乐</td><td>曲库、环境音与后台播放</td></tr>
+            <tr><td>扫雷</td><td>首步安全、标旗、和弦与三档难度</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="first-app">4. 第一句话造应用</h2>
+      <p>打开「应用生成」，写一句你真正想要的东西。下面三句都能用：</p>
+      <ul>
+        <li>做一个 25 分钟的番茄钟，深色，结束时响一声。</li>
+        <li>做一个扫雷，首步安全，三档难度。</li>
+        <li>做一个记账应用，数据存在本地，月底给我一个总数。</li>
+      </ul>
+
+      <h3>点下生成之后</h3>
+      <ol>
+        <li>命中已知模板时，直接渲染模板 HTML；否则交给宿主模型生成单文件 HTML。</li>
+        <li>生成结果必须在浏览器里通过验收：完整 HTML、有 <code>&lt;title&gt;</code>、不能访问父窗口、不能引用外部 <code>http(s)</code> 资源。</li>
+        <li>验收失败会自动让模型修一次；仍然失败就报错，不会把坏文件放上桌面。</li>
+        <li>通过后写入 <code>apps/gen-&lt;date&gt;-&lt;random&gt;/index.html</code> 与 <code>app.json</code>，图标出现在桌面。</li>
+      </ol>
+
+      <div class="callout">
+        <b>硬约束</b> 正文 ≤ 250 行，产物 ≤ 2 MiB，生成超时 180 秒。超时会先要求模型返回更紧凑的完整 HTML；截断的输出不会被当成可用应用。
+      </div>
+
+      <p>生成的应用跑在独立 origin，可以用 <code>localStorage</code> 与 Worker。需要和宿主数据打交道时，用 <code>window.nexlOS.storage</code>；离开宿主后这段能力不存在，代码里要留回退。</p>
+      <p>如果生成器说模型不可用：回到 DSH 配置模型与凭据。插件不带 key，也不会替你选 provider。</p>
+
+      <h2 id="import">5. 导入一个 GitHub 仓库</h2>
+      <p>同一个「应用生成」面板里，粘贴一个 GitHub 地址。插件只接受 <code>github.com/owner/repo</code>。</p>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>步骤</th><th>行为</th><th>限制</th></tr></thead>
+          <tbody>
+            <tr><td>校验</td><td>只接受 <code>github.com/owner/repo</code></td><td>其他域名直接拒绝</td></tr>
+            <tr><td>克隆</td><td><code>git clone --depth 1</code></td><td>180 秒超时</td></tr>
+            <tr><td>入口</td><td>根 <code>index.html</code> 直接使用</td><td>没有入口时看下一步</td></tr>
+            <tr><td>构建</td><td>有 <code>package.json</code> 且声明 <code>build</code> 时，<code>npm install</code> + <code>npm run build</code></td><td>各 300 秒；执行前必须显式同意</td></tr>
+            <tr><td>产物</td><td>依次找 <code>dist/index.html</code>、<code>build/index.html</code>、<code>out/index.html</code></td><td>找不到就报错</td></tr>
+            <tr><td>落地</td><td><code>apps/gh-&lt;date&gt;-&lt;random&gt;/</code>，写 <code>app.json</code></td><td>应用是普通目录</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--warn">
+        <b>执行脚本前想清楚</b> 有 <code>build</code> 脚本的仓库会在你的机器上跑 <code>npm install</code> 与 <code>npm run build</code>。只导入你信任的仓库；失败时插件会清掉这次克隆的目录。
+      </div>
+
+      <p>适合导入的：有根 <code>index.html</code> 的静态站点、十年没更新但还能打开的小工具、带 <code>build</code> 脚本的标准前端项目。不适合的：需要后端、数据库或私有凭据的项目。</p>
+
+      <h2 id="take">6. 带走一个应用</h2>
+      <p>应用就是目录。把它复制出来，用任何静态服务器打开：</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>带走</span><button class="copy-btn" type="button" data-copy="take-command">复制</button></div>
+        <div class="code-body" id="take-command"><span class="c"># NexlOS home 下的 apps/</span>
+cp -R "&lt;NexlOS home&gt;/apps/&lt;id&gt;" ~/Desktop/my-app
+cd ~/Desktop/my-app
+python3 -m http.server 8000</div>
+      </div>
+
+      <p>单文件应用不依赖构建工具，换一台机器照样跑。用到 <code>window.nexlOS.storage</code> 的部分需要回退到 <code>localStorage</code>；用外部 CDN 的应用不符合生成器的验收规则，也不会被自动生成。</p>
+      <p>带走的是文件，不是签名。没有 <code>.nexlosapp</code> 签名包，也没有跨机器出处校验；这正是它可迁移的原因。</p>
+
+      <h2 id="app">7. 最小应用结构</h2>
+      <p>一个最小应用只有两个文件：</p>
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>目录</span></div>
+        <div class="code-body">apps/focus-timer/
+  index.html
+  app.json</div>
+      </div>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>app.json</span><button class="copy-btn" type="button" data-copy="app-json-example">复制</button></div>
+        <div class="code-body" id="app-json-example">{
+  "id": "focus-timer",
+  "name": "番茄钟",
+  "description": "25 分钟专注计时",
+  "entry": "index.html",
+  "capabilities": ["storage"]
+}</div>
+      </div>
+
+      <ul>
+        <li><code>id</code> 只用小写字母、数字与连字符；它也是目录名。</li>
+        <li><code>entry</code> 指向入口 HTML；生成器写的是 <code>index.html</code>。</li>
+        <li><code>capabilities</code> 至少包含 <code>storage</code> 才能读写自己的数据；不声明时宿主数据接口返回 403。</li>
+        <li>页面必须有 <code>&lt;title&gt;</code>，不能访问 <code>window.parent</code>，不能依赖外部 <code>http(s)</code> 资源。</li>
+      </ul>
+
+      <p>内置应用以代码形式放在 <code>webos/</code>；生成的应用放在 NexlOS home 的 <code>apps/</code>。两者在桌面上看起来一样，维护方式不同。</p>
+
+      <h2 id="commands">8. 25 条命令</h2>
+      <p>这些是宿主 HTTP 接口暴露的命令，桌面与 agent 共用。它们不是 shell 命令；终端应用里跑的是宿主的 shell。</p>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>分组</th><th>命令</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td rowspan="2">设置</td><td><code>settings.get</code></td><td>读取桌面设置</td></tr>
+            <tr><td><code>settings.set</code></td><td>写入桌面设置</td></tr>
+            <tr><td rowspan="2">应用</td><td><code>app.list</code></td><td>本机应用清单</td></tr>
+            <tr><td><code>app.open</code></td><td>打开生成应用</td></tr>
+            <tr><td rowspan="7">文件</td><td><code>fs.list</code></td><td>列目录</td></tr>
+            <tr><td><code>fs.read</code></td><td>读文本文件</td></tr>
+            <tr><td><code>fs.write</code></td><td>保存文本文件</td></tr>
+            <tr><td><code>fs.mkdir</code></td><td>新建文件夹</td></tr>
+            <tr><td><code>fs.rename</code></td><td>移动 / 重命名</td></tr>
+            <tr><td><code>fs.delete</code></td><td>删除</td></tr>
+            <tr><td><code>fs.usage</code></td><td>工作区占用</td></tr>
+            <tr><td rowspan="3">小说</td><td><code>novel.list</code></td><td>列出全部书目</td></tr>
+            <tr><td><code>novel.create</code></td><td>新建一本书</td></tr>
+            <tr><td><code>novel.open</code></td><td>打开一本书</td></tr>
+            <tr><td rowspan="4">章节</td><td><code>chapter.list</code></td><td>章节目录</td></tr>
+            <tr><td><code>chapter.create</code></td><td>新建一章</td></tr>
+            <tr><td><code>chapter.read</code></td><td>读取正文</td></tr>
+            <tr><td><code>chapter.save</code></td><td>保存正文</td></tr>
+            <tr><td rowspan="2">大纲</td><td><code>outline.read</code></td><td>读取总纲</td></tr>
+            <tr><td><code>outline.save</code></td><td>保存总纲</td></tr>
+            <tr><td rowspan="2">人物</td><td><code>cast.list</code></td><td>人物表</td></tr>
+            <tr><td><code>cast.save</code></td><td>保存人物表</td></tr>
+            <tr><td>导出</td><td><code>export.markdown</code></td><td>合并导出 Markdown</td></tr>
+            <tr><td rowspan="2">系统</td><td><code>system.status</code></td><td>内核状态与命令目录</td></tr>
+            <tr><td><code>workspace.info</code></td><td>工作区状态</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="terminal">9. 终端多开</h2>
+      <p>终端应用支持标签与分栏。每一格是一条独立 PTY，可以同时跑不同的 CLI；切到别的应用再回来，会话还在。</p>
+      <ol>
+        <li>打开「终端」，用 <b>+</b> 新建标签。</li>
+        <li>用分栏按钮把当前标签拆成两格或三格；拖动分隔条改比例。</li>
+        <li>在每一格运行一个 CLI：<code>grok</code>、<code>claude</code>、<code>codex</code>。三路输出各自滚动，互不覆盖。</li>
+      </ol>
+      <p>标签与分栏结构存在 <code>sessionStorage</code>，刷新或切走再回来会接回同一条 PTY。三路改的是同一个工作区，文件落盘后桌面立即可见。</p>
+
+      <h2 id="swarm">10. 子代理与蜂群</h2>
+      <p>蜂群或子代理运行时，过程出现在三处，数据来自同一条目录：</p>
+      <ul>
+        <li><b>右栏「状态空间」</b>：集群条给出人数、步数、在跑数；成员区一行一个子代理，显示当前工具与参数，↗ 打开只读对话。成员区独立滚动，不随日志滚走。</li>
+        <li><b>对话窗口的状态弹窗</b>：标题右侧的「N 子代理」展开后逐行列出成员；运行中显示已用时，结束后显示步数与结果摘要。点行进入该子代理会话，标题栏 ← 回到队长。</li>
+        <li><b>Agent 集群浮窗</b>：蜂群指令的成员与状态；成员行点开同一只读对话。</li>
+      </ul>
+      <p>一轮的运行轨迹只收本轮派的子代理：Host 用子会话的 <code>createdAt</code> 对照本轮起点，仍在后台跑的旧成员例外保留。相关接口：<code>GET /agent/agents?sessionId=&lt;captain&gt;</code>、<code>GET /agent/agents?swarmId=&lt;id&gt;</code>、<code>GET /agent/agents?scope=all</code>。</p>
+
+      <h2 id="browser">11. Agent 浏览器</h2>
+      <p>在桌面命令栏或 DSH 里说清目标，Agent 会先读页面结构，再决定动作。它走的是结构优先的语义视图：正文、链接、表格、表单和可操作元素，不是靠截图猜坐标。</p>
+      <ul>
+        <li><b>读页面</b>：<code>snapshot</code> 返回语义树与动作空间，先看再点。</li>
+        <li><b>做动作</b>：<code>navigate</code>、<code>click</code>、<code>type</code>、<code>scroll</code> 都落在独立的 Agent 浏览器里。</li>
+        <li><b>人工接管</b>：遇到登录或验证码，<code>handoff</code> 打开独立 Chrome；你处理完，<code>resume</code> 回到同一个任务。</li>
+        <li><b>默认隔离</b>：侧车 Chromium，不操作用户日常标签页；需要附带现有登录态时才切到 attach 模式。</li>
+      </ul>
+      <p>浏览器任务和桌面命令共用同一个会话。让它先读页面、再执行写操作；提交前确认目标页面和字段，避免在错误页面上重复提交。</p>
+
+      <h2>12. 下一步</h2>
+      <ul>
+        <li>想改系统：主题、壁纸、语言包与画板，见 <a href="install.html#extras">可选包</a>。</li>
+        <li>想做应用或游戏：从 <a href="#app">最小应用结构</a> 开始，读 <a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a>，提交时用 <code>git commit -s</code> 签署 DCO。</li>
+        <li>想知道这台桌面从哪来：<a href="../museum.html">操作系统博物馆</a>。</li>
+        <li>想知道边界：<a href="../index.html#limits">它不做什么</a>。</li>
+      </ul>
+
+      <div class="doc-next">
+        <a href="install.html"><small>回到上一页</small><b>安装指南：DSH 与 Octop →</b></a>
+        <a href="../index.html#build"><small>动手</small><b>造一个应用、游戏，或改造系统 →</b></a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="../assets/icon.svg" alt="" width="34" height="34">
+          <div>
+            <span class="footer-word">NEXLOS</span>
+            <span class="footer-sub">AI-NATIVE OS · WINDOS2026</span>
+          </div>
+        </div>
+        <p>一台 7.95 MiB 的电脑，给 agent 用。说一句话，它就给你造一个应用；搬进来任何东西，带着一个应用离开。</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>产品</h4>
+          <ul>
+            <li><a href="../system.html">系统与能力</a></li>
+            <li><a href="../editions.html">全部版本</a></li>
+            <li><a href="../workflows.html">工作方式</a></li>
+            <li><a href="../museum.html">操作系统博物馆</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>文档</h4>
+          <ul>
+            <li><a href="install.html">安装指南</a></li>
+            <li><a href="beginner.html">新手教程</a></li>
+            <li><a href="../build.html">开发与软件工厂</a></li>
+            <li><a href="install.html#troubleshooting">故障排查</a></li>
+            <li><a href="../editions.html#download">下载与校验</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>参与</h4>
+          <ul>
+            <li><a href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub 仓库</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">商标政策</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>本站是 windos2026 的官方站点；安装包与校验和只从本站和 GitHub Releases 发布，其余站点提供的安装包与本项目无关。</p>
+      <p>插件源代码与公开文档按 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a> 提供；商标不随 Apache-2.0 授予，第三方素材按各自许可。</p>
+      <p>Windos2026 是 NexlOS 的界面主题名称。本项目与 Microsoft Corporation 或任何其他操作系统厂商没有隶属、授权或背书关系；Windows 是 Microsoft Corporation 的商标。</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NexlOS Authors · v1.1.0-lite.0</span>
+      <span>Bring anything. Leave with an app.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/i18n-data.js" defer></script>
+<script src="../assets/i18n.js" defer></script>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

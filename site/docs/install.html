@@ -1,0 +1,460 @@
+<!doctype html>
+<html lang="zh-Hans" data-page="install">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>安装 windos2026 · DSH 与 Octop 两种宿主 | NexlOS</title>
+<meta name="description" content="windos2026 安装指南：DSH 对话安装、插件管理安装、安装脚本，以及 Octop 工作台安装、可选包、核对、卸载与故障排查。">
+<meta name="theme-color" content="#003475">
+<meta property="og:type" content="article">
+<meta property="og:title" content="安装 windos2026 · DSH 与 Octop 两种宿主">
+<meta property="og:url" content="https://nexxxl.github.io/windos2026/docs/install.html">
+<meta property="og:image" content="https://nexxxl.github.io/windos2026/assets/img/desktop.jpg">
+<link rel="canonical" href="https://nexxxl.github.io/windos2026/docs/install.html">
+<link rel="icon" href="../assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="../index.html" aria-label="NexlOS 首页">
+      <img src="../assets/icon.svg" alt="" width="30" height="30">
+      <span><span class="brand-word">NEXLOS</span><span class="brand-sub">AI-NATIVE OS · WINDOS2026</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="siteNav" aria-label="主导航">
+      <a href="../system.html">系统</a>
+      <a href="../editions.html">版本</a>
+      <a href="../workflows.html">工作方式</a>
+      <a href="../build.html">开发</a>
+      <a href="../museum.html">博物馆</a>
+      <a href="install.html">安装</a>
+      <a href="beginner.html">教程</a>
+    </nav>
+    <div class="top-actions">
+      <span class="version-chip">0.6.15 · 七种装法</span>
+      <a class="btn btn--primary btn--sm" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+  <section class="doc-hero">
+    <div class="shell">
+      <div class="breadcrumb">
+        <a href="../index.html">首页</a><span class="sep">/</span><span>文档</span><span class="sep">/</span><span>安装</span>
+      </div>
+      <h1>安装 windos2026</h1>
+      <p class="doc-lead">
+        两种宿主，三种装法。先确认环境，再选 DSH 或 Octop；装完核对一次，最后知道怎么卸载。
+        本页的路径、参数和已知限制都来自仓库当前版本。
+      </p>
+      <div class="doc-meta">
+        <span class="tag tag--lime">v1.1.0-lite.0</span>
+        <span class="tag">7.95 MiB</span>
+        <span class="tag">Node.js 22+</span>
+        <span class="tag">Apache-2.0</span>
+      </div>
+    </div>
+  </section>
+
+  <div class="shell doc-shell">
+    <aside class="doc-side">
+      <p class="doc-side-title">文档</p>
+      <nav aria-label="文档导航">
+        <a href="beginner.html">新手教程</a>
+        <a href="install.html" aria-current="page">安装指南</a>
+        <a href="../museum.html">操作系统博物馆</a>
+        <a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南 ↗</a>
+      </nav>
+      <div class="doc-side-meta">
+        <b>@nexlos/os</b>
+        v1.1.0-lite.0<br>
+        解包 12.6 MiB / 293 文件<br>
+        1 个运行时依赖
+      </div>
+    </aside>
+
+    <article class="doc-body">
+      <div class="toc">
+        <p>本页内容</p>
+        <ol>
+          <li><a href="#before">先确认</a></li>
+          <li><a href="#dsh">方式 A：DSH 对话</a></li>
+          <li><a href="#plugin-manager">方式 B：插件管理</a></li>
+          <li><a href="#scripts">方式 C：安装脚本</a></li>
+          <li><a href="#octop">Octop 工作台</a></li>
+          <li><a href="#first-run">第一次进入</a></li>
+          <li><a href="#extras">可选包</a></li>
+          <li><a href="#verify">核对</a></li>
+          <li><a href="#uninstall">卸载</a></li>
+          <li><a href="#troubleshooting">故障排查</a></li>
+          <li><a href="#other">其他形态</a></li>
+        </ol>
+      </div>
+
+      <h2 id="before">0. 先确认</h2>
+      <p>windos2026 是一个 DSH 插件，也可以作为 Octop 的桌面服务运行。它不自带模型，也不发布 npm 包；仓库本身就是安装包。</p>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>项目</th><th>要求</th></tr></thead>
+          <tbody>
+            <tr><td>DSH 宿主</td><td>可加载本地 bundle 的 DeepSeek Harness，含 Web、会话与终端服务</td></tr>
+            <tr><td>Node.js</td><td>22 或更高</td></tr>
+            <tr><td>pnpm</td><td>使用 <code>dsh plugin add</code> 时需要 12+</td></tr>
+            <tr><td>权限</td><td>安装 bundle 会加载插件代码，需要 Full access 或当次批准</td></tr>
+            <tr><td>模型</td><td>不用另配；读当前 DSH 档案的模型。看不到模型时返回 <code>501</code> 并说明原因</td></tr>
+            <tr><td>平台</td><td>macOS / Linux 有安装脚本；Windows 路径按 alpha 对待</td></tr>
+            <tr><td>安装包</td><td>7.95 MiB；npm 尚未发布，<code>npm install @nexlos/os</code> 会 404</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout callout--note">
+        <b>不需要</b> 不需要 <code>npm install</code>，不需要另装模型，也不需要创建账号。安装脚本只写 DSH profile 的依赖与链接，不碰用户数据目录。
+      </div>
+
+      <h2 id="dsh">1. 方式 A：在 DSH 对话里安装（推荐）</h2>
+      <p>把仓库地址发给 DSH，再说一句「安装 windos2026」。DSH 会克隆仓库，再用 <code>plugin_manager install_bundle</code> 把仓库目录装进当前档案。</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>DSH · 安装提示</span><button class="copy-btn" type="button" data-copy="dsh-prompt">复制</button></div>
+        <div class="code-body" id="dsh-prompt"><span class="c"># 把仓库地址发给 DSH</span>
+https://github.com/nexxxl/windos2026
+
+<span class="c"># 然后说</span>
+<span class="lime">安装 windos2026</span></div>
+      </div>
+
+      <h3>装完会发生什么</h3>
+      <ul>
+        <li>仓库被克隆到 DSH 的工作目录。</li>
+        <li>当前 profile 的依赖里出现 <code>@nexlos/os</code>，bundle 行为名是 <code>nexlos-os</code>。</li>
+        <li>重新进入 Web 桌面后，侧栏多一个「NexlOS 桌面」入口。</li>
+        <li>首次进入先显示 hello 引导，选好界面语言再进系统。</li>
+      </ul>
+
+      <div class="callout callout--warn">
+        <b>需要批准</b> 安装 bundle 会在宿主里加载插件代码。DSH 需要 Full access，或在当次安装时明确批准。不要在应用变更时强行关闭程序。
+      </div>
+
+      <h2 id="plugin-manager">2. 方式 B：插件管理会话</h2>
+      <p>已经克隆到本地，或想指定一个固定目录时，在 DSH 的插件管理会话里执行：</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>plugin_manager</span><button class="copy-btn" type="button" data-copy="pm-command">复制</button></div>
+        <div class="code-body" id="pm-command">plugin_manager install_bundle target=/absolute/path/to/windos2026</div>
+      </div>
+
+      <p><code>target</code> 指向仓库根目录，也就是包含 <code>package.json</code> 与 <code>cordis.patch.yml</code> 的那一层。装好后同样重新进入 Web 桌面。</p>
+
+      <h2 id="scripts">3. 方式 C：安装脚本</h2>
+      <p>不经过会话，直接把插件装进本机 profile。脚本做四件事：校验来源 → 复制插件 → 写 <code>link:</code> 依赖 → 建符号链接或 junction。</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>macOS / Linux</span><button class="copy-btn" type="button" data-copy="posix-command">复制</button></div>
+        <div class="code-body" id="posix-command">git clone https://github.com/nexxxl/windos2026.git
+cd windos2026
+./scripts/install-posix.sh
+
+<span class="c"># 指定档案</span>
+./scripts/install-posix.sh --profile nexl</div>
+      </div>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>Windows</span><button class="copy-btn" type="button" data-copy="win-command">复制</button></div>
+        <div class="code-body" id="win-command">powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1
+
+<span class="c"># 指定档案</span>
+powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1 -Profile nexlwin</div>
+      </div>
+
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>脚本</th><th>参数</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td>install-posix.sh</td><td><code>--profile &lt;name&gt;</code></td><td>指定 DSH 档案；不给时从运行中的 dsh 进程读取</td></tr>
+            <tr><td>install-posix.sh</td><td><code>--target &lt;dir&gt;</code></td><td>复制位置，默认 <code>~/nexl/plugin</code></td></tr>
+            <tr><td>install-posix.sh</td><td><code>--uninstall</code></td><td>摘掉依赖与链接，保留插件文件</td></tr>
+            <tr><td>install-windows.ps1</td><td><code>-Profile &lt;name&gt;</code></td><td>指定档案</td></tr>
+            <tr><td>install-windows.ps1</td><td><code>-Target &lt;dir&gt;</code></td><td>复制位置，默认 <code>%USERPROFILE%\nexl\plugin</code></td></tr>
+            <tr><td>install-windows.ps1</td><td><code>-Uninstall</code></td><td>摘掉依赖与 junction</td></tr>
+            <tr><td>install-windows.ps1</td><td><code>-Restart</code></td><td>安装后尝试重启宿主</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">两个脚本都跟随 <code>DSH_HOME</code>；自定义了 DSH home 的机器不会装到 <code>~/.dsh</code>。脚本不运行 <code>npm install</code>，也不改 <code>config.home</code> 指向的用户数据。</p>
+
+      <h2 id="octop">4. Octop 工作台</h2>
+      <p>Octop 不能加载 DSH bundle：它没有 Cordis 运行时，插件 API 也没有导航插槽。所以 Octop 走另一条路——把同一个 <code>webos/</code> 与 <code>index.js</code> 作为独立 Node 服务运行，再往 Dashboard 注入一个入口。</p>
+
+      <h3>要求</h3>
+      <ul>
+        <li>Node.js 22+，与 Octop 在同一台机器。</li>
+        <li><code>~/.octop</code> 下已有 Octop 安装（macOS / Linux；Windows 未测试）。</li>
+        <li>仓库依赖：<code>npm ci</code>，或让安装器执行 <code>npm install</code>。</li>
+      </ul>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>Octop</span><button class="copy-btn" type="button" data-copy="octop-command">复制</button></div>
+        <div class="code-body" id="octop-command">git clone https://github.com/nexxxl/windos2026.git
+cd windos2026
+<span class="lime">./bin/octop-install install</span></div>
+      </div>
+
+      <p><code>install</code> 会做四件事：</p>
+      <ol>
+        <li data-i18n-html="octop-entry-copy"><code>host/octop/entry.js</code> 会被复制到 Octop 的 <code>dashboard/nexlos-entry.js</code>。</li>
+        <li>往 dashboard 的 <code>index.html</code> 追加一个 <code>&lt;script&gt;</code> 标签；原文件保留为 <code>index.html.nexlos-backup</code>。</li>
+        <li>写入并启动每用户服务（macOS 是 <code>com.nexlos.octop-desktop</code>，Linux 是 <code>nexlos-octop.service</code>）。</li>
+        <li>打开 Octop。</li>
+      </ol>
+
+      <p>成功后，左侧出现常驻的「NexlOS 桌面」；点开占满主工作区，命令栏用你的 Octop agent，模型指示显示 <code>octop · &lt;model&gt;</code>。</p>
+
+      <h3 id="octop-commands">管理命令</h3>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>命令</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code>./bin/octop-install install</code></td><td>注入入口，注册并启动服务</td></tr>
+            <tr><td><code>./bin/octop-install status</code></td><td>查看服务健康、launchd 状态、Octop、注入与备份</td></tr>
+            <tr><td><code>./bin/octop-install up</code></td><td>确保服务在跑，然后打开 Octop</td></tr>
+            <tr><td><code>./bin/octop-install down</code></td><td>停掉桌面服务，保留入口</td></tr>
+            <tr><td><code>./bin/octop-install uninstall</code></td><td>还原 <code>index.html</code>，移除入口与服务</td></tr>
+            <tr><td><code>./bin/octop-install doctor</code></td><td>检查 Node、依赖、<code>webos/</code>、Octop venv 与端口</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>环境变量</h3>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>变量</th><th>默认值</th><th>作用</th></tr></thead>
+          <tbody>
+            <tr><td><code>NEXLOS_PORT</code></td><td><code>8090</code></td><td>桌面服务端口</td></tr>
+            <tr><td><code>NEXLOS_HOME</code></td><td>与 DSH 版共享</td><td>应用与数据目录</td></tr>
+            <tr><td><code>OCTOP_URL</code></td><td><code>http://127.0.0.1:8088</code></td><td>Octop 地址</td></tr>
+            <tr><td><code>NEXLOS_BIND</code></td><td><code>127.0.0.1</code></td><td>绑定地址；默认只回环</td></tr>
+            <tr><td><code>NEXLOS_STATE_DIR</code></td><td><code>~/.nexlos-octop</code></td><td>配置与日志</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>两种宿主差在哪</h3>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>区域</th><th>DSH</th><th>Octop</th></tr></thead>
+          <tbody>
+            <tr><td>启动</td><td>宿主里的插件 bundle</td><td>Dashboard 入口背后的独立 Node 服务</td></tr>
+            <tr><td>模型</td><td>当前 DSH 档案</td><td>你的 Octop agent</td></tr>
+            <tr><td>终端</td><td>可用（宿主 PTY）</td><td>不可用：独立宿主没有 PTY，<code>term.info</code> 返回 <code>enabled:false</code> 与原因</td></tr>
+            <tr><td>会话工具 / 子代理 / 浏览器桥</td><td>由 DSH 提供</td><td>不在；相关命令返回 <code>501</code> 与原因</td></tr>
+            <tr><td>文件、应用、命令、主题、语言</td><td>相同</td><td>相同</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="callout">
+        <b>已知限制</b> 入口是 DOM 注入，不是官方导航插槽。Octop 升级重置 <code>index.html</code> 后，重新运行 <code>./bin/octop-install install</code>。桥只读 <code>~/.octop/credential.txt</code> 的管理员账号，按单用户使用；端口只监听回环，不要对外暴露。
+      </div>
+
+      <p>回滚：<code>./bin/octop-install uninstall</code>。卸载会还原 Dashboard、移除服务，但不会删除 NexlOS home 里的应用。宿主差异与更多限制见 <a href="https://github.com/nexxxl/windos2026/blob/main/docs/octop.md" target="_blank" rel="noopener">docs/octop.md</a>。</p>
+
+      <h2 id="first-run">5. 第一次进入</h2>
+      <p>重新进入 Web 桌面后，首次会先显示 hello 引导：黑底大字招呼语、语言选择，然后进系统。选择结果写入 <code>settings.json</code> → <code>language</code>。</p>
+
+      <figure class="shot" style="margin-top:18px">
+        <img src="../assets/img/hello.jpg" alt="NexlOS hello 引导：语言选择" width="1440" height="900" loading="lazy">
+        <figcaption><b>hello 引导</b><span>8 种内置语言；默认预选 English，可当场选简体中文、繁體中文、日文、韩文等。</span></figcaption>
+      </figure>
+
+      <ul>
+        <li>想重看引导：在地址后加 <code>?hello=1</code>。</li>
+        <li>之后修改：设置 → 时间和语言。</li>
+        <li>数据目录：<code>config.home</code> 优先；否则 <code>NEXLOS_HOME</code>；否则已存在的 <code>~/Library/Application Support/NexlOS</code>；最后落到宿主工作目录下的 <code>spaces/</code>。</li>
+      </ul>
+
+      <h2 id="extras">6. 可选包</h2>
+      <p>主包带 8 种内置语言、两套主题、两张壁纸和一段背景音乐。画板、7 种扩展语言和 CJK 办公字体在可选包里，按需安装。</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>可选包</span><button class="copy-btn" type="button" data-copy="extras-command">复制</button></div>
+        <div class="code-body" id="extras-command"><span class="c"># 画板（ArtCraft 移植版）</span>
+./scripts/install-extras.sh artcraftport
+
+<span class="c"># 7 种扩展语言</span>
+./scripts/install-extras.sh langs
+
+<span class="c"># CJK 办公字体：公开仓不携带，需先放到 extras/fonts-cjk/</span>
+./scripts/install-extras.sh fonts</div>
+      </div>
+
+      <p>脚本把资源放到 <code>webos/extras/</code> 或 <code>webos/a/office/fonts/</code>，运行时按路径取用。公开仓不带 CJK 字体包；直接运行 <code>all</code> 会在字体这一步停下，先装 <code>artcraftport</code> 与 <code>langs</code> 即可。</p>
+
+      <div class="callout callout--note">
+        <b>CDN 可选</b> 如果你的部署把 extras 放到 CDN，可以在加载 <code>app.js</code> 之前设置 <code>window.NEXLOS_PACKS_BASE</code>，语言包与画板都从前缀取。主包不依赖这个设置。
+      </div>
+
+      <h2 id="verify">7. 核对</h2>
+      <ul class="checklist">
+        <li>DSH 侧栏出现「NexlOS 桌面」，点开能进桌面。</li>
+        <li>首次进入出现 hello 引导；选完语言后界面文案跟着变。</li>
+        <li>设置 → 应用 能看到 17 个内置应用；「系统」不在桌面与 Dock。</li>
+        <li>打开「系统」，能看到 25 条命令与插件版本 <code>1.1.0-lite.0</code>。</li>
+        <li>打开「应用生成」，能写出一句话并生成一个内嵌应用（需要模型）。</li>
+        <li>Octop：<code>./bin/octop-install status</code> 正常；<code>curl -s http://127.0.0.1:8090/agent/status</code> 返回 <code>"provider":"octop"</code>。</li>
+      </ul>
+
+      <p>开发侧核对：</p>
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>开发侧</span></div>
+        <div class="code-body">npm ci
+npm run check
+npm test
+./scripts/verify-lite.sh
+npm pack --dry-run --json</div>
+      </div>
+      <p><code>verify-lite.sh</code> 检查 tarball ≤ 10 MB、包内不含语言覆盖层与 CJK 字体、画板资源在 <code>extras/</code>、媒体为 AAC、壁纸存在。</p>
+
+      <h2 id="uninstall">8. 卸载</h2>
+      <p>卸载只摘依赖与链接，不删除你的应用与工作区。</p>
+
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>卸载</span><button class="copy-btn" type="button" data-copy="uninstall-command">复制</button></div>
+        <div class="code-body" id="uninstall-command"><span class="c"># macOS / Linux</span>
+./scripts/install-posix.sh --uninstall
+
+<span class="c"># Windows</span>
+powershell -ExecutionPolicy Bypass -File scripts\install-windows.ps1 -Uninstall
+
+<span class="c"># Octop</span>
+./bin/octop-install uninstall</div>
+      </div>
+      <p>也可以在 DSH 的插件管理里移除 <code>@nexlos/os</code> bundle。应用仍在 NexlOS home 的 <code>apps/</code> 下；需要保留时先复制这个目录。</p>
+
+      <h2 id="troubleshooting">9. 故障排查</h2>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>现象</th><th>原因</th><th>处理</th></tr></thead>
+          <tbody>
+            <tr><td><code>npm install @nexlos/os</code> 404</td><td>npm 尚未发布</td><td>用仓库地址或安装脚本</td></tr>
+            <tr><td>装完没有 NexlOS 入口</td><td>没有批准 Full access，或 profile 未写入 bundle</td><td>检查 profile 依赖与 <code>dsh.profile.bundles</code>；完全退出宿主再进</td></tr>
+            <tr><td>模型状态 <code>unavailable</code> / 能力返回 501</td><td>宿主档案里没有可用模型</td><td>在 DSH 里配置模型与凭据；插件不带 key</td></tr>
+            <tr><td>画板显示「未安装」</td><td>可选包没装</td><td><code>./scripts/install-extras.sh artcraftport</code></td></tr>
+            <tr><td>扩展语言不在选择器里</td><td>语言包没装</td><td><code>./scripts/install-extras.sh langs</code>，重载桌面</td></tr>
+            <tr><td>中文办公行高与分页不同</td><td>没有 CJK 字体包，回退系统字体</td><td>安装 OFL 字体包，或接受系统字体回退</td></tr>
+            <tr><td>Octop 升级后入口消失</td><td>Dashboard 的 <code>index.html</code> 被重置</td><td>重跑 <code>./bin/octop-install install</code></td></tr>
+            <tr><td>Octop 里终端不可用</td><td>独立宿主没有 PTY</td><td>用 DSH；Octop 的 <code>term.info</code> 会说明原因</td></tr>
+            <tr><td>Octop 端口冲突</td><td>8090 被占用</td><td><code>NEXLOS_PORT=8091 ./bin/octop-install up</code></td></tr>
+            <tr><td>Windows 上行为异常</td><td>Windows 路径按 alpha 对待</td><td>提 issue，附版本、路径与日志</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2 id="other">10. 其他形态</h2>
+      <p>本页讲的是 DSH 与 Octop 两种宿主装法。其他形态的入口、状态与限制见 <a href="../editions.html">版本</a>；下面是最短路径。</p>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>形态</th><th>怎么装</th><th>状态</th></tr></thead>
+          <tbody>
+            <tr><td>Windows / macOS 包</td><td>下载对应 ZIP，解压运行；目前没有公开下载</td><td>本地候选 0.6.15</td></tr>
+            <tr><td>npm 版</td><td>进入包目录用 <code>nexlos</code> 启动；npm 包尚未发布</td><td>本地候选 0.6.15</td></tr>
+            <tr><td>优盘版</td><td>按盘内说明运行；伞兵版已交付，随身与安全模式未发行</td><td>已交付 / 原型 / 设计</td></tr>
+            <tr><td>Linux 版</td><td>按 Linux 文档在 amd64 上原生安装</td><td>实机验收 0.5.4</td></tr>
+            <tr><td>Pad 版</td><td>安装 debug APK，可在系统设置里设为默认桌面</td><td>debug APK</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="footnote">没有公开下载入口的形态，就是还不能给；不要从第三方转载包安装。</p>
+
+      <h2>11. 版本与许可</h2>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>项目</th><th>取值</th></tr></thead>
+          <tbody>
+            <tr><td>包名 / 版本</td><td><code>@nexlos/os</code> <code>1.1.0-lite.0</code></td></tr>
+            <tr><td>tarball</td><td>7.95 MiB</td></tr>
+            <tr><td>解包</td><td>12.6 MiB / 293 文件</td></tr>
+            <tr><td>运行时依赖</td><td>1 个（<code>jpeg-js</code>）</td></tr>
+            <tr><td>许可</td><td>Apache-2.0（插件源码与公开文档；商标与第三方素材除外）</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p>逐文件许可映射见 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSING.md" target="_blank" rel="noopener">LICENSING.md</a>；第三方来源见 <a href="https://github.com/nexxxl/windos2026/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES.md</a>；商标规则见 <a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">TRADEMARK.md</a>。</p>
+
+      <div class="doc-next">
+        <a href="beginner.html"><small>下一篇</small><b>新手教程：从 hello 到第一个应用 →</b></a>
+        <a href="../museum.html"><small>换个方向</small><b>操作系统博物馆：1969—2026 →</b></a>
+      </div>
+    </article>
+  </div>
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="../assets/icon.svg" alt="" width="34" height="34">
+          <div>
+            <span class="footer-word">NEXLOS</span>
+            <span class="footer-sub">AI-NATIVE OS · WINDOS2026</span>
+          </div>
+        </div>
+        <p>一台 7.95 MiB 的电脑，给 agent 用。说一句话，它就给你造一个应用；搬进来任何东西，带着一个应用离开。</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>产品</h4>
+          <ul>
+            <li><a href="../system.html">系统与能力</a></li>
+            <li><a href="../editions.html">全部版本</a></li>
+            <li><a href="../workflows.html">工作方式</a></li>
+            <li><a href="../museum.html">操作系统博物馆</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>文档</h4>
+          <ul>
+            <li><a href="install.html">安装指南</a></li>
+            <li><a href="beginner.html">新手教程</a></li>
+            <li><a href="../build.html">开发与软件工厂</a></li>
+            <li><a href="install.html#troubleshooting">故障排查</a></li>
+            <li><a href="../editions.html#download">下载与校验</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>参与</h4>
+          <ul>
+            <li><a href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub 仓库</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">商标政策</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <p>本站是 windos2026 的官方站点；安装包与校验和只从本站和 GitHub Releases 发布，其余站点提供的安装包与本项目无关。</p>
+      <p>插件源代码与公开文档按 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a> 提供；商标不随 Apache-2.0 授予，第三方素材按各自许可。</p>
+      <p>Windos2026 是 NexlOS 的界面主题名称。本项目与 Microsoft Corporation 或任何其他操作系统厂商没有隶属、授权或背书关系；Windows 是 Microsoft Corporation 的商标。</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NexlOS Authors · v1.1.0-lite.0</span>
+      <span>Bring anything. Leave with an app.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../assets/i18n-data.js" defer></script>
+<script src="../assets/i18n.js" defer></script>
+<script src="../assets/site.js" defer></script>
+</body>
+</html>

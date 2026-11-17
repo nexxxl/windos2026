@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh-Hans" data-page="home">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NexlOS · 一个不被定义的AI原生操作系统 — 同一个系统，七种装法</title>
+<meta name="description" content="NexlOS 是 AI 原生的桌面系统：17 个应用、25 条命令、8 种界面语言，应用是 HTML 文件。同一套系统有七种装法：DSH 插件、Octop 命令、Windows / macOS 包、npm、优盘、Linux、平板。">
+<meta name="theme-color" content="#003475">
+<meta property="og:title" content="NexlOS · 一个不被定义的AI原生操作系统">
+<meta property="og:description" content="同一个系统，七种装法。应用是文件，装进来能改，拷走能跑。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexxxl.github.io/windos2026/">
+<meta property="og:image" content="https://nexxxl.github.io/windos2026/assets/img/desktop.jpg">
+<link rel="canonical" href="https://nexxxl.github.io/windos2026/">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="NexlOS 首页">
+      <img src="assets/icon.svg" alt="" width="30" height="30">
+      <span><span class="brand-word">NEXLOS</span><span class="brand-sub">AI-NATIVE OS · WINDOS2026</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="siteNav" aria-label="主导航">
+      <a href="system.html">系统</a>
+      <a href="editions.html">版本</a>
+      <a href="workflows.html">工作方式</a>
+      <a href="build.html">开发</a>
+      <a href="museum.html">博物馆</a>
+      <a href="docs/install.html">安装</a>
+      <a href="docs/beginner.html">教程</a>
+    </nav>
+    <div class="top-actions">
+      <span class="version-chip">0.6.15 · 七种装法</span>
+      <a class="btn btn--primary btn--sm" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <!-- 首屏：生态定位 -->
+  <section class="hero">
+    <div class="shell hero-inner">
+      <div class="hero-copy">
+        <div class="eyebrow">NexlOS · AI 原生操作系统 · 2026</div>
+        <h1 class="display" data-i18n-html="hero-title">
+          <span class="line">一个<span class="mark">不被定义</span>的</span>
+          <span class="line">AI原生操作系统</span>
+        </h1>
+        <p class="hero-sub">
+          <strong>同一个系统，七种装法。</strong>
+          DSH 插件、Octop 命令、Windows / macOS 包、npm、优盘、Linux、平板。应用是 HTML 文件——装进来能改，拷走能跑。
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn--primary" href="editions.html">选择你的装法 <span class="arrow">→</span></a>
+          <a class="btn btn--ghost" href="system.html">先看系统 <span class="arrow">→</span></a>
+          <a class="btn btn--ghost" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+        </div>
+        <div class="hero-meta">
+          <span>Apache-2.0</span>
+          <span>本地优先</span>
+          <span>无账号 · 无遥测</span>
+          <span>应用是文件</span>
+        </div>
+      </div>
+
+      <div class="hero-stage">
+        <div class="hero-badge hero-badge--forms" aria-hidden="true"><span>7</span><span>种装法</span><small>one system</small></div>
+        <div class="window">
+          <div class="window-bar">
+            <span class="sq"></span>
+            <span class="win-title">NexlOS / 桌面</span>
+            <span class="win-dots"><i></i><i></i><i></i></span>
+          </div>
+          <div class="hero-shot">
+            <img src="assets/img/desktop.jpg" alt="NexlOS 桌面：壁纸、桌面图标与底部任务栏" width="1728" height="1080" fetchpriority="high">
+          </div>
+        </div>
+        <div class="hero-card" aria-label="一句话生成应用示意">
+          <div class="hero-card-bar"><span>任意宿主 · 生成示意</span><span>LOCAL</span></div>
+          <div class="hero-card-body">
+            <p><span class="you">you ›</span> <span class="cmd">做一个 25 分钟的番茄钟</span></p>
+            <p><span class="you">agent ›</span> 写入 <span class="path">apps/gen-1117-8f3a/</span></p>
+            <p><span class="you">agent ›</span> <span class="ok">verifyAppHtml ✓</span></p>
+            <p><span class="you">agent ›</span> 已放到桌面</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="stat-band" aria-label="发行数字">
+    <div class="shell">
+      <div class="stat"><b>17</b><span>内置应用</span></div>
+      <div class="stat"><b>25</b><span>注册命令</span></div>
+      <div class="stat"><b>8</b><span>界面语言</span></div>
+      <div class="stat"><b>7</b><span>装载形态</span></div>
+      <div class="stat"><b>3</b><span>桌面平台</span></div>
+      <div class="stat"><b>1</b><span>应用格式</span></div>
+    </div>
+  </div>
+
+  <!-- 01 七种装法 -->
+  <section class="section" id="forms">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">01 / 七种装法</div>
+          <h2 class="section-title">一个系统，<br>装进你手边的载体。</h2>
+        </div>
+        <p class="section-lead">
+          同一份 WebOS、同一套应用、同一份文件格式。差别只在启动链、数据根和凭据归属；换一种装法，应用和作品都跟着走。
+        </p>
+      </div>
+
+      <div class="form-grid">
+        <a class="form-card" href="editions.html#dsh">
+          <div class="form-head"><span class="form-mark">DSH</span><span class="status status--live">已发布</span></div>
+          <h3>DSH 插件版</h3>
+          <p>装进 DSH 档案，侧栏多一个桌面入口。模型、会话、终端都用宿主已有的。</p>
+          <span class="form-meta">7.95 MiB · v1.1.0-lite.0</span>
+        </a>
+        <a class="form-card" href="editions.html#octop">
+          <div class="form-head"><span class="form-mark">OCTOP</span><span class="status status--live">已交付</span></div>
+          <h3>Octop 命令版</h3>
+          <p>一条命令把本机 Octop 变成 NexlOS 宿主，左侧常驻入口，卸载即还原。</p>
+          <span class="form-meta">macOS · launchd · 127.0.0.1:8090</span>
+        </a>
+        <a class="form-card" href="editions.html#release">
+          <div class="form-head"><span class="form-mark">WIN / MAC</span><span class="status status--prep">本地候选</span></div>
+          <h3>Windows / macOS 包</h3>
+          <p>独立应用，不依赖宿主。三个平台的 ZIP，解压即用。</p>
+          <span class="form-meta">0.6.15 · x64 / arm64</span>
+        </a>
+        <a class="form-card" href="editions.html#npm">
+          <div class="form-head"><span class="form-mark">NPM</span><span class="status status--prep">本地候选</span></div>
+          <h3>npm 版</h3>
+          <p>终端里启动内核，在本机 Chrome 使用桌面；不需要 Go 或源码。</p>
+          <span class="form-meta">Node.js 22.19+ · 三平台</span>
+        </a>
+        <a class="form-card" href="editions.html#usb">
+          <div class="form-head"><span class="form-mark">USB</span><span class="status status--live">已交付 / 原型</span></div>
+          <h3>优盘版 · 三档</h3>
+          <p>伞兵带走程序，随身带走程序和数据，安全模式连系统一起带走。</p>
+          <span class="form-meta">≤ 1 GB / ~128 GB / 4–8 GB</span>
+        </a>
+        <a class="form-card" href="editions.html#linux">
+          <div class="form-head"><span class="form-mark">LINUX</span><span class="status status--done">实机验收</span></div>
+          <h3>Linux 版</h3>
+          <p>Go 内核加 GTK4 / WebKitGTK 原生壳，桌面与浏览器由系统合成器直接出画。</p>
+          <span class="form-meta">0.5.4 · Mint 21.3 · Ubuntu</span>
+        </a>
+        <a class="form-card" href="editions.html#pad">
+          <div class="form-head"><span class="form-mark">ANDROID</span><span class="status status--prep">debug APK</span></div>
+          <h3>Pad 版</h3>
+          <p>把桌面装进平板，可设为系统默认桌面；应用抽屉与文件导入导出接到 Android。</p>
+          <span class="form-meta">Pixel C · Android 9 / 11</span>
+        </a>
+        <a class="form-card form-card--cta" href="editions.html">
+          <div>
+            <div class="form-head"><span class="form-mark">ALL FORMS</span><span class="status status--live">同一套应用</span></div>
+            <h3>七种装法，一个应用格式。</h3>
+            <p>看每种形态的当前状态、下载入口和已知边界。</p>
+          </div>
+          <span class="form-meta">版本与状态 →</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 系统预览 -->
+  <section class="section section--tint" id="look">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">02 / 系统预览</div>
+          <h2 class="section-title">先看 64 秒，<br>再看它怎么工作。</h2>
+        </div>
+        <p class="section-lead">
+          这是系统实录，不是动效稿。开始菜单、窗口、办公、画板、终端和设置都在同一台桌面里。
+        </p>
+      </div>
+
+      <figure class="video-frame">
+        <video controls preload="metadata" poster="assets/media/poster.jpg" width="1280" height="800" playsinline aria-label="NexlOS 首屏演示，64 秒">
+          <source src="assets/media/nexlos-firstlook.mp4" type="video/mp4">
+          你的浏览器不支持视频，<a href="assets/media/nexlos-firstlook.mp4">下载 MP4</a>。
+        </video>
+        <figcaption class="video-meta">
+          <span><b>64 秒</b> 系统实录</span>
+          <span>1728 × 1080</span>
+          <span>开始菜单 · 窗口 · 办公 · 画板 · 终端 · 设置</span>
+          <span>MP4 / H.264</span>
+        </figcaption>
+      </figure>
+
+      <div class="preview-foot">
+        <div class="preview-notes">
+          <span>书房与墨读</span>
+          <span>便捷办公与便利贴</span>
+          <span>终端、设置与托盘时钟</span>
+        </div>
+        <a class="btn btn--dark" href="system.html">系统与 17 个应用 <span class="arrow">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 三种干法 -->
+  <section class="section" id="ways">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">03 / 三种干法</div>
+          <h2 class="section-title">一台桌面，<br>三种把活干完的方式。</h2>
+        </div>
+        <p class="section-lead">
+          终端里并排跑模型，蜂群里拆活，浏览器交给自然语言。三种都不离开这台桌面。
+        </p>
+      </div>
+
+      <div class="way-grid">
+        <a class="way-card" href="workflows.html#terminal-multi">
+          <span class="way-num">A</span>
+          <h3>终端多开</h3>
+          <p>grok、claude、codex 并在三个独立 PTY 里跑，输出互不覆盖，切回桌面文件已经落盘。</p>
+          <span class="way-go">看演示 <span>→</span></span>
+        </a>
+        <a class="way-card" href="workflows.html#swarm">
+          <span class="way-num">B</span>
+          <h3>蜂群模式</h3>
+          <p>一条指令并行发给全部成员，队长拆分、汇总、收口；每个成员的步骤和工具都可见。</p>
+          <span class="way-go">看集群 <span>→</span></span>
+        </a>
+        <a class="way-card" href="workflows.html#agent-browser">
+          <span class="way-num">C</span>
+          <h3>Agent 浏览器</h3>
+          <p>说清目标，Agent 先读页面结构，再点击、输入、滚动；登录与验证码交回给你。</p>
+          <span class="way-go">看流程 <span>→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 入口 -->
+  <section class="section section--tint" id="enter">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">04 / 从这里开始</div>
+          <h2 class="section-title">装上，开机，<br>造第一个应用。</h2>
+        </div>
+        <p class="section-lead">四条路，按你现在要解决的问题选一条。</p>
+      </div>
+
+      <div class="doc-cards">
+        <a class="doc-card" href="docs/install.html">
+          <span class="doc-num">01</span>
+          <h3>安装指南</h3>
+          <p>DSH 与 Octop 两种装法，加其他形态的入口、可选包与卸载。</p>
+          <span class="doc-go">开始安装 <span>→</span></span>
+        </a>
+        <a class="doc-card" href="docs/beginner.html">
+          <span class="doc-num">02</span>
+          <h3>新手教程</h3>
+          <p>从 hello 引导到第一个应用：概念、桌面、生成、导入、带走。</p>
+          <span class="doc-go">开始阅读 <span>→</span></span>
+        </a>
+        <a class="doc-card" href="museum.html">
+          <span class="doc-num">03</span>
+          <h3>操作系统博物馆</h3>
+          <p>从 1969 年的 UNIX 到 2026 年的 agent 桌面，12 件展品。</p>
+          <span class="doc-go">进入博物馆 <span>→</span></span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/icon.svg" alt="" width="34" height="34">
+          <div>
+            <span class="footer-word">NEXLOS</span>
+            <span class="footer-sub">AI-NATIVE OS · WINDOS2026</span>
+          </div>
+        </div>
+        <p>一个不被定义的AI原生操作系统。应用是文件，装进来能改，拷走能跑；同一个系统，七种装法。</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>产品</h4>
+          <ul>
+            <li><a href="system.html">系统与能力</a></li>
+            <li><a href="editions.html">全部版本</a></li>
+            <li><a href="workflows.html">工作方式</a></li>
+            <li><a href="museum.html">操作系统博物馆</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>文档</h4>
+          <ul>
+            <li><a href="docs/install.html">安装指南</a></li>
+            <li><a href="docs/beginner.html">新手教程</a></li>
+            <li><a href="build.html">开发与软件工厂</a></li>
+            <li><a href="docs/install.html#troubleshooting">故障排查</a></li>
+            <li><a href="editions.html#download">下载与校验</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>参与</h4>
+          <ul>
+            <li><a href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub 仓库</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">商标政策</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>本站是 windos2026 的官方站点；安装包与校验和只从本站和 GitHub Releases 发布，其余站点提供的安装包与本项目无关。</p>
+      <p>插件源代码与公开文档按 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a> 提供；商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文与移植说明见 <a href="https://github.com/nexxxl/windos2026/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES</a> 与 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSING.md" target="_blank" rel="noopener">LICENSING</a>。</p>
+      <p>Windos2026 是 NexlOS 的界面主题名称，用于描述千禧年风格的桌面外观。本项目与 Microsoft Corporation 或任何其他操作系统厂商没有隶属、授权或背书关系；Windows 是 Microsoft Corporation 的商标。DeepSeek Harness 为其权利人产品，本项目是第三方插件。</p>
+      <p>NexlOS、Windos2026 为其作者主张的标记；正式商用前仍需完成商标与字号检索。</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NexlOS Authors</span>
+      <span>Bring anything. Leave with an app.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/i18n-data.js" defer></script>
+<script src="assets/i18n.js" defer></script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

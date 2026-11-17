@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="zh-Hans" data-page="museum">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>操作系统博物馆 · 1969—2026 | NexlOS</title>
+<meta name="description" content="从 1969 年的 UNIX 到 2026 年的 agent 桌面：12 件展品，4 个时代。桌面隐喻、开始菜单、应用分发、文件与权限，四条线索一直走到今天。">
+<meta name="theme-color" content="#061a30">
+<meta property="og:title" content="操作系统博物馆 · 1969—2026">
+<meta property="og:description" content="12 件展品，4 个时代。看完这条线，你会知道今天这台桌面从哪来。">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://nexxxl.github.io/windos2026/museum.html">
+<meta property="og:image" content="https://nexxxl.github.io/windos2026/assets/img/desktop.jpg">
+<link rel="canonical" href="https://nexxxl.github.io/windos2026/museum.html">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="NexlOS 首页">
+      <img src="assets/icon.svg" alt="" width="30" height="30">
+      <span><span class="brand-word">NEXLOS</span><span class="brand-sub">AI-NATIVE OS · WINDOS2026</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="siteNav" aria-label="主导航">
+      <a href="system.html">系统</a>
+      <a href="editions.html">版本</a>
+      <a href="workflows.html">工作方式</a>
+      <a href="build.html">开发</a>
+      <a href="museum.html" aria-current="page">博物馆</a>
+      <a href="docs/install.html">安装</a>
+      <a href="docs/beginner.html">教程</a>
+    </nav>
+    <div class="top-actions">
+      <span class="version-chip">MUSEUM · 1969—2026</span>
+      <a class="btn btn--primary btn--sm" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="museum-hero">
+    <div class="shell">
+      <div class="eyebrow eyebrow--light">MUSEUM / 操作系统博物馆</div>
+      <h1>从一间机房，<br>到你口袋里的桌面。</h1>
+      <p class="museum-lead">
+        57 年，操作系统换过很多次外壳，但有几条线索一直没断：桌面隐喻、开始菜单、应用分发、文件与权限。
+        我们把这 12 件展品摆在一起，是为了让今天这台 7.95 MiB 的桌面知道自己的来路。
+      </p>
+      <div class="museum-stats">
+        <div><b>1969—2026</b><span>时间跨度</span></div>
+        <div><b>12</b><span>件展品</span></div>
+        <div><b>4</b><span>个时代</span></div>
+        <div><b>4</b><span>条线索</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="museum-body">
+    <div class="shell">
+      <div class="museum-toolbar">
+        <div class="era-tabs" role="tablist" aria-label="按时代筛选">
+          <button class="era-tab" type="button" data-era="all" role="tab" aria-selected="true">全部</button>
+          <button class="era-tab" type="button" data-era="pre" role="tab" aria-selected="false">前互联网 1969–1994</button>
+          <button class="era-tab" type="button" data-era="internet" role="tab" aria-selected="false">互联网 1995–2006</button>
+          <button class="era-tab" type="button" data-era="mobile" role="tab" aria-selected="false">移动与云 2007–2021</button>
+          <button class="era-tab" type="button" data-era="agent" role="tab" aria-selected="false">Agent 2022–今天</button>
+        </div>
+        <div class="timeline-nav" aria-label="上一件 / 下一件">
+          <button type="button" id="prevExhibit" aria-label="上一件展品">←</button>
+          <button type="button" id="nextExhibit" aria-label="下一件展品">→</button>
+        </div>
+      </div>
+
+      <article class="exhibit" aria-live="polite">
+        <div class="exhibit-stage" id="artifact">
+          <div class="artifact">
+            <div class="artifact-bar"><span class="sq"></span><span>UNIX · tty</span></div>
+            <div class="artifact-screen term">$ ls /usr<br>bin  include  lib  local<br>$ cat note.txt | wc -l<br>42<br>$ _</div>
+          </div>
+        </div>
+        <div class="exhibit-info">
+          <div class="exhibit-era" id="exEra">前互联网 · 1969–1994</div>
+          <div class="exhibit-year" id="exYear">1969</div>
+          <h2 id="exName">UNIX</h2>
+          <div class="kicker" id="exKicker" style="margin-top:10px">贝尔实验室</div>
+          <p class="exhibit-summary" id="exSummary">多用户、多任务，把设备抽象成文件。一个内核，一套 shell，一群可以组合的小工具。</p>
+          <div class="exhibit-legacy">
+            <h3>留下的东西</h3>
+            <ul id="exLegacy">
+              <li>文件描述符、管道与 shell</li>
+              <li>「一切皆文件」的接口直觉</li>
+              <li>今天的终端与文件命令仍然沿用这套语法</li>
+            </ul>
+          </div>
+          <p class="exhibit-source" id="exSource">来源：<a href="https://en.wikipedia.org/wiki/Unix" target="_blank" rel="noopener">Wikipedia · Unix ↗</a></p>
+        </div>
+      </article>
+
+      <div class="timeline-wrap">
+        <div class="timeline" id="timeline" role="tablist" aria-label="展品时间线">
+          <button type="button" data-id="unix" role="tab" aria-selected="true"><span class="yr">1969</span><span class="nm">UNIX</span></button>
+          <button type="button" data-id="dos" role="tab" aria-selected="false"><span class="yr">1981</span><span class="nm">IBM PC / MS-DOS</span></button>
+          <button type="button" data-id="mac" role="tab" aria-selected="false"><span class="yr">1984</span><span class="nm">Macintosh</span></button>
+          <button type="button" data-id="win10" role="tab" aria-selected="false"><span class="yr">1985</span><span class="nm">Windows 1.0</span></button>
+          <button type="button" data-id="linux" role="tab" aria-selected="false"><span class="yr">1991</span><span class="nm">Linux</span></button>
+          <button type="button" data-id="win95" role="tab" aria-selected="false"><span class="yr">1995</span><span class="nm">Windows 95</span></button>
+          <button type="button" data-id="osx" role="tab" aria-selected="false"><span class="yr">2001</span><span class="nm">Mac OS X</span></button>
+          <button type="button" data-id="iphone" role="tab" aria-selected="false"><span class="yr">2007</span><span class="nm">iPhone OS</span></button>
+          <button type="button" data-id="android" role="tab" aria-selected="false"><span class="yr">2008</span><span class="nm">Android</span></button>
+          <button type="button" data-id="chromeos" role="tab" aria-selected="false"><span class="yr">2011</span><span class="nm">ChromeOS</span></button>
+          <button type="button" data-id="genai" role="tab" aria-selected="false"><span class="yr">2022</span><span class="nm">生成式 AI</span></button>
+          <button type="button" data-id="nexlos" role="tab" aria-selected="false"><span class="yr">2026</span><span class="nm">NexlOS</span></button>
+        </div>
+        <p class="timeline-hint">点年份切换展品；时间线可用 ← → 键移动。展品说明为编辑整理，年份与发布信息以来源链接为准。</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="thread-section">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">四条线索</div>
+          <h2 class="section-title">外壳一直在换，<br>习惯没有断。</h2>
+        </div>
+        <p class="section-lead">
+          博物馆不是怀旧。它解释今天为什么长这样，也解释我们为什么把应用做成文件、把桌面装进宿主。
+        </p>
+      </div>
+
+      <div class="threads">
+        <article class="thread">
+          <span class="thread-num">01 / 桌面隐喻</span>
+          <h3>文件夹，就是文件夹</h3>
+          <p>1984 年的 Macintosh 把图标、文件夹和拖拽带进日常。今天你仍然把文件拖进窗口，仍然用同一套空间语言理解屏幕。</p>
+          <b>→ NexlOS 的桌面、窗口与 Dock 沿用这套直觉。</b>
+        </article>
+        <article class="thread">
+          <span class="thread-num">02 / 开始菜单</span>
+          <h3>所有应用，一个按钮</h3>
+          <p>1995 年的 Windows 95 把「所有应用」收进开始菜单。它解决的是发现问题：不用记住路径，也能找到程序。</p>
+          <b>→ NexlOS 的应用清单、搜索与开始菜单指向同一个入口。</b>
+        </article>
+        <article class="thread">
+          <span class="thread-num">03 / 应用分发</span>
+          <h3>装应用，变成默认动作</h3>
+          <p>2007 年的 iPhone OS 和 2008 年的 Android 把「装一个应用」变成日常。商店、账号与权限随之而来。</p>
+          <b>→ NexlOS 把这一步退回文件：apps/&lt;id&gt;/，复制即安装。</b>
+        </article>
+        <article class="thread">
+          <span class="thread-num">04 / 文件与权限</span>
+          <h3>一切皆文件，换了一层</h3>
+          <p>1969 年的 UNIX 用「一切皆文件」统一设备与数据。今天，一个应用也可以就是一个目录：index.html 加 app.json。</p>
+          <b>→ 带走、备份、删除，都是文件操作。</b>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="catalog">
+    <div class="shell">
+      <div class="eyebrow">展品目录</div>
+      <div class="catalog-grid">
+        <a class="catalog-item" href="#1969"><span class="cy">1969</span><b>UNIX</b><span>一切皆文件</span></a>
+        <a class="catalog-item" href="#1981"><span class="cy">1981</span><b>IBM PC / MS-DOS</b><span>个人电脑进入办公室</span></a>
+        <a class="catalog-item" href="#1984"><span class="cy">1984</span><b>Macintosh</b><span>桌面隐喻走向大众</span></a>
+        <a class="catalog-item" href="#1985"><span class="cy">1985</span><b>Windows 1.0</b><span>窗口管理器</span></a>
+        <a class="catalog-item" href="#1991"><span class="cy">1991</span><b>Linux</b><span>开源内核</span></a>
+        <a class="catalog-item" href="#1995"><span class="cy">1995</span><b>Windows 95</b><span>开始菜单与任务栏</span></a>
+        <a class="catalog-item" href="#2001"><span class="cy">2001</span><b>Mac OS X</b><span>Unix 内核 + Aqua</span></a>
+        <a class="catalog-item" href="#2007"><span class="cy">2007</span><b>iPhone OS</b><span>多点触控</span></a>
+        <a class="catalog-item" href="#2008"><span class="cy">2008</span><b>Android</b><span>开放移动系统</span></a>
+        <a class="catalog-item" href="#2011"><span class="cy">2011</span><b>ChromeOS</b><span>浏览器即系统</span></a>
+        <a class="catalog-item" href="#2022"><span class="cy">2022</span><b>生成式 AI</b><span>自然语言成为界面</span></a>
+        <a class="catalog-item is-current" href="#2026"><span class="cy">2026</span><b>NexlOS</b><span>Agent 的桌面</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sources">
+    <div class="shell">
+      <h2>史料与说明</h2>
+      <p>
+        本页是编辑整理，不是学术论文。年份、发布信息与系统特性以链接来源为准；不同来源对「首次」「第一个」的表述可能有差异，正文尽量使用可核对的事实。
+      </p>
+      <ul>
+        <li><a href="https://en.wikipedia.org/wiki/Unix" target="_blank" rel="noopener">Wikipedia · Unix</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/MS-DOS" target="_blank" rel="noopener">Wikipedia · MS-DOS</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/System_1" target="_blank" rel="noopener">Wikipedia · System 1</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Windows_1.0" target="_blank" rel="noopener">Wikipedia · Windows 1.0</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/History_of_Linux" target="_blank" rel="noopener">Wikipedia · History of Linux</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Windows_95" target="_blank" rel="noopener">Wikipedia · Windows 95</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Mac_OS_X_10.0" target="_blank" rel="noopener">Wikipedia · Mac OS X 10.0</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/IPhone_OS_1" target="_blank" rel="noopener">Wikipedia · iPhone OS 1</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/Android_version_history" target="_blank" rel="noopener">Wikipedia · Android version history</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/ChromeOS" target="_blank" rel="noopener">Wikipedia · ChromeOS</a></li>
+        <li><a href="https://en.wikipedia.org/wiki/ChatGPT" target="_blank" rel="noopener">Wikipedia · ChatGPT</a></li>
+        <li><a href="https://computerhistory.org/" target="_blank" rel="noopener">Computer History Museum</a></li>
+      </ul>
+    </div>
+  </section>
+
+  <aside class="museum-band">
+    <div class="shell">
+      <div>
+        <div class="kicker" style="color:var(--ink)">下一件展品</div>
+        <h2>可能是你的应用。</h2>
+        <p>博物馆记录的是系统，也是人在系统上做的东西。写一个应用、做一个游戏、改一套主题，把它放上桌面。</p>
+        <a class="btn btn--dark band-link" href="index.html#build">参与开发 <span class="arrow">→</span></a>
+      </div>
+      <div class="museum-years" aria-hidden="true">
+        <span><b>1969</b><i></i>机房</span>
+        <span><b>1995</b><i></i>家庭</span>
+        <span><b>2007</b><i></i>口袋</span>
+        <span><b>2026</b><i></i>Agent</span>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/icon.svg" alt="" width="34" height="34">
+          <div>
+            <span class="footer-word">NEXLOS</span>
+            <span class="footer-sub">AI-NATIVE OS · WINDOS2026</span>
+          </div>
+        </div>
+        <p>一台 7.95 MiB 的电脑，给 agent 用。说一句话，它就给你造一个应用；搬进来任何东西，带着一个应用离开。</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>产品</h4>
+          <ul>
+            <li><a href="system.html">系统与能力</a></li>
+            <li><a href="editions.html">全部版本</a></li>
+            <li><a href="workflows.html">工作方式</a></li>
+            <li><a href="museum.html">操作系统博物馆</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>文档</h4>
+          <ul>
+            <li><a href="docs/install.html">安装指南</a></li>
+            <li><a href="docs/beginner.html">新手教程</a></li>
+            <li><a href="build.html">开发与软件工厂</a></li>
+            <li><a href="docs/install.html#troubleshooting">故障排查</a></li>
+            <li><a href="editions.html#download">下载与校验</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>参与</h4>
+          <ul>
+            <li><a href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub 仓库</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">商标政策</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>本站是 windos2026 的官方站点；安装包与校验和只从本站和 GitHub Releases 发布，其余站点提供的安装包与本项目无关。</p>
+      <p>插件源代码与公开文档按 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a> 提供；商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文与移植说明见 <a href="https://github.com/nexxxl/windos2026/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES</a> 与 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSING.md" target="_blank" rel="noopener">LICENSING</a>。</p>
+      <p>Windos2026 是 NexlOS 的界面主题名称，用于描述千禧年风格的桌面外观。本项目与 Microsoft Corporation 或任何其他操作系统厂商没有隶属、授权或背书关系；Windows 是 Microsoft Corporation 的商标。DeepSeek Harness 为其权利人产品，本项目是第三方插件。</p>
+      <p>博物馆页面为编辑整理；年份与发布信息以来源链接为准。</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NexlOS Authors · v1.1.0-lite.0</span>
+      <span>Bring anything. Leave with an app.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/i18n-data.js" defer></script>
+<script src="assets/i18n.js" defer></script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>

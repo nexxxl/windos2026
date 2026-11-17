@@ -1,0 +1,508 @@
+<!doctype html>
+<html lang="zh-Hans" data-page="editions">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>全部版本 · 七种装法，同一套系统 | NexlOS</title>
+<meta name="description" content="NexlOS 的七种装载形态：DSH 插件、Octop 命令、Windows / macOS 包、npm、优盘三档、Linux、Android 平板，以及海外宿主与软件工厂；每种都标注当前状态与已知限制。">
+<meta name="theme-color" content="#003475">
+<meta property="og:type" content="article">
+<meta property="og:title" content="全部版本 · NexlOS">
+<meta property="og:url" content="https://nexxxl.github.io/windos2026/editions.html">
+<meta property="og:image" content="https://nexxxl.github.io/windos2026/assets/img/desktop.jpg">
+<link rel="canonical" href="https://nexxxl.github.io/windos2026/editions.html">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="progress" id="progress" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="shell topbar-inner">
+    <a class="brand" href="index.html" aria-label="NexlOS 首页">
+      <img src="assets/icon.svg" alt="" width="30" height="30">
+      <span><span class="brand-word">NEXLOS</span><span class="brand-sub">AI-NATIVE OS · WINDOS2026</span></span>
+    </a>
+    <button class="nav-toggle" id="navToggle" type="button" aria-label="打开导航" aria-expanded="false" aria-controls="siteNav">
+      <span></span><span></span><span></span>
+    </button>
+    <nav class="nav" id="siteNav" aria-label="主导航">
+      <a href="system.html">系统</a>
+      <a href="editions.html" aria-current="page">版本</a>
+      <a href="workflows.html">工作方式</a>
+      <a href="build.html">开发</a>
+      <a href="museum.html">博物馆</a>
+      <a href="docs/install.html">安装</a>
+      <a href="docs/beginner.html">教程</a>
+    </nav>
+    <div class="top-actions">
+      <span class="version-chip">0.6.15 · 七种装法</span>
+      <a class="btn btn--primary btn--sm" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub <span class="arrow">↗</span></a>
+    </div>
+  </div>
+</header>
+
+<main id="main">
+
+  <section class="page-hero">
+    <div class="shell">
+      <div class="eyebrow">版本 · 七种装法</div>
+      <h1 class="display display--sm">七种装法，<br>同一套东西。</h1>
+      <p class="page-lead">
+        同一份 WebOS、同一套应用、同一种文件格式。差别只在启动链、数据根和凭据归属。
+        下面每个形态都标了当前状态：能装、能验收、还是只到设计；没有下载入口的，就是还不能给你。
+      </p>
+      <div class="page-meta">
+        <span class="tag tag--lime">已发布 1</span>
+        <span class="tag">已交付 / 验收 3</span>
+        <span class="tag">本地候选 2</span>
+        <span class="tag">原型与设计 5</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 怎么选 -->
+  <section class="section section--tight" id="choose">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">01 / 怎么选</div>
+          <h2 class="section-title">你现在要解决<br>哪个问题？</h2>
+        </div>
+        <p class="section-lead">
+          只想先试试：装 DSH 插件。要独立应用：等 0.6.15 公开发行，或先用 Linux 版。要带走：优盘。要长期跑在服务器或低配机器上：Linux。
+        </p>
+      </div>
+
+      <div class="compare-wrap">
+        <table class="compare">
+          <thead>
+            <tr><th>你的情况</th><th>推荐</th><th>为什么</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>已经在用 DSH</td><td>DSH 插件版</td><td>仓库地址就是安装包，模型与会话用现成的</td></tr>
+            <tr><td>已经在用 Octop</td><td>Octop 命令版</td><td>一条命令挂进左侧，卸载即还原</td></tr>
+            <tr><td>想要一个独立应用</td><td>Windows / macOS 包</td><td>不依赖宿主；目前是本地候选，未公开下载</td></tr>
+            <tr><td>习惯终端，机器上只有 Node 和 Chrome</td><td>npm 版</td><td>不用 Go 或源码；目前是本地候选</td></tr>
+            <tr><td>要换电脑、进机房、给别人的机器用</td><td>优盘版</td><td>程序、数据甚至系统跟着盘走</td></tr>
+            <tr><td>长期跑在服务器或低配机器</td><td>Linux 版</td><td>原生窗口壳，实机验收过 Mint 与 Ubuntu</td></tr>
+            <tr><td>想把平板变成桌面</td><td>Pad 版</td><td>可设为默认桌面；终端与办公没有搬进去</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- A 装进宿主 -->
+  <section class="section" id="hosted">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">02 / 装进宿主</div>
+          <h2 class="section-title">借宿主的模型，<br>长出自己的桌面。</h2>
+        </div>
+        <p class="section-lead">不另建控制面，也不要求你再配一份模型。宿主负责模型、会话和终端，NexlOS 负责桌面。</p>
+      </div>
+
+      <div class="edition-grid">
+        <article class="edition" id="dsh">
+          <div class="edition-head">
+            <span class="edition-mark">DSH</span>
+            <span class="status status--live">已发布</span>
+          </div>
+          <h3>DSH 插件版</h3>
+          <p>作为插件装进 DSH 档案，侧栏出现「NexlOS 桌面」，点开占满主工作区。模型、会话、终端都用宿主已有的。</p>
+          <ul class="edition-facts">
+            <li><b>版本</b><span>v1.1.0-lite.0 · 7.95 MiB</span></li>
+            <li><b>要求</b><span>Node.js 22+ · 可加载本地 bundle 的 DSH</span></li>
+            <li><b>安装</b><span>把仓库地址发给 DSH，说「安装 windos2026」</span></li>
+            <li><b>限制</b><span>npm 包未发布；加载插件代码需要 Full access 或当次批准</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="docs/install.html#dsh">安装步骤 <span>→</span></a>
+            <a class="text-link" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">仓库 <span>↗</span></a>
+          </div>
+        </article>
+
+        <article class="edition" id="octop">
+          <div class="edition-head">
+            <span class="edition-mark">OCTOP</span>
+            <span class="status status--live">已交付</span>
+          </div>
+          <h3>Octop 命令版</h3>
+          <p>一条命令把本机 Octop 变成 NexlOS 宿主：左侧多一个常驻入口，点开在右侧主工作区打开桌面。</p>
+          <ul class="edition-facts">
+            <li><b>命令</b><span>./bin/nexlos install · status · uninstall</span></li>
+            <li><b>要求</b><span>Node.js 22+ · 已有 <code>~/.octop</code> 安装</span></li>
+            <li><b>进程</b><span>独立服务，只监听 127.0.0.1:8090</span></li>
+            <li><b>回滚</b><span>卸载即还原宿主导航与入口</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="docs/install.html#octop">安装步骤 <span>→</span></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- B 独立运行 -->
+  <section class="section section--tint" id="standalone">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">03 / 独立运行</div>
+          <h2 class="section-title">不借宿主，<br>自己就是一台电脑。</h2>
+        </div>
+        <p class="section-lead">Go 内核加原生窗口壳，自带 WebOS 与文件工作区。同一个版本有三个平台构建，也可以从终端启动。</p>
+      </div>
+
+      <div class="edition-grid">
+        <article class="edition" id="release">
+          <div class="edition-head">
+            <span class="edition-mark">WIN / MAC</span>
+            <span class="status status--prep">本地候选</span>
+          </div>
+          <h3>Windows / macOS 包</h3>
+          <p>解压即用的独立应用：本地 HTTP 服务、命令路由、文件工作区与内嵌桌面都由自己提供。</p>
+          <ul class="edition-facts">
+            <li><b>版本</b><span>0.6.15 · Windows x64 / Intel Mac / M 系列 Mac</span></li>
+            <li><b>内核</b><span>Go 0.6.15 + 原生窗口壳</span></li>
+            <li><b>签名</b><span>Mac 仅本地 ad-hoc 签名；Windows 未做发行签名</span></li>
+            <li><b>状态</b><span>三份 ZIP 已构建，尚未公开下载</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">关注发布 <span>↗</span></a>
+          </div>
+        </article>
+
+        <article class="edition" id="npm">
+          <div class="edition-head">
+            <span class="edition-mark">NPM</span>
+            <span class="status status--prep">本地候选</span>
+          </div>
+          <h3>npm 版</h3>
+          <p>终端里启动编译好的内核，在 Chrome 使用本机桌面。不用 Go、Python 或下载核心源码。</p>
+          <ul class="edition-facts">
+            <li><b>版本</b><span>0.6.15 · 三平台包</span></li>
+            <li><b>要求</b><span>Node.js 22.19+ · Chrome · macOS 12+</span></li>
+            <li><b>架构</b><span>按 Node 进程架构选包；Rosetta 下的 x64 Node 会选 Intel 包</span></li>
+            <li><b>状态</b><span>npm 包尚未发布；当前用本地包安装</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="docs/install.html#other">安装入口 <span>→</span></a>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- C 随身 -->
+  <section class="section" id="usb">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">04 / 随身携带</div>
+          <h2 class="section-title">三档优盘，<br>三种能带走的东西。</h2>
+        </div>
+        <p class="section-lead">
+          三档不是三个产品，是三种边界：伞兵只带程序，随身带程序和数据，安全模式连系统一起带。Core 与应用三档共用。
+        </p>
+      </div>
+
+      <div class="edition-grid edition-grid--three">
+        <article class="edition" id="paratrooper">
+          <div class="edition-head">
+            <span class="edition-mark">≤ 1 GB</span>
+            <span class="status status--done">已交付</span>
+          </div>
+          <h3>伞兵优盘</h3>
+          <p>程序随盘，资料留在宿主桌面的 <code>nexlos工作区</code>。适合环境好、有网、可以随时生成和删除工作区的机器。</p>
+          <ul class="edition-facts">
+            <li><b>版本</b><span>0.2.6-key-preview.33</span></li>
+            <li><b>验证</b><span>Windows x64 与 macOS Intel 实机通过</span></li>
+            <li><b>启动</b><span>用宿主系统，不引导自己的系统</span></li>
+          </ul>
+        </article>
+
+        <article class="edition" id="portable">
+          <div class="edition-head">
+            <span class="edition-mark">~ 128 GB</span>
+            <span class="status status--prep">原型</span>
+          </div>
+          <h3>随身优盘</h3>
+          <p>程序和数据都随盘，加密仓库保存工作区。换一台电脑接着做，「我的 AI 跟着我走」。</p>
+          <ul class="edition-facts">
+            <li><b>验证</b><span>TU100Pro 加密仓库版已完成原型</span></li>
+            <li><b>状态</b><span>128 GB 标准版尚未制造</span></li>
+            <li><b>启动</b><span>用宿主系统</span></li>
+          </ul>
+        </article>
+
+        <article class="edition" id="secure">
+          <div class="edition-head">
+            <span class="edition-mark">4–8 GB</span>
+            <span class="status status--plan">设计中</span>
+          </div>
+          <h3>安全模式优盘</h3>
+          <p>优盘自带 Linux，连系统一起带走。用在宿主进不去、不能装软件，或需要一个干净临时环境的时候。</p>
+          <ul class="edition-facts">
+            <li><b>数据</b><span>随盘，持久化分区</span></li>
+            <li><b>启动</b><span>引导优盘里的 Linux</span></li>
+            <li><b>状态</b><span>选型与设计完成，尚未做原型</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- D 原生端 -->
+  <section class="section section--tint" id="native">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">05 / 原生端</div>
+          <h2 class="section-title">桌面走系统合成器，<br>平板走 Android。</h2>
+        </div>
+        <p class="section-lead">同样的 WebOS，换成原生壳：Linux 用 GTK4 + WebKitGTK，平板用 WebView 加一层 Android 桥。</p>
+      </div>
+
+      <div class="edition-grid">
+        <article class="edition" id="linux">
+          <div class="edition-head">
+            <span class="edition-mark">LINUX</span>
+            <span class="status status--done">实机验收</span>
+          </div>
+          <h3>Linux 版</h3>
+          <p>Go 内核加 GTK4 / WebKitGTK 原生壳；桌面和浏览器页面由系统合成器直接出画，浏览器标签不走截图通道。</p>
+          <ul class="edition-facts">
+            <li><b>版本</b><span>0.5.4 · 低配渲染档 + 语言包按需加载</span></li>
+            <li><b>验收</b><span>Mint 21.3 amd64 实机；无影 Ubuntu 22.04 实例</span></li>
+            <li><b>未验收</b><span>arm64、容器与 AI 全链路</span></li>
+            <li><b>内置应用</b><span>17 个；OreVein 已从内核与界面移除</span></li>
+          </ul>
+        </article>
+
+        <article class="edition" id="pad">
+          <div class="edition-head">
+            <span class="edition-mark">ANDROID</span>
+            <span class="status status--prep">debug APK</span>
+          </div>
+          <h3>Pad 版</h3>
+          <p>全屏 WebView 承载原有外壳，Android 侧补上应用抽屉、文件导入导出和系统浏览；可设为默认桌面。</p>
+          <ul class="edition-facts">
+            <li><b>设备</b><span>Pixel C · Android 9 / 11 · minSdk 25</span></li>
+            <li><b>已有</b><span>此电脑、书房、画板、记忆、蜂群、扫雷、设置等</span></li>
+            <li><b>未搬入</b><span>终端、Agent 任务、办公套件、应用商店、自带浏览器内核</span></li>
+            <li><b>状态</b><span>debug APK；未做发行签名与商店上架</span></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- E 扩展 -->
+  <section class="section" id="beyond">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">06 / 扩展轨道</div>
+          <h2 class="section-title">还在路上，<br>但方向已经写清。</h2>
+        </div>
+        <p class="section-lead">这两条不是装载形态，是接下来要补的能力：别的宿主，和更可靠的生成。</p>
+      </div>
+
+      <div class="edition-grid">
+        <article class="edition" id="overseas">
+          <div class="edition-head">
+            <span class="edition-mark">HOSTS</span>
+            <span class="status status--plan">设计阶段</span>
+          </div>
+          <h3>海外宿主兼容</h3>
+          <p>把同一套桌面接到 VS Code、Codex、OpenClaw、Goose 等宿主。当前 <code>@nexlos/os</code> 是 DSH 专用插件，不能原包安装。</p>
+          <ul class="edition-facts">
+            <li><b>首批</b><span>VS Code 完整桌面 VSIX + 通用 MCP 工具包 + Codex 引擎适配验证</span></li>
+            <li><b>状态</b><span>接口与本地源码核验完成；未开发或发布适配器</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="build.html#hosts">兼容性说明 <span>→</span></a>
+          </div>
+        </article>
+
+        <article class="edition" id="factory">
+          <div class="edition-head">
+            <span class="edition-mark">FACTORY</span>
+            <span class="status status--plan">试验田</span>
+          </div>
+          <h3>软件工厂</h3>
+          <p>把「生成一个应用」从单文件生成器，做成能稳定产出并验收的流水线：规格、构建、检查、回灌修复、台账。</p>
+          <ul class="edition-facts">
+            <li><b>产物</b><span>复刻型 Web 应用 · 空间交互型 Three.js 场景</span></li>
+            <li><b>门禁</b><span>三档截图 · SSIM · 自检 · 预算；最多回灌 4 轮</span></li>
+            <li><b>状态</b><span>历史构建到安装验证有记录；正式移植与成功率待验收</span></li>
+          </ul>
+          <div class="edition-links">
+            <a class="text-link" href="build.html#factory">工厂怎么跑 <span>→</span></a>
+          </div>
+        </article>
+      </div>
+
+      <div class="callout" style="margin-top:28px">
+        <b>状态说明</b>
+        「已发布」指公开可下载；「已交付」指本机交付并能装回原状；「实机验收」指有具体机器与日期的验收记录；「本地候选」指构建完成但未公开；
+        「原型」「设计中」「试验田」都不提供下载。
+      </div>
+    </div>
+  </section>
+
+  <!-- 下载与校验 -->
+  <section class="section section--tint" id="download">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <div class="eyebrow">07 / 下载与校验</div>
+          <h2 class="section-title">下哪个文件，<br>下完怎么核对。</h2>
+        </div>
+        <p class="section-lead">
+          0.6.15 的三份 ZIP 已构建并逐份核对，仓库仍然是私有的，所以现在没有公开下载入口。
+          开放之后，这一节就是唯一清单：文件名、字节和摘要都得对得上，对不上就别装。
+        </p>
+      </div>
+
+      <h3>系统要求</h3>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>形态</th><th>系统</th><th>架构与依赖</th><th>安装方式</th></tr></thead>
+          <tbody>
+            <tr><td>Windows 包</td><td>Windows 10 或更高</td><td>x64；PE 产物，无运行时依赖</td><td>解压后运行 <code>nexlos.exe</code></td></tr>
+            <tr><td>macOS 包</td><td>macOS 12.0 或更高</td><td>Intel 与 Apple Silicon 各一份</td><td>解压后打开 <code>NexlOS.app</code></td></tr>
+            <tr><td>Linux 版</td><td>带 GTK4 与 WebKitGTK 的发行版</td><td>x64；0.5.4 单独构建</td><td>内核加原生窗口壳，实机验收过</td></tr>
+            <tr><td>npm 版</td><td>macOS 12+ / Windows / Linux</td><td>Node.js 22.19+，另需本机 Chrome</td><td>终端启动内核，桌面在 Chrome 打开</td></tr>
+            <tr><td>Pad 版</td><td>Android 9 或更高</td><td>minSdk 25；debug APK</td><td>侧载安装，未做发行签名</td></tr>
+            <tr><td>DSH 插件</td><td>能加载本地 bundle 的 DSH</td><td>Node.js 22+；7.95 MiB</td><td>把仓库地址发给 DSH</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3 style="margin-top:30px">0.6.15 的三份制品</h3>
+      <p>字节与摘要取自同批的 <code>release-manifest.json</code>；下表摘要只印前 16 位，完整值在下面的校验块里。</p>
+      <div class="doc-table-wrap">
+        <table class="doc-table">
+          <thead><tr><th>文件名</th><th>平台</th><th>字节</th><th>SHA-256 前 16 位</th></tr></thead>
+          <tbody>
+            <tr><td><code>NexlOS-0.6.15-windows-amd64-candidate.zip</code></td><td>windows/amd64</td><td>27910077</td><td><code>86fe06815ccd920d</code></td></tr>
+            <tr><td><code>NexlOS-0.6.15-darwin-amd64-candidate.zip</code></td><td>darwin/amd64</td><td>28709588</td><td><code>72c264ddd5f17a02</code></td></tr>
+            <tr><td><code>NexlOS-0.6.15-darwin-arm64-candidate.zip</code></td><td>darwin/arm64</td><td>28204878</td><td><code>b4927f34f4ac7faf</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="code" style="margin-top:22px">
+        <div class="code-bar"><span class="sq"></span><span>SHA256SUMS · 完整摘要</span><button class="copy-btn" type="button" data-copy="sha256sums">复制</button></div>
+        <div class="code-body code-body--wrap" id="sha256sums">86fe06815ccd920d7630d4a1433cf341f7f4f7d21d18086a8e53fa3fd48dbbc7  NexlOS-0.6.15-windows-amd64-candidate.zip
+72c264ddd5f17a02327524811bdde17512ae5c37621c687eee7307cb1c76b04b  NexlOS-0.6.15-darwin-amd64-candidate.zip
+b4927f34f4ac7faf5648ce4a935b34880ec1c730024d15a72887474b9b1053b7  NexlOS-0.6.15-darwin-arm64-candidate.zip</div>
+      </div>
+
+      <h3 style="margin-top:30px">下载后核对</h3>
+      <p>把 ZIP 和 <code>SHA256SUMS</code> 放进同一个目录，再跑对应平台的那一条。输出必须是 <code>OK</code>，出现 <code>FAILED</code> 就删掉重下。</p>
+      <div class="code">
+        <div class="code-bar"><span class="sq"></span><span>macOS / Linux</span><button class="copy-btn" type="button" data-copy="verify-posix">复制</button></div>
+        <div class="code-body" id="verify-posix">shasum -a 256 -c SHA256SUMS</div>
+      </div>
+      <div class="code" style="margin-top:14px">
+        <div class="code-bar"><span class="sq"></span><span>Windows · PowerShell</span><button class="copy-btn" type="button" data-copy="verify-win">复制</button></div>
+        <div class="code-body" id="verify-win">Get-FileHash -Algorithm SHA256 .\NexlOS-0.6.15-windows-amd64-candidate.zip</div>
+      </div>
+
+      <h3 style="margin-top:30px">第一次打开</h3>
+      <p>这一批是未公证、未做发行签名的构建，系统会拦一次。拦截不是打包出错，是签名状态如实反映在系统里。</p>
+      <div class="callout callout--warn">
+        <b>macOS</b>
+        应用只有本地 ad-hoc 签名，没有开发者 ID 与公证。第一次打开请在 Finder 里右键 → 打开；仍然被拦时执行 <code>xattr -d com.apple.quarantine</code> 再打开。
+      </div>
+      <div class="callout callout--warn" style="margin-top:12px">
+        <b>Windows</b>
+        PE 产物没有 Authenticode 签名，SmartScreen 会提示未知发布者。选「更多信息」→「仍要运行」；企业策略禁用侧载的机器上，请让管理员走白名单。
+      </div>
+      <div class="callout callout--note" style="margin-top:12px">
+        <b>来源</b>
+        只从本站和 <code>nexxxl/windos2026</code> 的 Releases 取包。第三方转载包没有我们的摘要，出了问题也无法回溯。
+      </div>
+
+      <h3 style="margin-top:30px">更新怎么走</h3>
+      <p>
+        独立运行的应用会读固定预发布页上的签名清单：先用编译进二进制的公钥验签，再解析清单，任何一步失败都保持当前版本。
+        发行公钥指纹是 <code>ed25519:a8dcfdce0dafbc50</code>，可以在应用的状态接口里核对。
+      </p>
+      <p>
+        仓库私有的这段时间，更新检查会拿到 404 并按 24 小时退避，这是预期行为；转公开后同一套逻辑不用改。
+      </p>
+    </div>
+  </section>
+
+</main>
+
+<footer class="footer">
+  <div class="shell">
+    <div class="footer-top">
+      <div>
+        <div class="footer-brand">
+          <img src="assets/icon.svg" alt="" width="34" height="34">
+          <div>
+            <span class="footer-word">NEXLOS</span>
+            <span class="footer-sub">AI-NATIVE OS · WINDOS2026</span>
+          </div>
+        </div>
+        <p>一个不被定义的AI原生操作系统。应用是文件，装进来能改，拷走能跑；同一个系统，七种装法。</p>
+      </div>
+      <div class="footer-links">
+        <div>
+          <h4>产品</h4>
+          <ul>
+            <li><a href="system.html">系统与能力</a></li>
+            <li><a href="editions.html">全部版本</a></li>
+            <li><a href="workflows.html">工作方式</a></li>
+            <li><a href="museum.html">操作系统博物馆</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>文档</h4>
+          <ul>
+            <li><a href="docs/install.html">安装指南</a></li>
+            <li><a href="docs/beginner.html">新手教程</a></li>
+            <li><a href="build.html">开发与软件工厂</a></li>
+            <li><a href="docs/install.html#troubleshooting">故障排查</a></li>
+            <li><a href="editions.html#download">下载与校验</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>参与</h4>
+          <ul>
+            <li><a href="https://github.com/nexxxl/windos2026" target="_blank" rel="noopener">GitHub 仓库</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/CONTRIBUTING.md" target="_blank" rel="noopener">贡献指南</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/issues" target="_blank" rel="noopener">Issues</a></li>
+            <li><a href="https://github.com/nexxxl/windos2026/blob/main/TRADEMARK.md" target="_blank" rel="noopener">商标政策</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-legal">
+      <p>本站是 windos2026 的官方站点；安装包与校验和只从本站和 GitHub Releases 发布，其余站点提供的安装包与本项目无关。</p>
+      <p>插件源代码与公开文档按 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSE" target="_blank" rel="noopener">Apache-2.0</a> 提供；商标不随 Apache-2.0 授予，第三方素材按各自许可。来源、许可全文与移植说明见 <a href="https://github.com/nexxxl/windos2026/blob/main/THIRD_PARTY_NOTICES.md" target="_blank" rel="noopener">THIRD_PARTY_NOTICES</a> 与 <a href="https://github.com/nexxxl/windos2026/blob/main/LICENSING.md" target="_blank" rel="noopener">LICENSING</a>。</p>
+      <p>Windos2026 是 NexlOS 的界面主题名称，用于描述千禧年风格的桌面外观。本项目与 Microsoft Corporation 或任何其他操作系统厂商没有隶属、授权或背书关系；Windows 是 Microsoft Corporation 的商标。DeepSeek Harness 为其权利人产品，本项目是第三方插件。</p>
+      <p>NexlOS、Windos2026 为其作者主张的标记；正式商用前仍需完成商标与字号检索。</p>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 NexlOS Authors</span>
+      <span>Bring anything. Leave with an app.</span>
+    </div>
+  </div>
+</footer>
+
+<script src="assets/i18n-data.js" defer></script>
+<script src="assets/i18n.js" defer></script>
+<script src="assets/site.js" defer></script>
+</body>
+</html>
