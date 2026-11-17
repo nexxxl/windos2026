@@ -4,6 +4,8 @@
   var seq = 0
   var waiters = {}
   window.addEventListener('message', function (event) {
+    // 应用在不透明源里，origin 不可比；只认父窗口这一条通道。
+    if (event.source !== window.parent) return
     var data = event.data
     if (!data || data.__nexlAppDataResult !== true || !waiters[data.requestId]) return
     var waiter = waiters[data.requestId]

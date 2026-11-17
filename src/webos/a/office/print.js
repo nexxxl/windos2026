@@ -103,12 +103,59 @@
     }
   }
 
+  // 打印内容来自文档模型，可能夹带脚本或事件属性；导入同源 iframe 前先剥掉。
+  // 打印只需要结构与样式，脚本一律不执行。
+  var DROP_IN_PRINT = 'script,iframe,object,embed,base,link[rel="import"],meta[http-equiv]';
+
+  // 会触发导航或加载的属性，值按 scheme 白名单放行；事件属性一律丢掉。
+  var URL_ATTRS = { href: 1, src: 1, action: 1, formaction: 1, poster: 1, background: 1 };
+
+  function attrAllowed(name, value) {
+    if (name.indexOf('on') === 0) return false;
+    if (!URL_ATTRS[name]) return true;
+    var colon = value.indexOf(':');
+    // 没有 scheme 的相对地址、锚点与站内路径都安全。
+    if (colon < 0) return true;
+    var scheme = value.slice(0, colon);
+    if (scheme === 'http' || scheme === 'https' || scheme === 'mailto' || scheme === 'tel' || scheme === 'blob') return true;
+    // 文档里的图片/音视频常用 data: 内嵌；只放行媒体类型。
+    if (scheme === 'data') return /^data:(?:image|video|audio)\//.test(value);
+    return false;
+  }
+
+  function scrubTree(root) {
+    var drop = root.querySelectorAll(DROP_IN_PRINT);
+    for (var i = drop.length - 1; i >= 0; i -= 1) {
+      if (drop[i].parentNode) drop[i].parentNode.removeChild(drop[i]);
+    }
+    var all = root.querySelectorAll('*');
+    for (var j = 0; j < all.length; j += 1) {
+      var attrs = all[j].attributes;
+      for (var k = attrs.length - 1; k >= 0; k -= 1) {
+        var name = String(attrs[k].name || '').toLowerCase();
+        // 去掉空白后再看 scheme，防 "java\tscript:" 这类绕过。
+        var value = String(attrs[k].value || '').replace(/[\u0000-\u0020]/g, '').toLowerCase();
+        if (!attrAllowed(name, value)) all[j].removeAttribute(attrs[k].name);
+      }
+    }
+    return root;
+  }
+
+  // 解析成 DOM 后整体导入目标文档：不把字符串再交给 document.write 求值。
+  function importHTML(doc, html) {
+    var parsed = new DOMParser().parseFromString(
+      String(html === null || html === undefined ? '' : html),
+      'text/html'
+    );
+    var root = doc.importNode(scrubTree(parsed.documentElement), true);
+    if (doc.documentElement) doc.removeChild(doc.documentElement);
+    doc.appendChild(root);
+    return doc;
+  }
+
   function printHTML(html, done) {
     var f = makeFrame();
-    var doc = f.contentWindow.document;
-    doc.open();
-    doc.write(html);
-    doc.close();
+    var doc = importHTML(f.contentWindow.document, html);
     var fired = false;
     function fire() {
       if (fired) return;
@@ -124,7 +171,11 @@
       if (fired) return;
       var ready = false;
       try {
-        ready = doc.readyState === 'complete' && doc.body && doc.body.childNodes.length > 0;
+        // 导入节点后文档不算「加载中」，样式表要单独等，否则会打出无版式的纸。
+        var styled = true;
+        var links = doc.querySelectorAll('link[rel="stylesheet"]');
+        for (var i = 0; i < links.length; i += 1) if (!links[i].sheet) styled = false;
+        ready = doc.readyState === 'complete' && doc.body && doc.body.childNodes.length > 0 && styled;
       } catch (e) {
         ready = true;
       }
