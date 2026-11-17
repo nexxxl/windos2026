@@ -50,7 +50,7 @@ async function startHost(overrides) {
   const child = spawn(process.execPath, [hostEntry], {
     cwd: root,
     env: hostEnv(overrides),
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe']
   })
   let output = ''
   const collect = (chunk) => {
@@ -88,9 +88,13 @@ test('Octop host rejects cross-origin requests on its own /agent routes', { time
   const crossSite = {
     origin: 'http://evil.example',
     'sec-fetch-site': 'cross-site',
-    'content-type': 'text/plain',
+    'content-type': 'text/plain'
   }
-  for (const [method, route] of [['POST', '/agent/chat'], ['GET', '/agent/status'], ['POST', '/agent/stop']]) {
+  for (const [method, route] of [
+    ['POST', '/agent/chat'],
+    ['GET', '/agent/status'],
+    ['POST', '/agent/stop']
+  ]) {
     const res = await request(port, method, route, crossSite, method === 'POST' ? '{"text":"probe"}' : undefined)
     assert.equal(res.status, 403, `${method} ${route} 应拒绝跨站来源`)
   }
@@ -107,7 +111,7 @@ test('Octop host refuses a non-loopback bind without NEXLOS_ALLOW_LAN', { timeou
   const child = spawn(process.execPath, [hostEntry], {
     cwd: root,
     env: hostEnv({ NEXLOS_HOME: home, NEXLOS_PORT: String(port), NEXLOS_BIND: '0.0.0.0' }),
-    stdio: ['ignore', 'pipe', 'pipe'],
+    stdio: ['ignore', 'pipe', 'pipe']
   })
   let output = ''
   child.stdout.on('data', (chunk) => {
