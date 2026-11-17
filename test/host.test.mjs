@@ -155,6 +155,24 @@ test('standalone plugin Host HTTP contract', { timeout: 20000 }, async (t) => {
       assert.equal(await fs.readFile(path.join(home, space, 'chapters', file), 'utf8'), read.body.fields.chapter.text)
     })
 
+    await t.test('keeps private home files out of fs commands and replay routes', async () => {
+      const secrets = '{"device":"private-key-fixture"}'
+      await fs.writeFile(path.join(home, 'cluster.json'), secrets)
+      await fs.writeFile(path.join(home, 'panel.html'), '<!doctype html><p>panel</p>')
+      for (const route of [
+        '/c/fs.read?path=' + encodeURIComponent('/cluster.json'),
+        '/d?path=' + encodeURIComponent('cluster.json'),
+        '/p/cluster.json'
+      ]) {
+        const res = await request(route)
+        assert.equal(res.status, 400, route + ' 应拒绝直接取私密文件')
+        assert.doesNotMatch(JSON.stringify(res.body), /private-key-fixture/, route + ' 不得回显内容')
+      }
+      const page = await request('/p/panel.html')
+      assert.equal(page.status, 200)
+      assert.match(page.headers.get('content-security-policy') || '', /sandbox/)
+    })
+
     await t.test('rejects workspace traversal and cross-origin mutation', async () => {
       await fs.writeFile(path.join(temporary, 'outside.txt'), 'outside fixture')
       const escape = await request('/c/fs.read?path=' + encodeURIComponent('../outside.txt'))
