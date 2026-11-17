@@ -160,10 +160,8 @@ to the page that already owns the intent. Do not open a new page for a synonym.
 ## Discovery plan
 
 A private repository is not indexed by GitHub search, Google or any awesome list.
-While this repository is private, no amount of copy changes the outcome: visibility
-is the first switch, and it belongs to the owner.
-
-Once public, apply these in order:
+This repository went public on 2026-11-16, so visibility is no longer the limit;
+the steps below were applied in order at that point and are re-checked per release:
 
 1. **About description** (one line, under 160 characters):
    `Tiny, local-first, agent-native OS for DSH: 7.94 MiB, 17 apps, your own model. One sentence makes an HTML app; every app leaves as a file.`
