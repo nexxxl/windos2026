@@ -270,7 +270,9 @@
         </div>
       </div>
       <div class="doc-scroll" id="docScroll">
-        <div class="doc-pages" id="docEditor"></div>
+        <div class="doc-zoom-box" id="docZoomBox">
+          <div class="doc-pages" id="docEditor"></div>
+        </div>
       </div>
     </section>
 
@@ -467,7 +469,7 @@
     </section>
 
     <section class="view view-pdf" id="viewPdf" hidden>
-      <!-- 保留 Chrome 自带阅读器（搜索、旋转、下载、原生滚动都在），外层只补页码与缩放。 -->
+      <!-- pdf.js 自己渲染页面：触控板捏合、页宽/整页与百分比都在应用内，不再依赖浏览器插件。 -->
       <div class="pdf-bar">
         <div class="ribbon-group">
           <div class="rg-row">
@@ -496,7 +498,11 @@
       </div>
       <div class="pdf-body">
         <aside class="pdf-thumbs" id="pdfThumbs" aria-label="页面列表"></aside>
-        <iframe class="pdf-frame" id="pdfFrame" title="PDF 预览"></iframe>
+        <div class="pdf-scroll" id="pdfScroll">
+          <div class="pdf-zoom-box" id="pdfZoomBox">
+            <div class="pdf-pages" id="pdfPages"></div>
+          </div>
+        </div>
       </div>
     </section>
 

@@ -9,11 +9,11 @@
 
 <img width="880" alt="windos2026 demo: boot, desktop, reader, ArtCraft, multi-window" src="docs/images/hero-demo.gif">
 
-7.94 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
+8.32 MiB. A 2026 AI-native, ultra-light operating system: alien technology in the millennium, your private software factory today. Bring anything. Leave with an HTML app.
 
 If a 2026 AI-native operating system had opened on your computer back in the millennium, what would you have used it for?
 
-windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 7.94 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `src/webos/`.
+windos2026 is the DSH plugin edition of NexlOS. It puts a full desktop inside DSH: 17 apps, 25 commands, 8 built-in interface languages, a 8.32 MiB tarball, and one runtime dependency. Generated apps are plain files under `apps/<id>/`; the 17 built-in apps ship as code under `src/webos/`.
 
 Everyone remembers their first desktop. This is the one you get to own: you assemble it yourself, one sentence at a time, and every app leaves with you as a file. Linux gave every program a machine; NexlOS gives every agent a computer.
 
@@ -24,27 +24,27 @@ Everyone remembers their first desktop. This is the one you get to own: you asse
 
 **Your apps.** Say one sentence in DSH: the generator writes `apps/<id>/index.html` plus `app.json`, opens the page in a browser to verify it, repairs it once if that check fails, then puts the icon on your desktop. Copy that directory to any static server and it still runs; hand it a GitHub URL and `importGithubApp` clones the repository, finds the built entry point, and mounts it as an app.
 
-**Your machine.** 7.94 MiB buys 17 apps, 25 commands and 8 interface languages inside the harness you already run: no second control plane to deploy, no account, no telemetry. Install the same bundle into another DSH profile and it uses that profile's model, not ours.
+**Your machine.** 8.32 MiB buys 17 apps, 25 commands and 8 interface languages inside the harness you already run: no second control plane to deploy, no account, no telemetry. Install the same bundle into another DSH profile and it uses that profile's model, not ours.
 
 ## Editions and licenses
 
 | Edition | What you get | License |
 | --- | --- | --- |
-| **Plugin** (source in this repository) | the 7.94 MiB package described below | [Apache-2.0](LICENSE) |
+| **Plugin** (source in this repository) | the 8.32 MiB package described below | [Apache-2.0](LICENSE) |
 | **Universal** (Releases) | a self-contained binary with its own native window shell | the closed kernel, shell and updater under [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md); the embedded desktop layer keeps Apache-2.0 |
 
 The authoritative file-by-file map is [LICENSING.md](docs/legal/LICENSING.md).
 
 ## Two ways to run it
 
-**Plugin — the minimal distribution.** One `install_bundle` into DSH or Octop, 7.94 MiB, no second control plane. It runs inside the harness you already use, and it is the form whose source is published here. Use it to feel what the system is and to build apps from a sentence.
+**Plugin — the minimal distribution.** One `install_bundle` into DSH or Octop, 8.32 MiB, no second control plane. It runs inside the harness you already use, and it is the form whose source is published here. Use it to feel what the system is and to build apps from a sentence.
 
 **Release — the full build.** A self-contained binary with its own native window shell, for Windows and macOS. No Node, no DSH, no harness. It is the complete system: the same desktop layer, plus the closed kernel and shell that turn it into a standalone machine on your own disk.
 
 | | Plugin | Release |
 | --- | --- | --- |
 | Get it from | this repository, `install_bundle` | [Releases](https://github.com/nexxxl/windos2026/releases) |
-| Size | 7.94 MiB | ~27 MB per platform |
+| Size | 8.32 MiB | ~27 MB per platform |
 | Needs | DSH or Octop, Node 22+ | nothing else |
 | License | Apache-2.0 | [NexlOS Binary License 1.0](docs/LICENSE-BINARY.md) |
 | Updates | pull and reinstall | download and replace the binary |
@@ -127,7 +127,7 @@ installing from a terminal starts cleanly.
 **macOS.** Use `darwin-arm64` on Apple Silicon and `darwin-amd64` on Intel.
 
 ```sh
-TAG=v0.6.15                      # the release you want
+TAG=v0.6.16                      # the release you want
 gh release download "$TAG" -R nexxxl/windos2026 -p '*darwin-arm64*.zip'
 unzip -q NexlOS-*-darwin-arm64-candidate.zip -d /tmp/nexlos
 mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
@@ -136,7 +136,7 @@ mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
 Without `gh`:
 
 ```sh
-TAG=v0.6.15
+TAG=v0.6.16
 curl -fL -o /tmp/nexlos.zip \
   "https://github.com/nexxxl/windos2026/releases/download/$TAG/NexlOS-${TAG#v}-darwin-arm64-candidate.zip"
 unzip -q /tmp/nexlos.zip -d /tmp/nexlos
@@ -146,7 +146,7 @@ mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
 **Windows (x64, PowerShell).**
 
 ```powershell
-$tag = 'v0.6.15'
+$tag = 'v0.6.16'
 gh release download $tag -R nexxxl/windos2026 -p '*windows-amd64*.zip'
 Expand-Archive .\NexlOS-*-windows-amd64-candidate.zip -DestinationPath "$env:LOCALAPPDATA\NexlOS" -Force
 & "$env:LOCALAPPDATA\NexlOS\NexlOS-*\nexlos.exe"
@@ -193,8 +193,8 @@ the process at all. Ad-hoc signing is not a trust statement.
 
 | Item | Number |
 | --- | --- |
-| Tarball | 7.94 MiB (measured with `npm pack --dry-run --json`) |
-| Unpacked | 12.6 MiB / 287 files |
+| Tarball | 8.32 MiB (measured with `npm pack --dry-run --json`) |
+| Unpacked | 13.98 MiB / 291 files |
 | Apps | 17 |
 | Commands | 25 |
 | Interface languages | 8 built in, 7 optional packs |
@@ -204,13 +204,13 @@ the process at all. Ad-hoc signing is not a trust statement.
 
 ## Where it fits in 2026
 
-If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 7.94 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
+If you arrived from a search for an **AI-native operating system**, an **agent computer**, a **software factory** or a **local-first BYOK runtime**, this is the honest match: a 8.32 MiB shell with 17 apps and 25 commands that runs inside DSH or Octop, turns one sentence into a portable HTML app, and gives an agent a workspace it can keep.
 
 - **Agent-native**: the desktop is the surface; generated apps are the artifacts.
 - **Software factory**: one sentence, one app, checked in a real browser, repaired once.
 - **Verified, not just generated**: a temporary Chromium checks console errors and declared interactions; only a passing app gets a desktop icon.
 - **Browser-surface reconstruction**: behavior capture, spec, rebuild and comparison stop at the browser; binaries stay out of scope.
-- **Tiny and portable**: 7.94 MiB, 287 files, one runtime dependency.
+- **Tiny and portable**: 8.32 MiB, 291 files, one runtime dependency.
 - **Local-first**: no account, no telemetry, no default model provider.
 - **GPU-drawn UI**: a WebGL graph view and a WebGL2 shader companion, both with Canvas2D fallbacks.
 - **3D author layer (universal edition)**: Three.js, glTF/GLB with KTX2, Draco and meshopt, on our own WebGL2/WebGPU surface. In progress, not in this tarball.

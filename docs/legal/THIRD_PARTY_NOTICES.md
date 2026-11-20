@@ -159,7 +159,7 @@ THE SOFTWARE.
 
 ### 8.2 其他组件
 
-xterm.js、perfect-freehand、Project Nayuki、98.css 与 grok-ball 均为 MIT，全文分别在 `src/webos/a/vendor/xterm-LICENSE.txt`、`src/webos/a/draw/perfect-freehand-LICENSE.txt`、`src/webos/a/vendor/retro-font/98.css-LICENSE.txt`、`src/webos/a/orb-LICENSE.txt` 与对应 HTML 内。jsQR 与 Readability 为 Apache-2.0，全文在 `src/webos/a/vendor/jsQR-LICENSE.txt`、`src/vendor/readability-LICENSE.txt`。jpeg-js 为 BSD-3-Clause。字体按其各自 OFL / CC BY-SA 文件授权。全文与组件同目录分发，不在本文件重复贴出。
+xterm.js、perfect-freehand、Project Nayuki、98.css 与 grok-ball 均为 MIT，全文分别在 `src/webos/a/vendor/xterm-LICENSE.txt`、`src/webos/a/draw/perfect-freehand-LICENSE.txt`、`src/webos/a/vendor/retro-font/98.css-LICENSE.txt`、`src/webos/a/orb-LICENSE.txt` 与对应 HTML 内。jsQR、Readability 与 pdf.js 为 Apache-2.0，全文在 `src/webos/a/vendor/jsQR-LICENSE.txt`、`src/vendor/readability-LICENSE.txt`、`src/webos/a/office/vendor/pdfjs/LICENSE`。jpeg-js 为 BSD-3-Clause。字体按其各自 OFL / CC BY-SA 文件授权。全文与组件同目录分发，不在本文件重复贴出。
 
 ## 9. 随附配套源码
 

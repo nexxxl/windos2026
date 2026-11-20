@@ -30,7 +30,8 @@ Release page and can be diffed against the code.
 
 ## Files
 
-- [v0.6.15.md](v0.6.15.md) — the current version.
+- [v0.6.16.md](v0.6.16.md) — the current version.
+- [v0.6.15.md](v0.6.15.md) — the previous version.
 - [../release-notes-template.md](../release-notes-template.md) — the template
   every version file starts from.
 - [../releasing.md](../releasing.md) — the build and audit sequence that

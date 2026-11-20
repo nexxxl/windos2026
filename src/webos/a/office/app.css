@@ -294,7 +294,7 @@ button { cursor: pointer; }
 /* 页面设置挂在工具栏最右侧，菜单向左展开，避免被视口裁掉。 */
 .page-menu { width: 248px; left: auto; right: 0; }
 .menu-title { font-size: 11px; color: var(--muted); letter-spacing: .04em; margin: 2px 0 6px; }
-/* 快速页边距：一排放四个按钮，与常用页边距预设一一对应。 */
+/* 快速页边距：一排放四个按钮，和 Word 的预设一一对应。 */
 .margin-presets { display: flex; margin-bottom: 8px; }
 .margin-presets button {
   flex: 1 1 0; display: inline-block; width: auto; text-align: center;
@@ -395,6 +395,14 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
 .doc-scroll {
   flex: 1 1 auto; overflow: auto; padding: 18px 18px 24px;
   background: #808080;
+  overflow-anchor: none;
+}
+/* 缩放层：WKWebView 对 grid 的 zoom 支持不稳定，改用 transform 缩放纸张，
+   由这层承担缩放后的真实占位尺寸，滚动条才会跟着变化。 */
+.doc-zoom-box {
+  width: 100%;
+  min-height: 100%;
+  margin: 0 auto;
 }
 .doc-pages {
   --page-w: 21cm;
@@ -403,6 +411,7 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
   --m-right: 3.17cm;
   --m-bottom: 2.54cm;
   --m-left: 3.17cm;
+  font-size: 15px;
   display: grid;
   grid-template-columns: max-content;
   justify-content: center;
@@ -411,6 +420,12 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
   grid-row-gap: 18px;
   min-height: 100%;
 }
+/* 导入件按原件的默认字体/字号渲染；新建件仍用编辑器主题。 */
+.doc-pages.doc-imported {
+  font-family: var(--doc-font, inherit);
+  font-size: var(--doc-size, 15px);
+}
+.doc-pages.doc-imported .blk-body { line-height: 1.3; }
 /* 双页 / 四页：两列排布，配合状态栏比例把两或四张纸压进一屏。 */
 .doc-pages.mode-two,
 .doc-pages.mode-four { grid-template-columns: repeat(2, max-content); }
@@ -429,7 +444,7 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
   height: 100%;
   padding: var(--m-top) var(--m-right) var(--m-bottom) var(--m-left);
 }
-/* 页眉页脚落在页边距里，位置与常规文档一致；没有内容时整块隐藏。 */
+/* 页眉页脚落在页边距里，和 Word 的位置一致；没有内容时整块隐藏。 */
 .page-head, .page-foot {
   position: absolute; left: var(--m-left); right: var(--m-right);
   font-size: 11.5px; color: #4a4a4a; text-align: center;
@@ -441,7 +456,7 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
 .blk { position: relative; margin: 0 0 2px; }
 /* 只留一个黑色插入光标，不再给整段套黄色焦点框，这是 Office 2003 的手感。 */
 .blk-body {
-  outline: none; padding: 0; line-height: 1.75; font-size: 15px;
+  outline: none; padding: 0; line-height: 1.75; font-size: inherit;
   min-height: 1.4em; caret-color: #000;
 }
 .blk-body:focus { background: transparent; box-shadow: none; }
@@ -481,7 +496,7 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
   font-size: 11px; text-align: center; padding-top: 5px; min-height: 0;
 }
 
-/* 目录：点线前导 + 右对齐页码，1–3 级标题一个读法。 */
+/* 目录：点线前导 + 右对齐页码，和 Word 的 TOC 1–3 一个读法。 */
 .blk-toc .toc-body { cursor: default; }
 .toc-heading { font-size: 16px; font-weight: 700; margin-bottom: 6px; letter-spacing: .12em; }
 .toc-entry {
@@ -509,8 +524,15 @@ body.ruler-drag, body.ruler-drag * { cursor: ew-resize !important; user-select: 
   border-radius: 5px; padding: 5px 7px; font-size: 12px; font-family: inherit;
 }
 .blk[data-type="hr"] { border-top: 1px solid var(--line); margin: 18px 0; }
-.blk table { border-collapse: collapse; width: 100%; margin: 8px 0; }
-.blk td, .blk th { border: 1px solid var(--line); padding: 6px 8px; font-size: 13px; }
+/* 表格：列宽由 colgroup 钉住；边框/内边距跟随原件，字号继承正文。 */
+.blk table { border-collapse: collapse; margin: 8px 0; max-width: 100%; }
+.blk table.has-cols { table-layout: fixed; }
+.blk td, .blk th {
+  border: var(--cell-border, 1px solid var(--line));
+  padding: var(--cell-pad, 2px 6px);
+  font-size: inherit; line-height: 1.35; vertical-align: top;
+  overflow-wrap: anywhere; word-break: break-word;
+}
 .blk .passthrough {
   font-size: 12px; color: var(--muted); border: 1px dashed var(--line);
   padding: 10px 12px; border-radius: 6px; background: #faf8f4;
@@ -620,7 +642,38 @@ table.sheet td.cell.num { text-align: right; }
 }
 .pdf-thumb:hover { border-color: var(--accent); color: var(--accent); }
 .pdf-thumb.active { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); font-weight: 600; }
-.pdf-frame { flex: 1 1 auto; width: 100%; border: 0; background: #525659; }
+/* PDF 页面用 pdf.js 画到 canvas 上；缩放层与 Word 一样走 transform，
+   这样触控板捏合、页宽/整页和百分比都能落在同一套几何里。 */
+.pdf-scroll {
+  flex: 1 1 auto; overflow: auto; padding: 18px 18px 24px;
+  background: #525659;
+  scroll-behavior: auto;
+  /* 页面插入和缩放会改变内容高度；关掉滚动锚定，避免 WebKit 自己把视角挪到下一页。 */
+  overflow-anchor: none;
+}
+.pdf-pages, .pdf-page { overflow-anchor: none; }
+.pdf-zoom-box { width: 100%; min-height: 100%; margin: 0 auto; }
+.pdf-pages {
+  display: grid;
+  grid-template-columns: max-content;
+  justify-content: center;
+  align-content: start;
+  grid-row-gap: 18px;
+}
+.pdf-pages.align-start { justify-content: start; }
+.pdf-page {
+  position: relative;
+  background: #fff;
+  box-shadow: 0 2px 9px rgba(0,0,0,.45);
+}
+.pdf-page canvas { display: block; }
+.pdf-page:not(.ready)::after {
+  content: '正在排版…';
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  color: #8a8a8a; font-size: 13px;
+}
+.pdf-hint { color: #e8e8e8; font-size: 13px; padding: 24px; text-align: center; }
 
 /* ---------- AI ---------- */
 .ai-panel {
@@ -686,7 +739,8 @@ table.sheet td.cell.num { text-align: right; }
   .stage { display: block; overflow: visible; }
   .view { height: auto; display: block; }
   .doc-scroll { background: #fff; padding: 0; overflow: visible; }
-  .doc-pages { display: block; min-height: 0; }
+  .doc-zoom-box { width: auto !important; height: auto !important; margin: 0 !important; }
+  .doc-pages { display: block; min-height: 0; transform: none !important; width: auto !important; height: auto !important; zoom: 1 !important; }
   .doc-page {
     width: auto; height: auto; min-height: 0; border: 0; box-shadow: none;
     margin: 0 auto; page-break-after: always; zoom: 1 !important;
@@ -695,6 +749,20 @@ table.sheet td.cell.num { text-align: right; }
   .doc-body { height: auto; min-height: 0; }
   .blk-tools { display: none !important; }
   .page-head, .page-foot { position: static; }
+  .pdf-bar, .pdf-thumbs { display: none !important; }
+  .pdf-body { display: block; }
+  .pdf-scroll { background: #fff; padding: 0; overflow: visible; }
+  .pdf-zoom-box { width: auto !important; height: auto !important; margin: 0 !important; }
+  .pdf-pages {
+    display: block; transform: none !important;
+    width: auto !important; height: auto !important;
+  }
+  .pdf-page {
+    box-shadow: none; margin: 0 auto; page-break-after: always;
+    width: auto !important; height: auto !important;
+  }
+  .pdf-page:last-child { page-break-after: auto; }
+  .pdf-page canvas { width: 100% !important; height: auto !important; }
 }
 /* ---------- 工具面板：二维码 / 公众号排版 / X 线程 ---------- */
 /* 浮层放在 .stage 里，只盖住工作区；菜单栏、侧栏、状态栏始终可点。 */

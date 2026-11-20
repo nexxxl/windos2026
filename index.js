@@ -28,6 +28,7 @@ import { createBrowserBridge } from './src/browser-bridge.js'
 import { compileAppSpec, renderAppTemplate, validateGeneratedHtml } from './src/app-templates.js'
 import { verifyAppHtml } from './src/app-verifier.js'
 import { capabilityList, capabilityOf, unsupportedCapability } from './src/capabilities.js'
+import { importDocxEntries } from './src/office-docx.js'
 
 /** Plugin name; the Loader row, the bundle and the client entry share it. */
 export const name = 'nexlos-os'
@@ -1092,35 +1093,6 @@ function xmlTitle(entries, fallback) {
     }
   } catch (_error) { /* fallback */ }
   return fallback
-}
-
-function importDocxEntries(entries, fallbackTitle) {
-  const raw = entries.get('word/document.xml')
-  if (!raw) throw new Error('DOCX 缺少 word/document.xml')
-  const xml = raw.toString('utf8')
-  const blocks = []
-  const paragraphs = xml.match(/<w:p\b[\s\S]*?<\/w:p>/gu) || []
-  let index = 0
-  for (const paragraph of paragraphs) {
-    const style = /<w:pStyle[^>]*w:val="([^"]+)"/u.exec(paragraph)
-    const styleName = style ? style[1].toLowerCase() : ''
-    let type = 'p'
-    if (/title/u.test(styleName)) type = 'h1'
-    else if (/heading1/u.test(styleName)) type = 'h1'
-    else if (/heading2/u.test(styleName)) type = 'h2'
-    else if (/heading3/u.test(styleName)) type = 'h3'
-    const runs = []
-    const texts = paragraph.match(/<w:t\b[^>]*>[\s\S]*?<\/w:t>/gu) || []
-    for (const node of texts) {
-      const value = decodeXml(node.replace(/^<w:t\b[^>]*>/u, '').replace(/<\/w:t>$/u, ''))
-      if (value !== '') runs.push({ t: value })
-    }
-    if (runs.length === 0) continue
-    index += 1
-    blocks.push({ id: 'b' + index, type, runs })
-  }
-  if (blocks.length === 0) blocks.push({ id: 'b1', type: 'p', runs: [{ t: '（空白 DOCX）' }] })
-  return { kind: 'doc', title: xmlTitle(entries, fallbackTitle), doc: { blocks } }
 }
 
 function importXlsxEntries(entries, fallbackTitle) {

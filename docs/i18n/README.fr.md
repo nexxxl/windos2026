@@ -2,11 +2,11 @@
 
 [English](../../README.md) · [简体中文](README.zh-CN.md) · [繁體中文](README.zh-TW.md) · [日本語](README.ja.md) · [한국어](README.ko.md) · [Español](README.es.md) · **Français** · [Deutsch](README.de.md)
 
-7,94 MiB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
+8,32 MiB. Un système d'exploitation AI-native ultraléger de 2026 : une technologie extraterrestre au millénaire, votre usine logicielle privée aujourd'hui. Bring anything. Leave with an HTML app.
 
 Si un système d'exploitation AI-native de 2026 s'était ouvert sur votre ordinateur au millénaire, qu'en auriez-vous fait ?
 
-windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 7,94 MiB et une seule dépendance d'exécution. Les applications générées sont de simples fichiers sous `apps/<id>/` ; les 17 applications intégrées sont du code sous `src/webos/`.
+windos2026 est l'édition plugin DSH de NexlOS. Il installe un bureau complet dans DSH : 17 applications, 25 commandes, 8 langues d'interface intégrées, une archive de 8,32 MiB et une seule dépendance d'exécution. Les applications générées sont de simples fichiers sous `apps/<id>/` ; les 17 applications intégrées sont du code sous `src/webos/`.
 
 *Traduction. La version de référence est le README anglais.*
 
@@ -18,13 +18,13 @@ Vous souvenez-vous du bureau de votre premier ordinateur ? Celui-ci peut être l
 
 **Vos applications.** Dites une phrase dans DSH : le générateur écrit `apps/<id>/index.html` et `app.json`, ouvre la page dans un navigateur pour la vérifier, la répare une fois si ce contrôle échoue, puis pose l'icône sur votre bureau. Copiez ce répertoire sur n'importe quel serveur statique : il fonctionne toujours ; donnez-lui une URL GitHub et `importGithubApp` clone le dépôt, trouve le point d'entrée compilé et le monte comme application.
 
-**Votre machine.** 7,94 MiB apportent 17 applications, 25 commandes et 8 langues d'interface dans le harness que vous exécutez déjà : pas de second plan de contrôle à déployer, pas de compte, pas de télémétrie. Installez le même bundle dans un autre profil DSH : il utilisera le modèle de ce profil, pas le nôtre.
+**Votre machine.** 8,32 MiB apportent 17 applications, 25 commandes et 8 langues d'interface dans le harness que vous exécutez déjà : pas de second plan de contrôle à déployer, pas de compte, pas de télémétrie. Installez le même bundle dans un autre profil DSH : il utilisera le modèle de ce profil, pas le nôtre.
 
 ## Deux éditions, deux licences
 
 | Édition | Ce que vous obtenez | Licence |
 | --- | --- | --- |
-| **Plugin** (source de ce dépôt) | le paquet de 7.94 MiB décrit ci-dessous | [Apache-2.0](../../LICENSE) |
+| **Plugin** (source de ce dépôt) | le paquet de 8.32 MiB décrit ci-dessous | [Apache-2.0](../../LICENSE) |
 | **Universelle** (Releases) | un binaire autonome avec sa propre coque de fenêtre native | le noyau et la coque fermés sous [NexlOS Binary License 1.0](../LICENSE-BINARY.md) ; la couche bureau embarquée reste Apache-2.0 |
 
 La carte faisant autorité, fichier par fichier, est dans [LICENSING.md](../legal/LICENSING.md).
@@ -82,8 +82,8 @@ La barre latérale d'Octop affiche **NexlOS desktop** ; le bureau s'ouvre dans l
 
 | Élément | Nombre |
 | --- | --- |
-| Archive | 7,94 MiB |
-| Décompressé | 12,6 MiB / 287 fichiers |
+| Archive | 8,32 MiB |
+| Décompressé | 13,98 MiB / 291 fichiers |
 | Applications | 17 |
 | Commandes | 25 |
 | Langues d'interface | 8 intégrées, 7 paquets optionnels |
