@@ -32,6 +32,31 @@ not listed here.
 - No bundled credentials. The package ships no key and sets no default model
   provider; it reads the model configured in the current DSH profile.
 
+## 1.1.1-lite.0 — 2026-11-20
+
+### Added
+
+- 便捷办公 (office) DOCX import now runs through a zero-dependency OOXML
+  parser (`src/office-docx.js`) instead of regex text extraction. It reads the
+  table grid, merged cells (`gridSpan`, `vMerge`), outer and per-cell borders,
+  shading, cell padding, repeating header rows, column widths and table
+  width/alignment; `styles.xml` plus `theme1.xml` default fonts; paragraph
+  indentation including `leftChars`/`firstLineChars`; spacing; hyperlinks;
+  Wingdings `w:sym` glyphs; and page size, margins and orientation.
+- Word viewer zoom: 150 % preset and fit-to-width. The page box is scaled, so
+  text, tables and images grow together.
+- PDF reading through a vendored pdf.js 3.11 build
+  (`src/webos/a/office/vendor/pdfjs/`, Apache-2.0): canvas pages rendered lazily,
+  print output taken from the canvases.
+- PDF zoom with the same 150 % and fit-to-width controls, plus trackpad and
+  ctrl-wheel scaling inside the scroll container.
+
+### Fixed
+
+- The PDF page counter read `/Count` from the import-time byte scan, which PDFs
+  with object streams do not expose, so multi-page files showed one page. It now
+  reads the page count pdf.js reports after the document loads.
+
 ## Unreleased
 
 ### Added

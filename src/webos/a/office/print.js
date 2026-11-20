@@ -58,7 +58,7 @@
     viewSlide: 'slideStage',
     viewMarkdown: 'mdPreview',
     viewHtml: 'htmlPreview',
-    viewPdf: 'pdfFrame'
+    viewPdf: 'pdfPages'
   };
 
   function frameHTML(inner) {
@@ -201,6 +201,24 @@
     return true;
   }
 
+  // canvas 的像素不在 outerHTML 里，序列化前先转成图片；PDF 每页都是 canvas。
+  function withCanvasSnapshots(node) {
+    if (!node || !node.querySelectorAll) return node;
+    var srcs = node.querySelectorAll('canvas');
+    if (!srcs.length) return node;
+    var copy = node.cloneNode(true);
+    var dsts = copy.querySelectorAll('canvas');
+    for (var i = 0; i < srcs.length && i < dsts.length; i++) {
+      try {
+        var img = document.createElement('img');
+        img.src = srcs[i].toDataURL('image/png');
+        img.setAttribute('style', 'width:100%;height:auto;display:block');
+        dsts[i].parentNode.replaceChild(img, dsts[i]);
+      } catch (e) {}
+    }
+    return copy;
+  }
+
   // 打印当前视图（本地 DOM，最快、所见即所得）。
   function printView(done) {
     var view = visibleView();
@@ -212,7 +230,7 @@
       return false;
     }
     if (!node) node = view;
-    return printNode(node, done);
+    return printNode(withCanvasSnapshots(node), done);
   }
 
   // 打印服务端渲染的 HTML（版式更接近导出件，适合正式出纸）。
