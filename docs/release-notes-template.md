@@ -5,7 +5,7 @@ layer you can read in the plugin edition, and an updater that verifies a signed
 manifest. This release is the **universal edition** — no Node.js, no DSH, no
 Octop. Download, unzip, run.
 
-Not sure which form you want? The 7.94 MiB **plugin edition** runs inside DSH or
+Not sure which form you want? The 8.32 MiB **plugin edition** runs inside DSH or
 Octop and is Apache-2.0 throughout; it installs from the repository, not from
 here. This page is the standalone build.
 

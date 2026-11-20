@@ -61,7 +61,7 @@ Search results for the same period, grouped by phrase:
 | --- | --- | --- |
 | Agent-native surface | Strong | A shell, apps and a workspace that a host hands to an agent |
 | OS for agents | Strong | "Linux gave every program a machine; NexlOS gives every agent a computer" |
-| Tiny and deployable | Strong | 7.94 MiB, 287 files, one dependency |
+| Tiny and deployable | Strong | 8.32 MiB, 291 files, one dependency |
 | Software factory | Strong | One sentence → app, browser check, one repair, icon |
 | Local-first / BYOK | Strong | No key, no default provider, no telemetry, no account |
 | Single-file artifacts | Strong | `apps/<id>/index.html` plus `app.json` |
@@ -164,7 +164,7 @@ This repository went public on 2026-11-16, so visibility is no longer the limit;
 the steps below were applied in order at that point and are re-checked per release:
 
 1. **About description** (one line, under 160 characters):
-   `Tiny, local-first, agent-native OS for DSH: 7.94 MiB, 17 apps, your own model. One sentence makes an HTML app; every app leaves as a file.`
+   `Tiny, local-first, agent-native OS for DSH: 8.32 MiB, 17 apps, your own model. One sentence makes an HTML app; every app leaves as a file.`
 2. **Topics** (20 maximum):
    `ai-native`, `agent-native`, `agent-os`, `web-os`, `operating-system`,
    `local-first`, `byok`, `no-telemetry`, `deepseek-harness`, `dsh`, `plugin`,
