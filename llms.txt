@@ -45,9 +45,9 @@ Canonical: https://github.com/nexxxl/windos2026
 - Hosts: DSH (plugin bundle) and Octop (standalone entry).
 - 3D: the universal edition adds a Three.js author layer, glTF/GLB with KTX2, Draco
   or meshopt, and a WebGL2/WebGPU surface. The plugin tarball has no scene graph.
-- Universal edition binaries: published as GitHub Releases assets (v0.6.15,
+- Universal edition binaries: published as GitHub Releases assets (v0.6.16,
   pre-release, unsigned); separate licence.
-  https://github.com/nexxxl/windos2026/releases/tag/v0.6.15
+  https://github.com/nexxxl/windos2026/releases/tag/v0.6.16
 
 ## Boundaries
 

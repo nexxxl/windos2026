@@ -127,7 +127,7 @@ installing from a terminal starts cleanly.
 **macOS.** Use `darwin-arm64` on Apple Silicon and `darwin-amd64` on Intel.
 
 ```sh
-TAG=v0.6.15                      # the release you want
+TAG=v0.6.16                      # the release you want
 gh release download "$TAG" -R nexxxl/windos2026 -p '*darwin-arm64*.zip'
 unzip -q NexlOS-*-darwin-arm64-candidate.zip -d /tmp/nexlos
 mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
@@ -136,7 +136,7 @@ mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
 Without `gh`:
 
 ```sh
-TAG=v0.6.15
+TAG=v0.6.16
 curl -fL -o /tmp/nexlos.zip \
   "https://github.com/nexxxl/windos2026/releases/download/$TAG/NexlOS-${TAG#v}-darwin-arm64-candidate.zip"
 unzip -q /tmp/nexlos.zip -d /tmp/nexlos
@@ -146,7 +146,7 @@ mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
 **Windows (x64, PowerShell).**
 
 ```powershell
-$tag = 'v0.6.15'
+$tag = 'v0.6.16'
 gh release download $tag -R nexxxl/windos2026 -p '*windows-amd64*.zip'
 Expand-Archive .\NexlOS-*-windows-amd64-candidate.zip -DestinationPath "$env:LOCALAPPDATA\NexlOS" -Force
 & "$env:LOCALAPPDATA\NexlOS\NexlOS-*\nexlos.exe"

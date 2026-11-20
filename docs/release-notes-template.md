@@ -30,7 +30,7 @@ the app starts without a security prompt.
 **macOS** — swap `arm64` for `amd64` on an Intel Mac:
 
 ```sh
-TAG=<tag>                        # e.g. v0.6.15
+TAG=<tag>                        # e.g. v0.6.16
 gh release download "$TAG" -R nexxxl/windos2026 -p '*darwin-arm64*.zip'
 unzip -q NexlOS-*-darwin-arm64-candidate.zip -d /tmp/nexlos
 mv /tmp/nexlos/NexlOS-*/NexlOS.app /Applications/
